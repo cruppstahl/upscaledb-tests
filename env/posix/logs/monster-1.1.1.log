@@ -1,0 +1,482 @@
+----------------------------------------------------------------
+new test starts on Mon Dec 21 08:18:49 CET 2009
+parameters: (1) --direct-access=1 --inmemorydb=1     
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/01.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/02.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/03.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/04.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/05.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/06.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/07.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/08.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/09.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/100.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/10.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/110.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/119.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/11.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/120.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/130.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/140.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/14.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/150.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/15.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/160.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/16.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/170.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/17.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/180.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/18.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/190.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/194.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/19.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/200.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/201.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/202.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/20.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/220.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/45.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/46.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/93.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/blb-002.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/dup01.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/dup02.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/ext_020.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/ext_021.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/insert.tst
+[OK]   --direct-access=1 --inmemorydb=1        ../../testfiles/1/small.tst
+44 tests; 0 error(s)
+----------------------------------------------------------------
+new test starts on Mon Dec 21 08:19:14 CET 2009
+parameters: (1) --direct-access=1 --inmemorydb=1 --fullcheck-find=1    
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/03.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/04.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/05.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/06.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/07.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/08.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/09.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/100.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/10.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/110.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/119.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/11.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/120.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/130.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/140.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/14.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/150.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/15.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/160.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/16.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/170.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/17.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/180.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/18.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/190.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/194.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/19.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/200.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/201.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/202.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/20.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/220.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/45.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/46.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/93.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/blb-002.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/dup01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/dup02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/ext_020.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/ext_021.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/insert.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-find=1       ../../testfiles/1/small.tst
+44 tests; 0 error(s)
+----------------------------------------------------------------
+new test starts on Mon Dec 21 08:20:07 CET 2009
+parameters: (1) --direct-access=1 --inmemorydb=1 --useralloc=1    
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/03.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/04.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/05.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/06.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/07.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/08.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/09.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/100.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/10.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/110.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/119.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/11.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/120.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/130.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/140.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/14.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/150.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/15.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/160.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/16.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/170.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/17.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/180.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/18.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/190.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/194.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/19.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/200.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/201.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/202.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/20.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/220.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/45.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/46.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/93.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/blb-002.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/dup01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/dup02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/ext_020.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/ext_021.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/insert.tst
+[OK]   --direct-access=1 --inmemorydb=1 --useralloc=1       ../../testfiles/1/small.tst
+44 tests; 0 error(s)
+----------------------------------------------------------------
+new test starts on Mon Dec 21 08:20:32 CET 2009
+parameters: (1) --direct-access=1 --inmemorydb=1 --overwrite=1    
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/03.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/04.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/05.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/06.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/07.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/08.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/09.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/100.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/10.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/110.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/119.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/11.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/120.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/130.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/140.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/14.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/150.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/15.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/160.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/16.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/170.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/17.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/180.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/18.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/190.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/194.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/19.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/200.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/201.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/202.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/20.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/220.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/45.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/46.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/93.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/blb-002.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/dup01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/dup02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/ext_020.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/ext_021.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/insert.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1       ../../testfiles/1/small.tst
+44 tests; 0 error(s)
+----------------------------------------------------------------
+new test starts on Mon Dec 21 08:21:00 CET 2009
+parameters: (1) --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1   
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/03.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/04.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/05.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/06.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/07.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/08.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/09.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/100.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/10.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/110.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/119.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/11.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/120.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/130.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/140.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/14.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/150.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/15.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/160.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/16.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/170.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/17.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/180.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/18.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/190.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/194.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/19.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/200.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/201.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/202.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/20.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/220.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/45.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/46.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/93.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/blb-002.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/dup01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/dup02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/ext_020.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/ext_021.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/insert.tst
+[OK]   --direct-access=1 --inmemorydb=1 --overwrite=1 --useralloc=1      ../../testfiles/1/small.tst
+44 tests; 0 error(s)
+----------------------------------------------------------------
+new test starts on Mon Dec 21 08:21:28 CET 2009
+parameters: (1) --direct-access=1 --inmemorydb=1 --use-cursors=1    
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/03.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/04.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/05.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/06.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/07.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/08.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/09.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/100.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/10.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/110.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/119.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/11.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/120.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/130.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/140.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/14.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/150.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/15.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/160.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/16.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/170.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/17.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/180.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/18.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/190.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/194.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/19.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/200.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/201.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/202.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/20.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/220.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/45.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/46.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/93.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/blb-002.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/dup01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/dup02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/ext_020.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/ext_021.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/insert.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1       ../../testfiles/1/small.tst
+44 tests; 0 error(s)
+----------------------------------------------------------------
+new test starts on Mon Dec 21 08:21:53 CET 2009
+parameters: (1) --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1   
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/03.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/04.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/05.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/06.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/07.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/08.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/09.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/100.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/10.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/110.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/119.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/11.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/120.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/130.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/140.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/14.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/150.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/15.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/160.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/16.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/170.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/17.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/180.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/18.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/190.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/194.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/19.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/200.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/201.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/202.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/20.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/220.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/45.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/46.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/93.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/blb-002.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/dup01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/dup02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/ext_020.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/ext_021.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/insert.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --overwrite=1      ../../testfiles/1/small.tst
+44 tests; 0 error(s)
+----------------------------------------------------------------
+new test starts on Mon Dec 21 08:22:21 CET 2009
+parameters: (1) --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1   
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/03.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/04.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/05.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/06.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/07.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/08.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/09.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/100.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/10.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/110.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/119.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/11.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/120.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/130.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/140.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/14.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/150.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/15.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/160.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/16.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/170.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/17.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/180.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/18.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/190.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/194.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/19.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/200.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/201.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/202.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/20.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/220.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/45.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/46.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/93.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/blb-002.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/dup01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/dup02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/ext_020.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/ext_021.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/insert.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --useralloc=1      ../../testfiles/1/small.tst
+44 tests; 0 error(s)
+----------------------------------------------------------------
+new test starts on Mon Dec 21 08:22:47 CET 2009
+parameters: (1) --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1   
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/03.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/04.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/05.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/06.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/07.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/08.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/09.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/100.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/10.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/110.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/119.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/11.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/120.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/130.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/140.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/14.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/150.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/15.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/160.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/16.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/170.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/17.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/180.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/18.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/190.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/194.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/19.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/200.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/201.tst
+status mismatch - 0 vs -11
+       ----> (Success) vs (Key not found)
+[FAIL] --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/202.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/20.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/220.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/45.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/46.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/93.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/blb-002.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/dup01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/dup02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/ext_020.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/ext_021.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/insert.tst
+[OK]   --direct-access=1 --inmemorydb=1 --use-cursors=1 --duplicate-first=1      ../../testfiles/1/small.tst
+44 tests; 1 error(s)
+----------------------------------------------------------------
+new test starts on Mon Dec 21 08:24:13 CET 2009
+parameters: (1) --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1    
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/03.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/04.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/05.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/06.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/07.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/08.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/09.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/100.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/10.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/110.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/119.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/11.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/120.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/130.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/140.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/14.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/150.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/15.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/160.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/16.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/170.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/17.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/180.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/18.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/190.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/194.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/19.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/200.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/201.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/202.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/20.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/220.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/45.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/46.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/93.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/blb-002.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/dup01.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/dup02.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/ext_020.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/ext_021.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/insert.tst
+[OK]   --direct-access=1 --inmemorydb=1 --fullcheck-backwards=1       ../../testfiles/1/small.tst
+44 tests; 0 error(s)

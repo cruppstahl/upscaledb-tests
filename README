@@ -1,0 +1,60 @@
+
+hamsterdb "monster" testsuite                    Thu Jun  2 20:31:03 CEST 2011
+(C) Christoph Rupp, chris@crupp.de; http://www.hamsterdb.com
+
+This is the README file of the hamsterdb "monster" testsuite.
+
+Contents:
+
+1. About
+
+This testsuite contains more than 30 000 tests for hamsterdb Embedded Storage.
+These tests run on Windows and Unix/Linux. They execute various script files
+(in /testfiles) against BerkeleyDb, and frequently compare both databases 
+to make sure that they're equal. 
+
+This is the initial release - the whole code is moved to github.com.
+
+2. Changes
+
+New Features
+* none
+
+Bugfixes
+* none
+
+Other Changes
+* none
+
+To see a list of all changes, look in the file ChangeLog.
+
+3. Roadmap
+
+* improve automization
+* add more tests for Transactions
+
+4. Known Issues/Bugs
+
+None.
+
+5. Documentation
+
+The documentation for the test suite is still missing. I'll write it as soon
+as i can, promised!
+
+6. Licensing
+
+The hamsterdb testsuite is released under GPL2 or later. There are several 
+exceptions for other open source licenses (see 
+http://hamsterdb.com/licensing/exceptions for legal information and a license 
+list).
+
+7. Contact
+
+Author of hamsterdb Embedded Storage is 
+    Christoph Rupp
+    Paul-Preuss-Str. 63
+    80995 Muenchen/Germany
+    email: chris@crupp.de
+    web: http://www.hamsterdb.com
+

@@ -1,0 +1,74 @@
+dnl
+dnl configuration script for hamsterdb
+dnl
+dnl Copyright (C) 2005-2007 Christoph Rupp (chris@crupp.de).
+dnl All rights reserved. See file LICENSE for licence and copyright
+dnl information
+dnl
+
+AC_INIT(src/hamsterdb.cpp)
+AM_INIT_AUTOMAKE(unittest,0.1)
+AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_INSTALL
+
+dnl 
+dnl check for cygwin/Win32
+dnl
+case $host in 
+*-*-cygwin*)
+    CFLAGS="${CFLAGS} -DWIN32 -DCYGWIN"
+    ;;
+*-*-mingw32*)
+    CFLAGS="${CFLAGS} -DWIN32"
+    ;;
+esac
+
+dnl
+dnl use -Wall on platforms with gcc
+dnl
+if test "x$GCC" = "xyes"; then
+    if test -z "`echo "$CFLAGS" | grep "\-Wall" 2> /dev/null`" ; then
+        CFLAGS="$CFLAGS -Wall"
+    fi
+fi
+
+dnl
+dnl check for little endian/big endian
+dnl
+AC_C_BIGENDIAN(
+        ac_big_endian=yes,
+        ac_big_endian=no,
+        ac_big_endian=no)
+if test $ac_big_endian = yes; then
+    CFLAGS="${CFLAGS} -DHAM_BIG_ENDIAN"
+else
+    CFLAGS="${CFLAGS} -DHAM_LITTLE_ENDIAN"
+fi
+
+dnl
+dnl support debugging
+dnl 
+AC_ARG_ENABLE(debug,
+     [  --enable-debug          Turn on debugging],
+     [case "${enableval}" in
+       yes) debug=true ;;
+       no)  debug=false ;;
+       *) AC_MSG_ERROR(bad value ${enableval} for --enable-debug) ;;
+     esac],[debug=false])
+AM_CONDITIONAL(DEBUG, test x$debug = xtrue)
+
+dnl
+dnl support profiling
+dnl 
+AC_ARG_ENABLE(profile,
+     [  --enable-profile        Turn on profiling],
+     [case "${enableval}" in
+       yes) profile=true ;;
+       no)  profile=false ;;
+       *) AC_MSG_ERROR(bad value ${enableval} for --enable-profile) ;;
+     esac],[profile=false])
+AM_CONDITIONAL(PROFILE, test x$profile = xtrue)
+
+AC_OUTPUT(Makefile src/Makefile)
+

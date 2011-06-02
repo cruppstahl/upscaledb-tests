@@ -1,0 +1,18 @@
+{
+   bdb_suppress_01
+   Memcheck:Param
+   pwrite64(buf)
+   fun:__pwrite_nocancel
+   fun:__os_io
+   fun:__memp_pgwrite
+   fun:__memp_bhwrite
+   fun:__memp_sync_int
+   fun:__db_sync
+   fun:__db_sync_pp
+   fun:_ZN10berkeleydb5flushEv
+   fun:_ZN6engine5flushEv
+   fun:_ZN6parser12process_lineEPc
+   fun:_ZN6parser7processEv
+   fun:main
+}
+
