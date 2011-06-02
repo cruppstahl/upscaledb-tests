@@ -1,8 +1,9 @@
 
 
 CUR=`pwd`
-HAM=../../../../hamsterdb_master/
-HAM=/home/chris/tmp/hamsterdb-1.1.10/
+#HAM=/home/chris/prj/hamsterdb_master/
+HAM=/home/chris/prj/hamsterdb/
+#HAM=/home/chris/tmp/hamsterdb-1.1.10/
 
 # update the header files
 cp $HAM/include/ham/*.h ../common/ham/

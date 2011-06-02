@@ -17,9 +17,9 @@ public:
 
     bool create(bool numeric);
     bool open(bool numeric);
-    bool insert(char *keytok, char *data);
-    bool erase(char *keytok);
-    bool find(char *keytok);
+    bool insert(const char *keytok, const char *data);
+    bool erase(const char *keytok);
+    bool find(const char *keytok);
     bool fullcheck(void);
     bool close(bool noreopen=false);
     bool flush(void);

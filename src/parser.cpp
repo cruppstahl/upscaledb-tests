@@ -77,23 +77,23 @@ parser::process_line(char *line)
         return 1;
     }
     else if (!strcasecmp(tok, "INSERT")) {
-        char *flags =strtok(&line[pos], ",");
-        char *keytok=strtok(0, ",");
-        char *data  =strtok(0, ",");
+        const char *flags =strtok(&line[pos], (char *)",");
+        const char *keytok=strtok(0, (char *)",");
+        const char *data  =strtok(0, (char *)",");
         if (!data)
             data="";
         (void)flags;
         return (m_engine->insert(keytok, data));
     }
     else if (!strcasecmp(tok, "ERASE")) {
-        char *flags =strtok(&line[pos], ",");
-        char *keytok=strtok(0, ",");
+        const char *flags =strtok(&line[pos], (char *)",");
+        const char *keytok=strtok(0, (char *)",");
         (void)flags;
         return (m_engine->erase(keytok));
     }
     else if (!strcasecmp(tok, "FIND")) {
-        char *flags =strtok(&line[pos], ",");
-        char *keytok=strtok(0, ",");
+        const char *flags =strtok(&line[pos], (char *)",");
+        const char *keytok=strtok(0, (char *)",");
         (void)flags;
         return (m_engine->find(keytok));
     }

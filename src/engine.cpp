@@ -67,7 +67,7 @@ engine::open(bool numeric)
 }
 
 bool 
-engine::insert(char *keytok, char *data)
+engine::insert(const char *keytok, const char *data)
 {
     ham_u32_t numkey=0;
     ham_size_t data_size;
@@ -133,7 +133,7 @@ engine::insert(char *keytok, char *data)
 }
 
 bool 
-engine::erase(char *keytok)
+engine::erase(const char *keytok)
 {
     ham_u32_t numkey=0;
     ham_key_t key;
@@ -171,7 +171,7 @@ engine::erase(char *keytok)
 }
 
 bool 
-engine::find(char *keytok)
+engine::find(const char *keytok)
 {
     ham_u32_t numkey=0;
     ham_key_t key;

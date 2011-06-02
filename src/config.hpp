@@ -43,6 +43,8 @@ typedef struct config
         sort_dupes=false;
         direct_access=false;
         output_xml=false;
+        enable_transactions=false;
+        txn_group=0;
     }
 
     ~config()
@@ -87,6 +89,8 @@ typedef struct config
     bool sort_dupes;
     bool direct_access;
     bool output_xml;
+    bool enable_transactions;
+    unsigned txn_group;
 } config;
 
 #endif /* CONFIG_HPP__ */

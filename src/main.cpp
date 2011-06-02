@@ -36,6 +36,7 @@
 #define ARG_SORT_DUPLICATES            38
 #define ARG_DIRECT_ACCESS              39
 #define ARG_OUTPUT_XML                 40
+#define ARG_USE_TRANSACTIONS           41
 
 /*
  * command line parameters
@@ -212,6 +213,14 @@ static option_t opts[]={
         "output_xml",
         "create XML output",
         0 },
+    {
+        ARG_USE_TRANSACTIONS,
+        "txn",
+        "use_transactions",
+        "use Transactions; argument is 'tmp' - create temp. Transactions; \n"
+        "\tN - (number) group N statements into a Transaction;\n"
+        "\t'all' - group the whole test into a single Transaction",
+        GETOPTS_NEED_ARGUMENT },
     { 0, 0, 0, 0, 0 }
 };
 
@@ -416,6 +425,20 @@ parse_config(int argc, char **argv, config *c)
         }
         else if (opt==ARG_OUTPUT_XML) {
             c->output_xml=true;
+        }
+        else if (opt==ARG_USE_TRANSACTIONS) {
+            c->enable_transactions=true;
+            if (strcmp("tmp", param)==0)
+                c->txn_group=0;
+            else if (strcmp("all", param)==0)
+                c->txn_group=0xffffffff;
+            else {
+                c->txn_group=strtoul(param, 0, 0);
+                if (!c->txn_group) {
+                    printf("invalid parameter for 'use_transactions'\n");
+                    exit(-1);
+                }
+            }
         }
         else if (opt==ARG_REOPEN) {
             c->reopen=true;
