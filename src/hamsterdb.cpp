@@ -88,6 +88,7 @@ hamsterdb::create()
     flags|=m_config->recovery?HAM_ENABLE_RECOVERY:0;
     flags|=m_config->cacheunlimited?HAM_CACHE_UNLIMITED:0;
     flags|=m_config->sort_dupes?HAM_SORT_DUPLICATES:0;
+    flags|=m_config->enable_transactions?HAM_ENABLE_TRANSACTIONS:0;
 
     os::unlink(DB_PATH "test-ham.db");
 
@@ -165,6 +166,7 @@ hamsterdb::open()
     flags|=m_config->lock_excl?HAM_LOCK_EXCLUSIVE:0;
     flags|=m_config->cacheunlimited?HAM_CACHE_UNLIMITED:0;
     flags|=m_config->sort_dupes?HAM_SORT_DUPLICATES:0;
+    flags|=m_config->enable_transactions?HAM_ENABLE_TRANSACTIONS:0;
 
     /*
      * aes encrypted databases are opened from an environment
@@ -220,12 +222,21 @@ hamsterdb::close()
         st=ham_cursor_close(m_cursor);
         if (st)
             return (st);
+        m_cursor=0;
+    }
+
+    if (m_txn) {
+        st=ham_txn_commit(m_txn, 0);
+        if (st)
+            return (st);
+        m_txn=0;
     }
 
     if (m_db) {
         st=ham_close(m_db, 0);
         if (st)
             return (st);
+        m_db=0;
     }
 
     if (m_env)
@@ -274,7 +285,7 @@ hamsterdb::insert(ham_key_t *key, ham_record_t *record)
             flags|=HAM_DUPLICATE;
 
         timer t(this, timer::insert);
-        return (ham_insert(m_db, 0, key, record, flags));
+        return (ham_insert(m_db, m_txn, key, record, flags));
     }
 }
 
@@ -300,7 +311,7 @@ hamsterdb::erase(ham_key_t *key)
     }
     else {
         timer t(this, timer::erase);
-        return (ham_erase(m_db, 0, key, flags));
+        return (ham_erase(m_db, m_txn, key, flags));
     }
 }
 
@@ -329,7 +340,7 @@ hamsterdb::find(ham_key_t *key, ham_record_t *record)
     }
     else {
         timer t(this, timer::find);
-        return (ham_find(m_db, 0, key, record, flags));
+        return (ham_find(m_db, m_txn, key, record, flags));
     }
 }
 
@@ -351,7 +362,7 @@ hamsterdb::create_cursor(void)
 {
     ham_cursor_t *cursor;
 
-    ham_status_t st=ham_cursor_create(m_db, 0, 0, &cursor);
+    ham_status_t st=ham_cursor_create(m_db, m_txn, 0, &cursor);
     if (st) {
         TRACE(("failed to create cursor: %d\n", st));
         exit(-1);

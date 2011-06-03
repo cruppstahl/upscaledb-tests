@@ -33,7 +33,11 @@ berkeleydb::~berkeleydb(void)
 ham_status_t 
 berkeleydb::create(void)
 {
-    int ret=db_create(&m_db, 0, 0);
+    timer t(this, timer::misc);
+
+    int ret;
+
+    ret=db_create(&m_db, 0, 0);
     if (ret)
         return (db2ham(ret));
 
@@ -58,8 +62,6 @@ berkeleydb::create(void)
      */
 
     os::unlink(DB_PATH "test-berk.db");
-
-    timer t(this, timer::misc);
 
     ret=m_db->open(m_db, 0, m_config->inmemory ? 0 : DB_PATH "test-berk.db", 
             0, DB_BTREE, DB_CREATE, 0);

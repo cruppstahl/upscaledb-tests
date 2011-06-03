@@ -9,7 +9,7 @@ class hamsterdb : public database
 {
 public:
     hamsterdb(config *c)
-    : database(c), m_db(0), m_env(0), m_cursor(0)
+    : database(c), m_db(0), m_env(0), m_txn(0), m_cursor(0)
     {
     }
 
@@ -37,6 +37,7 @@ public:
 protected:
     ham_db_t *m_db;
     ham_env_t *m_env;
+    ham_txn_t *m_txn;
     ham_cursor_t *m_cursor;
 };
 
