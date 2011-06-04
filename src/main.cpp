@@ -56,168 +56,169 @@ static option_t opts[]={
         0 },
     {
         ARG_PROFILE,
-        "p",
+        0,
         "profile",
         "enable profiling",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_INMEMORY,
-        "inmem",
+        0,
         "inmemorydb",
         "create in-memory-databases (if available)",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_OVERWRITE,
-        "over",
+        0,
         "overwrite",
         "overwrite existing keys",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_DUPLICATE,
-        "dupe",
+        0,
         "duplicate",
         "enable duplicate keys",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_DUPLICATE_FIRST,
-        "dupe-f",
+        0,
         "duplicate-first",
         "insert duplicate keys as the FIRST duplicate",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_USE_CURSORS,
-        "cursors",
+        0,
         "use-cursors",
         "use cursors for insert/erase",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_AES_ENCRYPTION,
-        "aes",
+        0,
         "use-aes",
         "use aes encryption",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_COMPRESSION,
-        "compress",
+        0,
         "use-compression",
         "use zlib compression",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_RECOVERY,
-        "recovery",
+        0,
         "use-recovery",
         "use recovery",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_NUMERIC,
-        "num",
+        0,
         "numeric",
         "force use of numeric (integer) keys",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_LOCK_EXCLUSIVE,
-        "lex",
-        "lock_ex",
+        0,
+        "lock-ex",
         "lock the file exclusively",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_PROGRESS,
-        "prog",
+        0,
         "progress",
         "show progress",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_DISABLE_MMAP,
-        "no-mmap",
+        0,
         "disable-mmap",
         "disable mmap",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_REOPEN,
-        "reopen",
+        0,
         "reopen",
         "call OPEN/FULLCHECK/CLOSE after each close",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_FULLCHECK_FIND,
-        "ff",
+        0,
         "fullcheck-find",
         "use ham_find in fullcheck",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_FULLCHECK_BACKWARDS,
-        "fb",
+        0,
         "fullcheck-backwards",
         "go backwards in fullcheck",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_USERALLOC,
-        "usr",
+        0,
         "useralloc",
         "ham_find: use flag HAM_RECORD_USER_ALLOC",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_PAGESIZE,
-        "ps",
+        0,
         "pagesize",
         "set the pagesize (use 0 for default)",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_KEYSIZE,
-        "ks",
+        0,
         "keysize",
         "set the keysize (use 0 for default)",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_CACHESIZE,
-        "cs",
+        0,
         "cachesize",
         "set the cachesize (use 0 for default)",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_CACHEUNLIMITED,
-        "cu",
+        0,
         "cacheunlimited",
         "use an unlimited cache",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_DATA_ACCESS_MODE,
-        "dam",
-        "data_access_mode",
-        "sets data access mode (DAM) - comma separated: "
-            "HAM_DAM_SEQUENTIAL_INSERT, HAM_DAM_RANDOM_WRITE",
+        0,
+        "data-access-mode",
+        "sets data access mode (DAM) - comma separated:\n"
+        "\tHAM_DAM_SEQUENTIAL_INSERT, HAM_DAM_RANDOM_WRITE",
         GETOPTS_NEED_ARGUMENT },
     {
         ARG_HINTING,
+        0,
         "hints",
-        "hints",
-        "sets hinting flags - comma separated: "
-            "HAM_HINT_RANDOM_ACCESS, HAM_HINT_SEQUENTIAL, "
-            "HAM_HINT_UBER_FAST_ACCESS, HAM_HINT_APPEND, HAM_HINT_PREPEND",
+        "sets hinting flags - comma separated:\n"
+        "\tHAM_HINT_RANDOM_ACCESS, HAM_HINT_SEQUENTIAL,\n"
+        "\tHAM_HINT_UBER_FAST_ACCESS, HAM_HINT_APPEND, HAM_HINT_PREPEND",
         GETOPTS_NEED_ARGUMENT },
     {
         ARG_SORT_DUPLICATES,
-        "sd",
+        0,
         "sort-duplicates",
         "enables sorting for duplicate keys",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_DIRECT_ACCESS,
-        "dac",
-        "direct_access",
+        0,
+        "direct-access",
         "sets HAM_DIRECT_ACCESS flag",
-        GETOPTS_NEED_ARGUMENT },
+        0 },
     {
         ARG_OUTPUT_XML,
-        "xml",
-        "output_xml",
+        0,
+        "output-xml",
         "create XML output",
         0 },
     {
         ARG_USE_TRANSACTIONS,
-        "txn",
-        "use_transactions",
-        "use Transactions; argument is 'tmp' - create temp. Transactions; \n"
+        0,
+        "use-transactions",
+        "use Transactions; arguments are \n"
+        "\t'tmp' - create temp. Transactions;\n"
         "\tN - (number) group N statements into a Transaction;\n"
         "\t'all' - group the whole test into a single Transaction",
         GETOPTS_NEED_ARGUMENT },
@@ -255,112 +256,52 @@ parse_config(int argc, char **argv, config *c)
             //c->filename=param;
         //}
         else if (opt==ARG_INMEMORY) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->inmemory=true;
-            else {
-                printf("invalid or missing parameter for 'inmemory'\n");
-                exit(-1);
-            }
+            c->inmemory=true;
         }
         else if (opt==ARG_OVERWRITE) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y') {
-                if (c->duplicate) {
-                    printf("invalid combination: overwrite && duplicate\n");
-                    exit(-1);
-                }
-                c->overwrite=true;
-            }
-            else {
-                printf("invalid or missing parameter for 'overwrite'\n");
+            if (c->duplicate) {
+                printf("invalid combination: overwrite && duplicate\n");
                 exit(-1);
             }
+            c->overwrite=true;
         }
         else if (opt==ARG_DUPLICATE) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y') {
-                if (c->overwrite) {
-                    printf("invalid combination: overwrite && duplicate\n");
-                    exit(-1);
-                }
-                c->duplicate=true;
-            }
-            else {
-                printf("invalid or missing parameter for 'duplicate'\n");
+            if (c->overwrite) {
+                printf("invalid combination: overwrite && duplicate\n");
                 exit(-1);
             }
+            c->duplicate=true;
         }
         else if (opt==ARG_DUPLICATE_FIRST) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y') {
-                if (!c->use_cursors) {
-                    printf("'duplicate-first' needs 'use-cursors'\n");
-                    exit(-1);
-                }
-                c->dupe_flags=HAM_DUPLICATE_INSERT_FIRST;
-                c->duplicate=true;
-            }
-            else {
-                printf("invalid or missing parameter for 'duplicate-first'\n");
+            if (!c->use_cursors) {
+                printf("'duplicate-first' needs 'use-cursors'\n");
                 exit(-1);
             }
+            c->dupe_flags=HAM_DUPLICATE_INSERT_FIRST;
+            c->duplicate=true;
         }
         else if (opt==ARG_USE_CURSORS) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->use_cursors=true;
-            else {
-                printf("invalid or missing parameter for 'use_cursors'\n");
-                exit(-1);
-            }
+            c->use_cursors=true;
         }
         else if (opt==ARG_AES_ENCRYPTION) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-			{
 #if 0
-				c->aes_encrypt=true;
+			c->aes_encrypt=true;
 #endif
-			}
-			else {
-                printf("invalid or missing parameter for aes encryption\n");
-                exit(-1);
-            }
         }
         else if (opt==ARG_COMPRESSION) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->compression=true;
-            else {
-                printf("invalid or missing parameter for compression\n");
-                exit(-1);
-            }
+            c->compression=true;
         }
         else if (opt==ARG_RECOVERY) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->recovery=true;
-            else {
-                printf("invalid or missing parameter for compression\n");
-                exit(-1);
-            }
+            c->recovery=true;
         }
         else if (opt==ARG_NUMERIC) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->numeric=true;
-            else {
-                printf("invalid or missing parameter for 'numeric'\n");
-                exit(-1);
-            }
+            c->numeric=true;
         }
         else if (opt==ARG_PROGRESS) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->progress=true;
-            else {
-                printf("invalid or missing parameter for 'progress'\n");
-                exit(-1);
-            }
+            c->progress=true;
         }
         else if (opt==ARG_DISABLE_MMAP) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->no_mmap=true;
-            else {
-                printf("invalid or missing parameter for 'no_mmap'\n");
-                exit(-1);
-            }
+            c->no_mmap=true;
         }
         else if (opt==ARG_PAGESIZE) {
             c->pagesize=strtoul(param, 0, 0);
@@ -372,12 +313,7 @@ parse_config(int argc, char **argv, config *c)
             c->cachesize=strtoul(param, 0, 0);
         }
         else if (opt==ARG_CACHEUNLIMITED) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->cacheunlimited=true;
-            else {
-                printf("invalid or missing parameter for 'cacheunlimited'\n");
-                exit(-1);
-            }
+            c->cacheunlimited=true;
         }
         else if (opt==ARG_DATA_ACCESS_MODE) {
             if (strstr(param, "HAM_DAM_SEQUENTIAL_INSERT"))
@@ -408,20 +344,10 @@ parse_config(int argc, char **argv, config *c)
             }
         }
         else if (opt==ARG_SORT_DUPLICATES) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->sort_dupes=true;
-            else {
-                printf("invalid or missing parameter for 'sort-duplicates'\n");
-                exit(-1);
-            }
+            c->sort_dupes=true;
         }
         else if (opt==ARG_DIRECT_ACCESS) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->direct_access=true;
-            else {
-                printf("invalid or missing parameter for 'direct_access'\n");
-                exit(-1);
-            }
+            c->direct_access=true;
         }
         else if (opt==ARG_OUTPUT_XML) {
             c->output_xml=true;
@@ -435,7 +361,7 @@ parse_config(int argc, char **argv, config *c)
             else {
                 c->txn_group=strtoul(param, 0, 0);
                 if (!c->txn_group) {
-                    printf("invalid parameter for 'use_transactions'\n");
+                    printf("invalid parameter for 'use-transactions'\n");
                     exit(-1);
                 }
             }
@@ -444,12 +370,7 @@ parse_config(int argc, char **argv, config *c)
             c->reopen=true;
         }
         else if (opt==ARG_LOCK_EXCLUSIVE) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->lock_excl=true;
-            else {
-                printf("invalid or missing parameter for 'lock_excl'\n");
-                exit(-1);
-            }
+            c->lock_excl=true;
         }
         else if (opt==ARG_USERALLOC) {
             c->puseralloc=malloc(USER_MALLOC_KEYRECSIZE);
@@ -459,20 +380,10 @@ parse_config(int argc, char **argv, config *c)
             }
         }
         else if (opt==ARG_FULLCHECK_FIND) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->fullcheck_find=true;
-            else {
-                printf("invalid or missing parameter for 'fullcheck-find'\n");
-                exit(-1);
-            }
+            c->fullcheck_find=true;
         }
         else if (opt==ARG_FULLCHECK_BACKWARDS) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->fullcheck_backwards=true;
-            else {
-                printf("invalid or missing parameter for 'fullcheck-backwards'\n");
-                exit(-1);
-            }
+            c->fullcheck_backwards=true;
         }
         else if (opt==GETOPTS_PARAMETER) {
             c->filename=param;

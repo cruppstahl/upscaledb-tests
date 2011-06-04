@@ -1,7 +1,7 @@
 /* 
  * getopts()
 
-  Copyright (C) 2005-2007 Christoph Rupp, www.crupp.de
+  Copyright (C) 2005-2011 Christoph Rupp, www.crupp.de
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -43,13 +43,23 @@ void
 getopts_usage(option_t *options)
 {
     printf("usage: %s <options>\n", g_program);
-    for (; options->shortopt; options++) {
-        if (options->flags & GETOPTS_NEED_ARGUMENT)
-            printf("    -%s, --%s:arg: %s\n", 
-                options->shortopt, options->longopt, options->helpdesc);
-        else
-            printf("    -%s, --%s: %s\n", 
-                options->shortopt, options->longopt, options->helpdesc);
+    for (; options->longopt; options++) {
+        if (options->flags & GETOPTS_NEED_ARGUMENT) {
+            if (options->shortopt)
+                printf("    -%s, --%s:arg: %s\n", 
+                        options->shortopt, options->longopt, options->helpdesc);
+            else
+                printf("    --%s:arg: %s\n", 
+                        options->longopt, options->helpdesc);
+        }
+        else {
+            if (options->shortopt)
+                printf("    -%s, --%s: %s\n", 
+                        options->shortopt, options->longopt, options->helpdesc);
+            else
+                printf("    --%s: %s\n", 
+                        options->longopt, options->helpdesc);
+        }
     }
     printf("\n");
 }
@@ -110,9 +120,11 @@ getopts(option_t *options, char **param)
     /*
      * check for a short option name
      */
-    else if (g_argv[g_a][0]=='-' || g_argv[g_a][0]=='/') {
+    else if (g_argv[g_a][0]=='-') {
         *param=&g_argv[g_a][1];
-        for (; o->shortopt; o++) {
+        for (; o->longopt; o++) {
+            if (!o->shortopt)
+                continue;
             if (!strcmp(o->shortopt, &g_argv[g_a][1])) {
                 if (o->flags & GETOPTS_NEED_ARGUMENT) {
                     if (g_a==g_argc)
