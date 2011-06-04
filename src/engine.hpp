@@ -23,15 +23,19 @@ public:
     bool fullcheck(void);
     bool close(bool noreopen=false);
     bool flush(void);
+    bool txn_begin(void);
+    bool txn_commit(void);
 
 protected:
     bool compare_records(ham_record_t *rec1, ham_record_t *rec2);
+    bool inc_opcount(void);
 
     bool compare_status(ham_status_t st[2]);
 
     database *m_db[2];
     config *m_config;
     parser *m_parser;
+    unsigned m_opcount;
 };
 
 #endif /* ENGINE_HPP__ */

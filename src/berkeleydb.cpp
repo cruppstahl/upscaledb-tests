@@ -237,6 +237,18 @@ berkeleydb::find(ham_key_t *key, ham_record_t *record)
 }
 
 ham_status_t 
+berkeleydb::txn_begin(void)
+{
+    return (0);
+}
+
+ham_status_t 
+berkeleydb::txn_commit(void)
+{
+    return (0);
+}
+
+ham_status_t 
 berkeleydb::db2ham(int ret)
 {
     switch (ret) {

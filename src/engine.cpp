@@ -46,6 +46,10 @@ engine::create(bool numeric)
         }
     }
 
+    if (m_config->txn_group) {
+        return (txn_begin());
+    }
+
     return (true);
 }
 
@@ -129,7 +133,11 @@ engine::insert(const char *keytok, const char *data)
             VERBOSE(("db[%d]: insert failed w/ status %d\n", i, st[i]));
     }
 
-    return (compare_status(st));
+    if (!compare_status(st))
+        return (false);
+    if (m_config->txn_group>0)
+        return (inc_opcount());
+    return (true);
 }
 
 bool 
@@ -167,7 +175,11 @@ engine::erase(const char *keytok)
             VERBOSE(("db[%d]: erase failed w/ status %d\n", i, st[i]));
     }
 
-    return (compare_status(st));
+    if (!compare_status(st))
+        return (false);
+    if (m_config->txn_group>0)
+        return (inc_opcount());
+    return (true);
 }
 
 bool 
@@ -212,7 +224,12 @@ engine::find(const char *keytok)
         TRACE(("record mismatch\n"));
         return false;
     }
-    return (compare_status(st));
+
+    if (!compare_status(st))
+        return (false);
+    if (m_config->txn_group>0)
+        return (inc_opcount());
+    return (true);
 }
 
 bool 
@@ -358,6 +375,34 @@ engine::flush(void)
 }
 
 bool 
+engine::txn_begin(void)
+{
+    for (int i=0; i<2; i++) {
+        ham_status_t st=m_db[i]->txn_begin();
+        if (st) {
+            TRACE(("db[%d]: txn_begin failed w/ status %d\n", i, st));
+            return (false);
+        }
+    }
+
+    return (true);
+}
+
+bool 
+engine::txn_commit(void)
+{
+    for (int i=0; i<2; i++) {
+        ham_status_t st=m_db[i]->txn_commit();
+        if (st) {
+            TRACE(("db[%d]: txn_begin failed w/ status %d\n", i, st));
+            return (false);
+        }
+    }
+
+    return (true);
+}
+
+bool 
 engine::compare_records(ham_record_t *rec1, ham_record_t *rec2)
 {
     if (rec1->size!=rec2->size)
@@ -369,6 +414,20 @@ engine::compare_records(ham_record_t *rec1, ham_record_t *rec2)
     if (!rec1->data && !rec2->data)
         return (true);
     return (memcmp(rec1->data, rec2->data, rec1->size)==0);
+}
+
+bool 
+engine::inc_opcount(void)
+{
+    if (++m_opcount>=m_config->txn_group) {
+        if (!txn_commit())
+            return (false);
+        if (!txn_begin())
+            return (false);
+        m_opcount=0;
+    }
+
+    return (true);
 }
 
 bool 

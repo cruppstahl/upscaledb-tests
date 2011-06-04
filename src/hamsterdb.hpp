@@ -22,6 +22,8 @@ public:
     virtual ham_status_t insert(ham_key_t *key, ham_record_t *record);
     virtual ham_status_t erase(ham_key_t *key);
     virtual ham_status_t find(ham_key_t *key, ham_record_t *record);
+    virtual ham_status_t txn_begin(void);
+    virtual ham_status_t txn_commit(void);
 
     virtual const char *get_name(void);
 

@@ -344,6 +344,26 @@ hamsterdb::find(ham_key_t *key, ham_record_t *record)
     }
 }
 
+ham_status_t 
+hamsterdb::txn_begin(void)
+{
+    assert(m_txn==0);
+
+    return (ham_txn_begin(&m_txn, m_db, 0));
+}
+
+ham_status_t 
+hamsterdb::txn_commit(void)
+{
+    assert(m_txn!=0);
+
+    ham_status_t st=ham_txn_commit(m_txn, 0);
+    if (st)
+        return (st);
+    m_txn=0;
+    return (0);
+}
+
 const char *
 hamsterdb::get_name(void)
 {
