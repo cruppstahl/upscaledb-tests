@@ -62,10 +62,10 @@ $t $d --keysize=8 --inmemorydb $1 $2 $3 $4 $5
 $t $d --keysize=8 --overwrite --inmemorydb $1 $2 $3 $4 $5
 $t $d --keysize=8 --use-cursors --overwrite --inmemorydb $1 $2 $3 $4 $5
 
-$t $d --keysize2 --reopen $1 $2 $3 $4 $5
-$t $d --keysize2 --overwrite --reopen $1 $2 $3 $4 $5
-$t $d --keysize2 --inmemorydb $1 $2 $3 $4 $5
-$t $d --keysize2 --overwrite --inmemorydb $1 $2 $3 $4 $5
+$t $d --keysize=12 --reopen $1 $2 $3 $4 $5
+$t $d --keysize=12 --overwrite --reopen $1 $2 $3 $4 $5
+$t $d --keysize=12 --inmemorydb $1 $2 $3 $4 $5
+$t $d --keysize=12 --overwrite --inmemorydb $1 $2 $3 $4 $5
 
 $t $d --keysize=33 --reopen $1 $2 $3 $4 $5
 $t $d --keysize=33 --overwrite --reopen $1 $2 $3 $4 $5
@@ -77,20 +77,20 @@ $t $d --keysize=680 --overwrite --reopen $1 $2 $3 $4 $5
 $t $d --keysize=680 --inmemorydb $1 $2 $3 $4 $5
 $t $d --keysize=680 --overwrite --inmemorydb $1 $2 $3 $4 $5
 
-$t $d --pagesize024 --reopen $1 $2 $3 $4 $5
-$t $d --pagesize024 --overwrite --reopen $1 $2 $3 $4 $5
-$t $d --pagesize024 --inmemorydb $1 $2 $3 $4 $5
-$t $d --pagesize024 --overwrite --inmemorydb $1 $2 $3 $4 $5
+$t $d --pagesize=1024 --reopen $1 $2 $3 $4 $5
+$t $d --pagesize=1024 --overwrite --reopen $1 $2 $3 $4 $5
+$t $d --pagesize=1024 --inmemorydb $1 $2 $3 $4 $5
+$t $d --pagesize=1024 --overwrite --inmemorydb $1 $2 $3 $4 $5
 
 $t $d --pagesize=8192 --reopen $1 $2 $3 $4 $5
 $t $d --pagesize=8192 --overwrite --reopen $1 $2 $3 $4 $5
 $t $d --pagesize=8192 --inmemorydb $1 $2 $3 $4 $5
 $t $d --pagesize=8192 --overwrite --inmemorydb $1 $2 $3 $4 $5
 
-$t $d --pagesize31072 --reopen $1 $2 $3 $4 $5
-$t $d --pagesize31072 --overwrite --reopen $1 $2 $3 $4 $5
-$t $d --pagesize31072 --inmemorydb $1 $2 $3 $4 $5
-$t $d --pagesize31072 --overwrite --inmemorydb $1 $2 $3 $4 $5
+$t $d --pagesize=131072 --reopen $1 $2 $3 $4 $5
+$t $d --pagesize=131072 --overwrite --reopen $1 $2 $3 $4 $5
+$t $d --pagesize=131072 --inmemorydb $1 $2 $3 $4 $5
+$t $d --pagesize=131072 --overwrite --inmemorydb $1 $2 $3 $4 $5
 
 $t $d --cacheunlimited --reopen $1 $2 $3 $4 $5
 $t $d --cachesize=0 --reopen $1 $2 $3 $4 $5
@@ -110,10 +110,10 @@ $t $d --cachesize=50 --disable-mmap --reopen $1 $2 $3 $4 $5
 $t $d --cachesize=50 --overwrite --disable-mmap --reopen $1 $2 $3 $4 $5
 $t $d --cachesize=50 --use-cursors --overwrite --disable-mmap --reopen $1 $2 $3 $4 $5
 
-$t $d --cachesize024 --reopen $1 $2 $3 $4 $5
-$t $d --cachesize024 --overwrite --reopen $1 $2 $3 $4 $5
-$t $d --cachesize024 --disable-mmap --reopen $1 $2 $3 $4 $5
-$t $d --cachesize024 --overwrite --disable-mmap --reopen $1 $2 $3 $4 $5
+$t $d --cachesize=1024 --reopen $1 $2 $3 $4 $5
+$t $d --cachesize=1024 --overwrite --reopen $1 $2 $3 $4 $5
+$t $d --cachesize=1024 --disable-mmap --reopen $1 $2 $3 $4 $5
+$t $d --cachesize=1024 --overwrite --disable-mmap --reopen $1 $2 $3 $4 $5
 
 $t $d --use-recovery --reopen $1 $2 $3 $4 $5
 $t $d --use-recovery --overwrite --reopen $1 $2 $3 $4 $5
@@ -157,116 +157,116 @@ $t $d --direct-access --inmemorydb --use-cursors --duplicate-first $1 $2 $3 $4 $
 $t $d --direct-access --inmemorydb --fullcheck-backwards $1 $2 $3 $4 $5
 
 # use temporary transactions
-$t $d --use-transactions:tmp $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --overwrite $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --duplicate-first $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --use-cursors $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --use-cursors --overwrite $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --use-cursors --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --use-cursors --duplicate-first $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --use-aes $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --use-compression $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --disable-mmap $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --fullcheck-find $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --fullcheck-backwards $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --useralloc $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --useralloc --use-cursors $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --pagesize=1024 $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --pagesize=10240 $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --pagesize=102400 $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --cachesize=1024 $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --cachesize=10240 $1 $2 $3 $4 $5
-$t $d --use-transactions:tmp --cachesize=102400 $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --overwrite $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --duplicate $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --duplicate-first $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --use-cursors $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --use-cursors --overwrite $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --use-cursors --duplicate $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --use-cursors --duplicate-first $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --use-aes $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --use-compression $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --disable-mmap $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --fullcheck-find $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --fullcheck-backwards $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --useralloc $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --useralloc --use-cursors $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --pagesize=1024 $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --pagesize=10240 $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --pagesize=102400 $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --cachesize=1024 $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --cachesize=10240 $1 $2 $3 $4 $5
+$t $d --use-transactions=tmp --cachesize=102400 $1 $2 $3 $4 $5
 
 # use transactions: group 20 ops in one txn
-$t $d --use-transactions:20 $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --overwrite $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --duplicate-first $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --use-cursors $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --use-cursors --overwrite $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --use-cursors --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --use-cursors --duplicate-first $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --use-aes $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --use-compression $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --disable-mmap $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --fullcheck-find $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --fullcheck-backwards $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --useralloc $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --useralloc --use-cursors $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --pagesize=1024 $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --pagesize=10240 $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --pagesize=102400 $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --cachesize=1024 $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --cachesize=10240 $1 $2 $3 $4 $5
-$t $d --use-transactions:20 --cachesize=102400 $1 $2 $3 $4 $5
+$t $d --use-transactions=20 $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --overwrite $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --duplicate $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --duplicate-first $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --use-cursors $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --use-cursors --overwrite $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --use-cursors --duplicate $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --use-cursors --duplicate-first $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --use-aes $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --use-compression $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --disable-mmap $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --fullcheck-find $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --fullcheck-backwards $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --useralloc $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --useralloc --use-cursors $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --pagesize=1024 $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --pagesize=10240 $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --pagesize=102400 $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --cachesize=1024 $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --cachesize=10240 $1 $2 $3 $4 $5
+$t $d --use-transactions=20 --cachesize=102400 $1 $2 $3 $4 $5
 
 # use transactions: group 200 ops in one txn
-$t $d --use-transactions:200 $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --overwrite $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --duplicate-first $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --use-cursors $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --use-cursors --overwrite $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --use-cursors --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --use-cursors --duplicate-first $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --use-aes $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --use-compression $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --disable-mmap $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --fullcheck-find $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --fullcheck-backwards $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --useralloc $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --useralloc --use-cursors $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --pagesize=1024 $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --pagesize=10240 $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --pagesize=102400 $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --cachesize=1024 $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --cachesize=10240 $1 $2 $3 $4 $5
-$t $d --use-transactions:200 --cachesize=102400 $1 $2 $3 $4 $5
+$t $d --use-transactions=200 $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --overwrite $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --duplicate $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --duplicate-first $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --use-cursors $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --use-cursors --overwrite $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --use-cursors --duplicate $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --use-cursors --duplicate-first $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --use-aes $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --use-compression $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --disable-mmap $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --fullcheck-find $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --fullcheck-backwards $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --useralloc $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --useralloc --use-cursors $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --pagesize=1024 $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --pagesize=10240 $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --pagesize=102400 $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --cachesize=1024 $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --cachesize=10240 $1 $2 $3 $4 $5
+$t $d --use-transactions=200 --cachesize=102400 $1 $2 $3 $4 $5
 
 # use transactions: group 10000 ops in one txn
-$t $d --use-transactions:10000 $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --overwrite $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --duplicate-first $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --use-cursors $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --use-cursors --overwrite $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --use-cursors --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --use-cursors --duplicate-first $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --use-aes $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --use-compression $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --disable-mmap $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --fullcheck-find $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --fullcheck-backwards $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --useralloc $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --useralloc --use-cursors $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --pagesize=1024 $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --pagesize=10240 $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --pagesize=102400 $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --cachesize=1024 $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --cachesize=10240 $1 $2 $3 $4 $5
-$t $d --use-transactions:10000 --cachesize=102400 $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --overwrite $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --duplicate $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --duplicate-first $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --use-cursors $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --use-cursors --overwrite $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --use-cursors --duplicate $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --use-cursors --duplicate-first $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --use-aes $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --use-compression $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --disable-mmap $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --fullcheck-find $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --fullcheck-backwards $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --useralloc $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --useralloc --use-cursors $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --pagesize=1024 $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --pagesize=10240 $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --pagesize=102400 $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --cachesize=1024 $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --cachesize=10240 $1 $2 $3 $4 $5
+$t $d --use-transactions=10000 --cachesize=102400 $1 $2 $3 $4 $5
 
 # use transactions: group ALL ops in one txn
-$t $d --use-transactions:all $1 $2 $3 $4 $5
-$t $d --use-transactions:all --overwrite $1 $2 $3 $4 $5
-$t $d --use-transactions:all --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions:all --duplicate-first $1 $2 $3 $4 $5
-$t $d --use-transactions:all --use-cursors $1 $2 $3 $4 $5
-$t $d --use-transactions:all --use-cursors --overwrite $1 $2 $3 $4 $5
-$t $d --use-transactions:all --use-cursors --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions:all --use-cursors --duplicate-first $1 $2 $3 $4 $5
-$t $d --use-transactions:all --use-aes $1 $2 $3 $4 $5
-$t $d --use-transactions:all --use-compression $1 $2 $3 $4 $5
-$t $d --use-transactions:all --disable-mmap $1 $2 $3 $4 $5
-$t $d --use-transactions:all --fullcheck-find $1 $2 $3 $4 $5
-$t $d --use-transactions:all --fullcheck-backwards $1 $2 $3 $4 $5
-$t $d --use-transactions:all --useralloc $1 $2 $3 $4 $5
-$t $d --use-transactions:all --useralloc --use-cursors $1 $2 $3 $4 $5
-$t $d --use-transactions:all --pagesize=1024 $1 $2 $3 $4 $5
-$t $d --use-transactions:all --pagesize=10240 $1 $2 $3 $4 $5
-$t $d --use-transactions:all --pagesize=102400 $1 $2 $3 $4 $5
-$t $d --use-transactions:all --cachesize=1024 $1 $2 $3 $4 $5
-$t $d --use-transactions:all --cachesize=10240 $1 $2 $3 $4 $5
-$t $d --use-transactions:all --cachesize=102400 $1 $2 $3 $4 $5
+$t $d --use-transactions=all $1 $2 $3 $4 $5
+$t $d --use-transactions=all --overwrite $1 $2 $3 $4 $5
+$t $d --use-transactions=all --duplicate $1 $2 $3 $4 $5
+$t $d --use-transactions=all --duplicate-first $1 $2 $3 $4 $5
+$t $d --use-transactions=all --use-cursors $1 $2 $3 $4 $5
+$t $d --use-transactions=all --use-cursors --overwrite $1 $2 $3 $4 $5
+$t $d --use-transactions=all --use-cursors --duplicate $1 $2 $3 $4 $5
+$t $d --use-transactions=all --use-cursors --duplicate-first $1 $2 $3 $4 $5
+$t $d --use-transactions=all --use-aes $1 $2 $3 $4 $5
+$t $d --use-transactions=all --use-compression $1 $2 $3 $4 $5
+$t $d --use-transactions=all --disable-mmap $1 $2 $3 $4 $5
+$t $d --use-transactions=all --fullcheck-find $1 $2 $3 $4 $5
+$t $d --use-transactions=all --fullcheck-backwards $1 $2 $3 $4 $5
+$t $d --use-transactions=all --useralloc $1 $2 $3 $4 $5
+$t $d --use-transactions=all --useralloc --use-cursors $1 $2 $3 $4 $5
+$t $d --use-transactions=all --pagesize=1024 $1 $2 $3 $4 $5
+$t $d --use-transactions=all --pagesize=10240 $1 $2 $3 $4 $5
+$t $d --use-transactions=all --pagesize=102400 $1 $2 $3 $4 $5
+$t $d --use-transactions=all --cachesize=1024 $1 $2 $3 $4 $5
+$t $d --use-transactions=all --cachesize=10240 $1 $2 $3 $4 $5
+$t $d --use-transactions=all --cachesize=102400 $1 $2 $3 $4 $5
