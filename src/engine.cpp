@@ -300,9 +300,6 @@ engine::fullcheck(void)
         else
             st[0]=m_db[0]->get_next(c[0], &key[0], &rec[0], 0);
 
-	if (key[0].data && *(unsigned *)key[0].data==73)
-		printf("hit\n");
-
         if (m_config->verbose>1) {
             if (m_config->numeric)
                 printf("fullcheck: %d/%d, keys %d/%d, blob size %d/%d\n", 
