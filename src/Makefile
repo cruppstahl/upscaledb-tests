@@ -76,7 +76,7 @@ AMTAR = ${SHELL} /home/chris/prj/hamsterdb-tests/missing --run tar
 AUTOCONF = ${SHELL} /home/chris/prj/hamsterdb-tests/missing --run autoconf
 AUTOHEADER = ${SHELL} /home/chris/prj/hamsterdb-tests/missing --run autoheader
 AUTOMAKE = ${SHELL} /home/chris/prj/hamsterdb-tests/missing --run automake-1.11
-AWK = gawk
+AWK = mawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2 -Wall -DHAM_LITTLE_ENDIAN

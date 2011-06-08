@@ -255,12 +255,12 @@ engine::fullcheck(void)
         if (m_config->puseralloc) {
             key[0].data=m_config->puseralloc;
             key[0].flags=HAM_KEY_USER_ALLOC;
-			/* keysize is a 16-bit value! */
-			assert(USER_MALLOC_KEYRECSIZE > 65530);
+            /* keysize is a 16-bit value! */
+            assert(USER_MALLOC_KEYRECSIZE > 65530);
             key[0].size=65530;
 
-			rec[0].data = static_cast<char *>(m_config->puseralloc) + 65530;
-			rec[0].size = USER_MALLOC_KEYRECSIZE - 65530;
+            rec[0].data = static_cast<char *>(m_config->puseralloc) + 65530;
+            rec[0].size = USER_MALLOC_KEYRECSIZE - 65530;
             rec[0].flags=HAM_RECORD_USER_ALLOC;
         }
 
@@ -278,10 +278,10 @@ engine::fullcheck(void)
 
         /* then: hamster db */
         if (m_config->fullcheck_find) {
-			/*
-			 * different behaviour for BDB and hamsterdb:
+            /*
+             * different behaviour for BDB and hamsterdb:
              * 
-			 * since BDB is used in this mode to fetch keys from its database 
+             * since BDB is used in this mode to fetch keys from its database 
              * and hamsterdb can only /look/ for keys, it's no use feeding 
              * hamsterdb an (illegal) key to look for when BDB didn't deliver 
              * one.
@@ -289,16 +289,19 @@ engine::fullcheck(void)
              * This mode does NOT discover keys lurking in the hamsterdb 
              * database which are NOT in the BDB database. Use regular 
              * fullcheck or fullcheck-backwards to cover that sort of thing.
-			 */
-			if (st[1]==HAM_KEY_NOT_FOUND)
+             */
+            if (st[1]==HAM_KEY_NOT_FOUND)
                 st[0]=st[1];
             else
-				st[0]=m_db[0]->find(&key[1], &rec[0]); /* !! */
+                st[0]=m_db[0]->find(&key[1], &rec[0]); /* !! */
         }
         else if (m_config->fullcheck_backwards)
             st[0]=m_db[0]->get_previous(c[0], &key[0], &rec[0], 0);
         else
             st[0]=m_db[0]->get_next(c[0], &key[0], &rec[0], 0);
+
+	if (key[0].data && *(unsigned *)key[0].data==73)
+		printf("hit\n");
 
         if (m_config->verbose>1) {
             if (m_config->numeric)
@@ -435,9 +438,9 @@ engine::compare_status(ham_status_t st[2])
 {
     if (st[0]!=st[1]) {
         TRACE(("status mismatch - %d vs %d\n"
-			"       ----> (%s) vs (%s)\n", 
-			st[0], st[1],
-			ham_strerror(st[0]), ham_strerror(st[1])));
+            "       ----> (%s) vs (%s)\n", 
+            st[0], st[1],
+            ham_strerror(st[0]), ham_strerror(st[1])));
         return false;
     }
 

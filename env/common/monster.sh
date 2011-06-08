@@ -160,7 +160,6 @@ $t $d --direct-access --inmemorydb --fullcheck-backwards $1 $2 $3 $4 $5
 $t $d --use-transactions=tmp $1 $2 $3 $4 $5
 $t $d --use-transactions=tmp --overwrite $1 $2 $3 $4 $5
 $t $d --use-transactions=tmp --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions=tmp --duplicate-first $1 $2 $3 $4 $5
 $t $d --use-transactions=tmp --use-cursors $1 $2 $3 $4 $5
 $t $d --use-transactions=tmp --use-cursors --overwrite $1 $2 $3 $4 $5
 $t $d --use-transactions=tmp --use-cursors --duplicate $1 $2 $3 $4 $5
@@ -183,7 +182,6 @@ $t $d --use-transactions=tmp --cachesize=102400 $1 $2 $3 $4 $5
 $t $d --use-transactions=20 $1 $2 $3 $4 $5
 $t $d --use-transactions=20 --overwrite $1 $2 $3 $4 $5
 $t $d --use-transactions=20 --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions=20 --duplicate-first $1 $2 $3 $4 $5
 $t $d --use-transactions=20 --use-cursors $1 $2 $3 $4 $5
 $t $d --use-transactions=20 --use-cursors --overwrite $1 $2 $3 $4 $5
 $t $d --use-transactions=20 --use-cursors --duplicate $1 $2 $3 $4 $5
@@ -206,7 +204,6 @@ $t $d --use-transactions=20 --cachesize=102400 $1 $2 $3 $4 $5
 $t $d --use-transactions=200 $1 $2 $3 $4 $5
 $t $d --use-transactions=200 --overwrite $1 $2 $3 $4 $5
 $t $d --use-transactions=200 --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions=200 --duplicate-first $1 $2 $3 $4 $5
 $t $d --use-transactions=200 --use-cursors $1 $2 $3 $4 $5
 $t $d --use-transactions=200 --use-cursors --overwrite $1 $2 $3 $4 $5
 $t $d --use-transactions=200 --use-cursors --duplicate $1 $2 $3 $4 $5
@@ -229,7 +226,6 @@ $t $d --use-transactions=200 --cachesize=102400 $1 $2 $3 $4 $5
 $t $d --use-transactions=10000 $1 $2 $3 $4 $5
 $t $d --use-transactions=10000 --overwrite $1 $2 $3 $4 $5
 $t $d --use-transactions=10000 --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions=10000 --duplicate-first $1 $2 $3 $4 $5
 $t $d --use-transactions=10000 --use-cursors $1 $2 $3 $4 $5
 $t $d --use-transactions=10000 --use-cursors --overwrite $1 $2 $3 $4 $5
 $t $d --use-transactions=10000 --use-cursors --duplicate $1 $2 $3 $4 $5
@@ -252,7 +248,6 @@ $t $d --use-transactions=10000 --cachesize=102400 $1 $2 $3 $4 $5
 $t $d --use-transactions=all $1 $2 $3 $4 $5
 $t $d --use-transactions=all --overwrite $1 $2 $3 $4 $5
 $t $d --use-transactions=all --duplicate $1 $2 $3 $4 $5
-$t $d --use-transactions=all --duplicate-first $1 $2 $3 $4 $5
 $t $d --use-transactions=all --use-cursors $1 $2 $3 $4 $5
 $t $d --use-transactions=all --use-cursors --overwrite $1 $2 $3 $4 $5
 $t $d --use-transactions=all --use-cursors --duplicate $1 $2 $3 $4 $5

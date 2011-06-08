@@ -233,7 +233,7 @@ hamsterdb::close()
     }
 
     if (m_db) {
-        st=ham_close(m_db, 0);
+        st=ham_close(m_db, HAM_AUTO_CLEANUP);
         if (st)
             return (st);
         m_db=0;
