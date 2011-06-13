@@ -5,6 +5,7 @@
 #include "engine.hpp"
 #include "parser.hpp"
 #include "getopts.h"
+#include <sstream>
 
 
 
@@ -242,12 +243,7 @@ parse_config(int argc, char **argv, config *c)
             exit(0);
         }
         else if (opt==ARG_PROFILE) {
-            if (param[0]=='1' || param[0]=='y' || param[0]=='Y')
-                c->profile=true;
-            else {
-                printf("invalid or missing parameter for 'profile'\n");
-                exit(-1);
-            }
+            c->profile=true;
         }
         else if (opt==ARG_VERBOSE) {
             c->verbose++;
@@ -351,6 +347,7 @@ parse_config(int argc, char **argv, config *c)
         }
         else if (opt==ARG_OUTPUT_XML) {
             c->output_xml=true;
+            c->profile=true;
         }
         else if (opt==ARG_USE_TRANSACTIONS) {
             c->enable_transactions=true;
@@ -398,6 +395,9 @@ parse_config(int argc, char **argv, config *c)
 int
 main(int argc, char **argv)
 {
+    std::stringstream args;
+    for (int i=1; i<argc-1; i++)
+        args << argv[i] << " ";
     config c;
     parse_config(argc, argv, &c);
 
@@ -408,17 +408,13 @@ main(int argc, char **argv)
     if (c.output_xml) {
         printf("<test-results>\n");
         printf("\t<machine>\n");
-        printf("\t\t<name></name>\n");
-        printf("\t\t<architecture></architecture>\n");
+        printf("\t\t<name>%s</name>\n", os::hostname());
+        printf("\t\t<architecture>%s</architecture>\n", os::architecture());
         printf("\t</machine>\n");
+        printf("</test-results>\n");
         printf("\t<test>\n");
         printf("\t\t<path>%s</path>\n", c.filename);
-        printf("\t\t<argument-list>\n");
-        printf("\t\t\t<argument>\n");
-        printf("\t\t\t\t<name></name>\n");
-        printf("\t\t\t\t<value></value>\n");
-        printf("\t\t\t</argument>\n");
-        printf("\t\t</argument-list>\n");
+        printf("\t\t<argument-list>%s</argument-list>\n", args.str().c_str());
     }
 
     bool ok = p.process();
@@ -426,7 +422,12 @@ main(int argc, char **argv)
     if (c.output_xml) {
         printf("\t\t<result>%d</result>\n", ok ? 0 : 1);
         printf("\t</test>\n");
-        printf("</test-results>\n");
+    }
+    else {
+        if (ok)
+            printf("[OK] %s %s\n", args.str().c_str(), c.filename);
+        else
+            printf("[FAIL] %s %s\n", args.str().c_str(), c.filename);
     }
 
 	return (ok ? 0 : 1);
