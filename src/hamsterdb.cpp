@@ -89,6 +89,7 @@ hamsterdb::create()
     flags|=m_config->cacheunlimited?HAM_CACHE_UNLIMITED:0;
     flags|=m_config->sort_dupes?HAM_SORT_DUPLICATES:0;
     flags|=m_config->enable_transactions?HAM_ENABLE_TRANSACTIONS:0;
+    flags|=m_config->use_writethrough?HAM_WRITE_THROUGH:0;
 
     os::unlink(DB_PATH "test-ham.db");
 
@@ -167,6 +168,7 @@ hamsterdb::open()
     flags|=m_config->cacheunlimited?HAM_CACHE_UNLIMITED:0;
     flags|=m_config->sort_dupes?HAM_SORT_DUPLICATES:0;
     flags|=m_config->enable_transactions?HAM_ENABLE_TRANSACTIONS:0;
+    flags|=m_config->use_writethrough?HAM_WRITE_THROUGH:0;
 
     /*
      * aes encrypted databases are opened from an environment

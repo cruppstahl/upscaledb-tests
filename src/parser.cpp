@@ -37,7 +37,7 @@ parser::process(void)
         m_lineno++;
 
         /* read from the file */
-        p=fgets(line, 1024*1024, m_f);
+        p=fgets(line, 1024*16, m_f);
         if (!p)
             break;
 

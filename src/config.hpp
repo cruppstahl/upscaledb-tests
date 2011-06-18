@@ -45,6 +45,7 @@ typedef struct config
         output_xml=false;
         enable_transactions=false;
         txn_group=0;
+        use_writethrough=false;
     }
 
     ~config()
@@ -91,6 +92,7 @@ typedef struct config
     bool output_xml;
     bool enable_transactions;
     unsigned txn_group;
+    bool use_writethrough;
 } config;
 
 #endif /* CONFIG_HPP__ */

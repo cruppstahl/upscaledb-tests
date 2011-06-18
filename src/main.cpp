@@ -38,6 +38,7 @@
 #define ARG_DIRECT_ACCESS              39
 #define ARG_OUTPUT_XML                 40
 #define ARG_USE_TRANSACTIONS           41
+#define ARG_WRITETHROUGH               42
 
 /*
  * command line parameters
@@ -223,6 +224,12 @@ static option_t opts[]={
         "\tN - (number) group N statements into a Transaction;\n"
         "\t'all' - group the whole test into a single Transaction",
         GETOPTS_NEED_ARGUMENT },
+    {
+        ARG_WRITETHROUGH,
+        0,
+        "writethrough",
+        "sets the HAM_WRITE_THROUGH flag",
+        0 },
     { 0, 0, 0, 0, 0 }
 };
 
@@ -348,6 +355,9 @@ parse_config(int argc, char **argv, config *c)
         else if (opt==ARG_OUTPUT_XML) {
             c->output_xml=true;
             c->profile=true;
+        }
+        else if (opt==ARG_WRITETHROUGH) {
+            c->use_writethrough=true;
         }
         else if (opt==ARG_USE_TRANSACTIONS) {
             c->enable_transactions=true;
