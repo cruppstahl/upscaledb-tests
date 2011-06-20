@@ -376,7 +376,7 @@ hamsterdb::get_name(void)
 ham_status_t 
 hamsterdb::check_integrity(void)
 {
-	return ham_check_integrity(m_db, 0);
+	return ham_check_integrity(m_db, m_txn);
 }
 
 void *
