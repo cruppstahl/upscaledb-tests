@@ -114,24 +114,24 @@ $t 3 --cachesize=1024 --overwrite --disable-mmap --reopen $1 $2 $3 $4 $5
 
 $t 3 --use-recovery --reopen $1 $2 $3 $4 $5
 $t 3 --use-recovery --overwrite --reopen $1 $2 $3 $4 $5
-$t 3 --use-recovery --pagesize024 --reopen $1 $2 $3 $4 $5
+$t 3 --use-recovery --pagesize=1024 --reopen $1 $2 $3 $4 $5
 $t 3 --use-recovery --duplicate --reopen $1 $2 $3 $4 $5
 $t 3 --use-recovery --overwrite --disable-mmap --reopen $1 $2 $3 $4 $5
-$t 3 --use-recovery --keysize6 --reopen $1 $2 $3 $4 $5
+$t 3 --use-recovery --keysize=16 --reopen $1 $2 $3 $4 $5
 
 # HAM_DAM_SEQUENTIAL_INSERT
 $t 3 --data-access-mode=HAM_DAM_SEQUENTIAL_INSERT --keysize=8 --reopen $1 $2 $3 $4 $5
 $t 3 --data-access-mode=HAM_DAM_SEQUENTIAL_INSERT --cachesize=50 --reopen $1 $2 $3 $4 $5
 $t 3 --data-access-mode=HAM_DAM_SEQUENTIAL_INSERT --keysize=680 --duplicate $1 $2 $3 $4 $5
 $t 3 --data-access-mode=HAM_DAM_SEQUENTIAL_INSERT --keysize=680 --overwrite $1 $2 $3 $4 $5
-$t 3 --data-access-mode=HAM_DAM_SEQUENTIAL_INSERT --pagesize024 --overwrite --keysize6 $1 $2 $3 $4 $5
+$t 3 --data-access-mode=HAM_DAM_SEQUENTIAL_INSERT --pagesize=1024 --overwrite --keysize=16 $1 $2 $3 $4 $5
 
 # HAM_DAM_RANDOM_WRITE
 $t 3 --data-access-mode=HAM_DAM_RANDOM_WRITE --keysize=8 --reopen $1 $2 $3 $4 $5
 $t 3 --data-access-mode=HAM_DAM_RANDOM_WRITE --cachesize=50 --reopen $1 $2 $3 $4 $5
 $t 3 --data-access-mode=HAM_DAM_RANDOM_WRITE --keysize=680 --duplicate $1 $2 $3 $4 $5
 $t 3 --data-access-mode=HAM_DAM_RANDOM_WRITE --keysize=680 --overwrite $1 $2 $3 $4 $5
-$t 3 --data-access-mode=HAM_DAM_RANDOM_WRITE --pagesize024 --overwrite --keysize6 $1 $2 $3 $4 $5
+$t 3 --data-access-mode=HAM_DAM_RANDOM_WRITE --pagesize=1024 --overwrite --keysize=16 $1 $2 $3 $4 $5
 
 # HAM_HINT_APPEND
 $t 3 --hints=HAM_HINT_APPEND --use-cursors --reopen $1 $2 $3 $4 $5
