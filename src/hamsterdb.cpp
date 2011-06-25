@@ -130,7 +130,7 @@ hamsterdb::create()
             return (st);
     }
 
-    st=ham_cursor_create(m_db, 0, 0, &m_cursor);
+    st=ham_cursor_create(m_db, m_txn, 0, &m_cursor);
     if (st)
         return (st);
 
@@ -207,7 +207,7 @@ hamsterdb::open()
         }
     }
 
-    st=ham_cursor_create(m_db, 0, 0, &m_cursor);
+    st=ham_cursor_create(m_db, m_txn, 0, &m_cursor);
     if (st)
         return (st);
 
@@ -238,6 +238,7 @@ hamsterdb::close()
         st=ham_close(m_db, HAM_AUTO_CLEANUP);
         if (st)
             return (st);
+        ham_delete(m_db);
         m_db=0;
     }
 
@@ -349,17 +350,45 @@ hamsterdb::find(ham_key_t *key, ham_record_t *record)
 ham_status_t 
 hamsterdb::txn_begin(void)
 {
+    ham_status_t st;
+
     assert(m_txn==0);
 
-    return (ham_txn_begin(&m_txn, m_db, 0));
+    if (m_cursor) {
+        st=ham_cursor_close(m_cursor);
+        if (st)
+            return (st);
+        m_cursor=0;
+    }
+
+    st=ham_txn_begin(&m_txn, m_db, 0);
+    if (st)
+        return (st);
+
+    st=ham_cursor_create(m_db, m_txn, 0, &m_cursor);
+    if (st) {
+        TRACE(("failed to create cursor: %d\n", st));
+        exit(-1);
+    }
+
+    return (0);
 }
 
 ham_status_t 
 hamsterdb::txn_commit(void)
 {
+    ham_status_t st;
+
     assert(m_txn!=0);
 
-    ham_status_t st=ham_txn_commit(m_txn, 0);
+    if (m_cursor) {
+        st=ham_cursor_close(m_cursor);
+        if (st)
+            return (st);
+        m_cursor=0;
+    }
+
+    st=ham_txn_commit(m_txn, 0);
     if (st)
         return (st);
     m_txn=0;

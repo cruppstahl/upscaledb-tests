@@ -9,7 +9,7 @@
 
 
 engine::engine(config *c)
-:   m_config(c), m_parser(0)
+:   m_config(c), m_parser(0), m_opcount(0)
 {
     m_db[0]=new hamsterdb(m_config);
     m_db[1]=new berkeleydb(m_config);
