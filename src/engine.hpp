@@ -26,6 +26,8 @@ public:
     bool txn_begin(void);
     bool txn_commit(void);
 
+    database *get_db(int i) { return m_db[i]; }
+
 protected:
     bool compare_records(ham_record_t *rec1, ham_record_t *rec2);
     bool inc_opcount(void);

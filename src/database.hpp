@@ -69,7 +69,8 @@ public:
                     ham_record_t *record, int flags)=0;
     virtual void close_cursor(void *cursor)=0;
 
-    void print_profile(void);
+    static void print_profile(database *db);
+    virtual void print_specific_profile(void)=0;
 
 protected:
     config *m_config;

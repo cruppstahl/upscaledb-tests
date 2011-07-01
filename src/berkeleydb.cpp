@@ -26,8 +26,6 @@ my_compare_db(DB *db, const DBT *dbt1, const DBT *dbt2)
 berkeleydb::~berkeleydb(void)
 {
     close();
-
-    print_profile();
 }
 
 ham_status_t 

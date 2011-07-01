@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "porting.hpp"
 #include "config.hpp"
 #include "endian.hpp"
@@ -350,11 +352,6 @@ engine::close(bool noreopen/* =false */)
             return (false);
         if (!close(true))
             return (false);
-    }
-
-    for (int i=0; i<2; i++) {
-        delete m_db[i];
-        m_db[i]=0;
     }
 
     return (true);

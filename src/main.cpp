@@ -5,7 +5,9 @@
 #include "engine.hpp"
 #include "parser.hpp"
 #include "getopts.h"
-#include <sstream>
+#include "hamsterdb.hpp"
+#include "berkeleydb.hpp"
+#include <iostream>
 
 
 
@@ -36,7 +38,6 @@
 #define ARG_HINTING                    37
 #define ARG_SORT_DUPLICATES            38
 #define ARG_DIRECT_ACCESS              39
-#define ARG_OUTPUT_XML                 40
 #define ARG_USE_TRANSACTIONS           41
 #define ARG_WRITETHROUGH               42
 
@@ -210,12 +211,6 @@ static option_t opts[]={
         "sets HAM_DIRECT_ACCESS flag",
         0 },
     {
-        ARG_OUTPUT_XML,
-        0,
-        "output-xml",
-        "create XML output",
-        0 },
-    {
         ARG_USE_TRANSACTIONS,
         0,
         "use-transactions",
@@ -352,10 +347,6 @@ parse_config(int argc, char **argv, config *c)
         else if (opt==ARG_DIRECT_ACCESS) {
             c->direct_access=true;
         }
-        else if (opt==ARG_OUTPUT_XML) {
-            c->output_xml=true;
-            c->profile=true;
-        }
         else if (opt==ARG_WRITETHROUGH) {
             c->use_writethrough=true;
         }
@@ -405,9 +396,6 @@ parse_config(int argc, char **argv, config *c)
 int
 main(int argc, char **argv)
 {
-    std::stringstream args;
-    for (int i=1; i<argc-1; i++)
-        args << argv[i] << " ";
     config c;
     parse_config(argc, argv, &c);
 
@@ -415,30 +403,23 @@ main(int argc, char **argv)
     parser p(&c, &e, c.filename, 0);
     e.set_parser(&p);
 
-    if (c.output_xml) {
-        printf("<test-results>\n");
-        printf("\t<machine>\n");
-        printf("\t\t<name>%s</name>\n", os::hostname());
-        printf("\t\t<architecture>%s</architecture>\n", os::architecture());
-        printf("\t</machine>\n");
-        printf("</test-results>\n");
-        printf("\t<test>\n");
-        printf("\t\t<path>%s</path>\n", c.filename);
-        printf("\t\t<argument-list>%s</argument-list>\n", args.str().c_str());
-    }
-
     bool ok = p.process();
 
-    if (c.output_xml) {
-        printf("\t\t<result>%d</result>\n", ok ? 0 : 1);
-        printf("\t</test>\n");
+    if (ok)
+        printf("[OK] %s\n", c.filename);
+    else
+        printf("[FAIL] %s\n", c.filename);
+
+    if (ok) {
+        /* always print the hamsterdb profile. print berkeleydb only if it's 
+         * requested */
+        database::print_profile(e.get_db(0));
+        if (c.profile) {
+            std::cout << "berkeleydb profile:" << std::endl;
+            database::print_profile(e.get_db(1));
+        }
     }
-    else {
-        if (ok)
-            printf("[OK] %s %s\n", args.str().c_str(), c.filename);
-        else
-            printf("[FAIL] %s %s\n", args.str().c_str(), c.filename);
-    }
+
 
 	return (ok ? 0 : 1);
 }

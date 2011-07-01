@@ -46,6 +46,7 @@ alloc_impl(mem_allocator_t *self, const char *file, int line, ham_u32_t size)
     desc->magic=MAGIC;
 
     priv->allocs++;
+    priv->total+=size;
     priv->current+=size;
     if (priv->current>priv->peak)
         priv->peak=priv->current;
@@ -79,7 +80,9 @@ realloc_impl(mem_allocator_t *self, const char *file, int line,
         return ((void *)ptr);
 
     /* otherwise just realloc the existing pointer */
-    return realloc(desc, sizeof(*desc)+size-1);
+    desc=(memdesc_t  *)realloc(desc, sizeof(*desc)+size-1);
+    desc->size=size;
+    return (desc->data);
 }
 
 void 
@@ -108,6 +111,13 @@ memtracker_get_peak(memtracker_t *mt)
 {
     memtracker_priv_t *priv=(memtracker_priv_t *)mt->priv;
     return (priv->peak);
+}
+
+unsigned long
+memtracker_get_total(memtracker_t *mt)
+{
+    memtracker_priv_t *priv=(memtracker_priv_t *)mt->priv;
+    return (priv->total);
 }
 
 unsigned long

@@ -23,6 +23,7 @@ typedef struct
     unsigned long peak;
     unsigned long current;
     unsigned long allocs;
+    unsigned long total;
 } memtracker_priv_t;
 
 /* copied from mem.h */
@@ -62,6 +63,9 @@ memtracker_get_peak(memtracker_t *mt);
 
 extern unsigned long
 memtracker_get_current(memtracker_t *mt);
+
+extern unsigned long
+memtracker_get_total(memtracker_t *mt);
 
 extern unsigned long
 memtracker_get_allocs(memtracker_t *mt);

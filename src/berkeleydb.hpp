@@ -1,11 +1,7 @@
 #ifndef BERKELEYDB_HPP__
 #define BERKELEYDB_HPP__
 
-#if WIN32
-#  include <db.h>
-#else
-#  include <db.h>
-#endif
+#include <db.h>
 #include <ham/hamsterdb.h> // for ham_status_t, ham_key_t etc
 
 #include "database.hpp"
@@ -41,6 +37,8 @@ public:
     virtual ham_status_t get_next(void *cursor, ham_key_t *key, 
                     ham_record_t *record, int flags);
     virtual void close_cursor(void *cursor);
+
+    virtual void print_specific_profile(void) { };
 
 protected:
     ham_status_t db2ham(int ret);

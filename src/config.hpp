@@ -42,7 +42,6 @@ typedef struct config
         hints=0;
         sort_dupes=false;
         direct_access=false;
-        output_xml=false;
         enable_transactions=false;
         txn_group=0;
         use_writethrough=false;
@@ -89,7 +88,6 @@ typedef struct config
     unsigned hints;
     bool sort_dupes;
     bool direct_access;
-    bool output_xml;
     bool enable_transactions;
     unsigned txn_group;
     bool use_writethrough;
