@@ -19,9 +19,7 @@ fi
 testdir=../../testfiles
 
 echo "----------------------------------------------------------------"
-echo -n "new test starts on "
-date
-echo "parameters: ($1) $2 $3 $4 $5 $6 $7 "
+echo "[CONFIGURATION] $2 $3 $4 $5 $6 $7 "
 
 maxdir=$1; shift
 
@@ -40,10 +38,10 @@ do
     done
 
     if [ $dir = $maxdir ]; then
-        echo "$total tests; $errors error(s)"
+        #echo "$total tests; $errors error(s)"
         exit $errors
     fi
 done
 
-echo "$total tests; $errors error(s)"
+echo "[RESULT] $total tests; $errors error(s)"
 exit $errors

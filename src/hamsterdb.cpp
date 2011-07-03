@@ -164,7 +164,6 @@ hamsterdb::open()
     flags|=m_config->no_mmap?HAM_DISABLE_MMAP:0; 
     flags|=m_config->lock_excl?HAM_LOCK_EXCLUSIVE:0;
     flags|=m_config->cacheunlimited?HAM_CACHE_UNLIMITED:0;
-    flags|=m_config->sort_dupes?HAM_SORT_DUPLICATES:0;
     flags|=m_config->enable_transactions?HAM_ENABLE_TRANSACTIONS:0;
     flags|=m_config->use_writethrough?HAM_WRITE_THROUGH:0;
 
@@ -180,7 +179,8 @@ hamsterdb::open()
         if (st)
             return (st);
     }
-    st=ham_env_open_db(m_env, m_db, 1, 0, &params[0]);
+    flags=m_config->sort_dupes?HAM_SORT_DUPLICATES:0;
+    st=ham_env_open_db(m_env, m_db, 1, flags, &params[0]);
     if (st)
         return (st);
 
