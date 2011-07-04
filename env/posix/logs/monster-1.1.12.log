@@ -1,0 +1,529 @@
+----------------------------------------------------------------
+[CONFIGURATION] --reopen      
+[OK] ../../testfiles/1/01.tst
+	perf-misc  		0.002000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.002000 sec
+	mem-num-allocs		24
+	mem-peak-bytes		84332 bytes
+	mem-total-bytes		85184 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/02.tst
+	perf-misc  		0.002000 sec
+	perf-insert		0.001000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.003000 sec
+	mem-num-allocs		60
+	mem-peak-bytes		84324 bytes
+	mem-total-bytes		88108 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/03.tst
+	perf-misc  		0.004000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.004000 sec
+	mem-num-allocs		36
+	mem-peak-bytes		84323 bytes
+	mem-total-bytes		85879 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/04.tst
+	perf-misc  		0.003000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.003000 sec
+	mem-num-allocs		27
+	mem-peak-bytes		84357 bytes
+	mem-total-bytes		84401 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/05.tst
+	perf-misc  		0.004000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.004000 sec
+	mem-num-allocs		26
+	mem-peak-bytes		84352 bytes
+	mem-total-bytes		84392 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/06.tst
+	perf-misc  		0.003000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.003000 sec
+	mem-num-allocs		27
+	mem-peak-bytes		84426 bytes
+	mem-total-bytes		84470 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/07.tst
+	perf-misc  		0.003000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.003000 sec
+	mem-num-allocs		30
+	mem-peak-bytes		84437 bytes
+	mem-total-bytes		84493 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/08.tst
+	perf-misc  		0.003000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.003000 sec
+	mem-num-allocs		28
+	mem-peak-bytes		84423 bytes
+	mem-total-bytes		84471 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/09.tst
+	perf-misc  		0.004000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.004000 sec
+	mem-num-allocs		29
+	mem-peak-bytes		84428 bytes
+	mem-total-bytes		84480 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/100.tst
+	perf-misc  		0.013000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.001000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.002000 sec
+	perf-total		0.016000 sec
+	mem-num-allocs		467
+	mem-peak-bytes		85077 bytes
+	mem-total-bytes		98841 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	7
+	io-num-alloc		0
+	io-num-alloc-page	5
+[OK] ../../testfiles/1/10.tst
+	perf-misc  		0.003000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.003000 sec
+	mem-num-allocs		47
+	mem-peak-bytes		84425 bytes
+	mem-total-bytes		86681 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/110.tst
+	perf-misc  		0.004000 sec
+	perf-insert		0.001000 sec
+	perf-erase 		0.002000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.007000 sec
+	mem-num-allocs		401
+	mem-peak-bytes		84913 bytes
+	mem-total-bytes		86453 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	8
+	io-num-alloc		0
+	io-num-alloc-page	6
+[OK] ../../testfiles/1/119.tst
+	perf-misc  		0.011000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.011000 sec
+	mem-num-allocs		385
+	mem-peak-bytes		84913 bytes
+	mem-total-bytes		86389 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	8
+	io-num-alloc		0
+	io-num-alloc-page	6
+[OK] ../../testfiles/1/11.tst
+	perf-misc  		0.003000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.003000 sec
+	mem-num-allocs		33
+	mem-peak-bytes		84367 bytes
+	mem-total-bytes		84435 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/120.tst
+	perf-misc  		0.023000 sec
+	perf-insert		0.003000 sec
+	perf-erase 		0.001000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.027000 sec
+	mem-num-allocs		410
+	mem-peak-bytes		84913 bytes
+	mem-total-bytes		86489 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	8
+	io-num-alloc		0
+	io-num-alloc-page	6
+[OK] ../../testfiles/1/130.tst
+	perf-misc  		0.015000 sec
+	perf-insert		0.003000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.018000 sec
+	mem-num-allocs		412
+	mem-peak-bytes		84913 bytes
+	mem-total-bytes		86497 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	8
+	io-num-alloc		0
+	io-num-alloc-page	6
+[OK] ../../testfiles/1/140.tst
+	perf-misc  		0.013000 sec
+	perf-insert		0.007000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.020000 sec
+	mem-num-allocs		393
+	mem-peak-bytes		84913 bytes
+	mem-total-bytes		86421 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	8
+	io-num-alloc		0
+	io-num-alloc-page	6
+[OK] ../../testfiles/1/14.tst
+	perf-misc  		0.002000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.002000 sec
+	mem-num-allocs		16
+	mem-peak-bytes		84379 bytes
+	mem-total-bytes		84379 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/150.tst
+	perf-misc  		0.009000 sec
+	perf-insert		0.008000 sec
+	perf-erase 		0.001000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.018000 sec
+	mem-num-allocs		391
+	mem-peak-bytes		84913 bytes
+	mem-total-bytes		86413 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	8
+	io-num-alloc		0
+	io-num-alloc-page	6
+[OK] ../../testfiles/1/15.tst
+	perf-misc  		0.003000 sec
+	perf-insert		0.001000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.004000 sec
+	mem-num-allocs		26
+	mem-peak-bytes		84335 bytes
+	mem-total-bytes		85195 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/160.tst
+	perf-misc  		0.009000 sec
+	perf-insert		0.013000 sec
+	perf-erase 		0.001000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.023000 sec
+	mem-num-allocs		391
+	mem-peak-bytes		84913 bytes
+	mem-total-bytes		86413 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	8
+	io-num-alloc		0
+	io-num-alloc-page	6
+[OK] ../../testfiles/1/16.tst
+	perf-misc  		0.005000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.005000 sec
+	mem-num-allocs		22
+	mem-peak-bytes		84321 bytes
+	mem-total-bytes		84345 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/170.tst
+	perf-misc  		0.006000 sec
+	perf-insert		0.011000 sec
+	perf-erase 		0.004000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.021000 sec
+	mem-num-allocs		413
+	mem-peak-bytes		84913 bytes
+	mem-total-bytes		86501 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	8
+	io-num-alloc		0
+	io-num-alloc-page	6
+[OK] ../../testfiles/1/17.tst
+	perf-misc  		0.002000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.002000 sec
+	mem-num-allocs		27
+	mem-peak-bytes		84351 bytes
+	mem-total-bytes		84395 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/180.tst
+	perf-misc  		0.005000 sec
+	perf-insert		0.029000 sec
+	perf-erase 		0.005000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.039000 sec
+	mem-num-allocs		416
+	mem-peak-bytes		85866 bytes
+	mem-total-bytes		87622 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	8
+	io-num-alloc		0
+	io-num-alloc-page	6
+[OK] ../../testfiles/1/18.tst
+	perf-misc  		0.003000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.003000 sec
+	mem-num-allocs		28
+	mem-peak-bytes		84416 bytes
+	mem-total-bytes		84464 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/190.tst
+	perf-misc  		0.003000 sec
+	perf-insert		0.036000 sec
+	perf-erase 		0.014000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.053000 sec
+	mem-num-allocs		396
+	mem-peak-bytes		84913 bytes
+	mem-total-bytes		86433 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	8
+	io-num-alloc		0
+	io-num-alloc-page	6
+[OK] ../../testfiles/1/194.tst
+	perf-misc  		0.011000 sec
+	perf-insert		0.034000 sec
+	perf-erase 		0.007000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.052000 sec
+	mem-num-allocs		402
+	mem-peak-bytes		84913 bytes
+	mem-total-bytes		86457 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	8
+	io-num-alloc		0
+	io-num-alloc-page	6
+[OK] ../../testfiles/1/19.tst
+	perf-misc  		0.013000 sec
+	perf-insert		0.000000 sec
+	perf-erase 		0.000000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.013000 sec
+	mem-num-allocs		22
+	mem-peak-bytes		84404 bytes
+	mem-total-bytes		84428 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	2
+	io-num-write		0
+	io-num-write-page	4
+	io-num-alloc		0
+	io-num-alloc-page	2
+[OK] ../../testfiles/1/200.tst
+	perf-misc  		0.010000 sec
+	perf-insert		0.048000 sec
+	perf-erase 		0.008000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.066000 sec
+	mem-num-allocs		400
+	mem-peak-bytes		84913 bytes
+	mem-total-bytes		86449 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	8
+	io-num-alloc		0
+	io-num-alloc-page	6
+[OK] ../../testfiles/1/201.tst
+	perf-misc  		0.011000 sec
+	perf-insert		0.048000 sec
+	perf-erase 		0.013000 sec
+	perf-find  		0.000000 sec
+	perf-cursor		0.000000 sec
+	perf-total		0.072000 sec
+	mem-num-allocs		406
+	mem-peak-bytes		84913 bytes
+	mem-total-bytes		86473 bytes
+	io-num-flushes		2
+	io-num-read		0
+	io-num-read-page	1
+	io-num-write		0
+	io-num-write-page	8
+	io-num-alloc		0
+	io-num-alloc-page	6
