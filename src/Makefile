@@ -79,7 +79,7 @@ AUTOMAKE = ${SHELL} /home/chris/prj/hamsterdb-tests/missing --run automake-1.11
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2 -Wall -DHAM_LITTLE_ENDIAN
+CFLAGS = -g -Wall -DHAM_LITTLE_ENDIAN
 CPP = gcc -E
 CPPFLAGS = 
 CXX = g++

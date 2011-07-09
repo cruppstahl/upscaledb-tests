@@ -101,7 +101,7 @@ engine::insert(const char *keytok, const char *data)
     }
     else {
         key.data=(void *)keytok;
-        key.size=(ham_size_t)strlen(keytok);
+        key.size=(ham_size_t)strlen(keytok)+1;
     }
 
     /*
@@ -316,6 +316,11 @@ engine::fullcheck(void)
                     key[1].data ? (char *)key[1].data : "(null)",
                     rec[0].size, rec[1].size);
         }
+
+if (key[0].data && *(unsigned *)key[0].data==73) {
+	printf("hit\n");
+}
+
 
         if (!compare_status(st))
             return false;
