@@ -317,7 +317,7 @@ engine::fullcheck(void)
                     rec[0].size, rec[1].size);
         }
 
-if (key[0].data && *(unsigned *)key[0].data==73) {
+if (key[0].data && *(unsigned *)key[0].data==121) {
 	printf("hit\n");
 }
 
