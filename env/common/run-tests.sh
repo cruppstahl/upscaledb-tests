@@ -28,6 +28,7 @@ do
     for file in `ls $testdir/$dir/*.tst`
     do
         # call $file  $1 $2 $3 $4 $5 $6 $7 
+        echo "starting" $executable $1 $2 $3 $4 $5 $6 $7 $8 $9 $file
         $executable $1 $2 $3 $4 $5 $6 $7 $8 $9 $file
 
         if [ $? = 0 ]
