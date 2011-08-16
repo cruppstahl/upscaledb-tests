@@ -108,6 +108,15 @@ engine::insert(const char *keytok, const char *data)
      * allocate and initialize data 
      */
     data_size=strtoul(data, 0, 0);
+
+    /*
+     * berkeleydb: duplicates are not allowed with identical records,
+     * and hamsterdb also forbids this if duplicates are sorted, therefore
+     * the records are "unique-ified" by patching the line number in the
+     * beginning
+     */
+    if (m_config->sort_dupes && data_size==0)
+        data_size=sizeof(unsigned);
     if (data_size) {
         if (data_size>m_config->data_size) {
             m_config->data_size=data_size;
