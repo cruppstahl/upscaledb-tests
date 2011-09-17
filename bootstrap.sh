@@ -3,5 +3,6 @@
 libtoolize --force \
 && aclocal \
 && automake --add-missing --foreign \
-&& autoconf 
+&& autoconf \
+&& autoheader
 
