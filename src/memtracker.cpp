@@ -33,7 +33,7 @@ verify_mem_desc(memdesc_t *desc)
         throw std::out_of_range("memory blob descriptor is corrupt");
 }
 
-void *
+static void *
 alloc_impl(mem_allocator_t *self, const char *file, int line, ham_u32_t size)
 {
     memtracker_t *mt=(memtracker_t *)self;
@@ -54,7 +54,7 @@ alloc_impl(mem_allocator_t *self, const char *file, int line, ham_u32_t size)
     return (desc->data);
 }
 
-void 
+static void 
 free_impl(mem_allocator_t *self, const char *file, int line, const void *ptr)
 {
     memtracker_t *mt=(memtracker_t *)self;
@@ -66,7 +66,7 @@ free_impl(mem_allocator_t *self, const char *file, int line, const void *ptr)
     free(desc);
 }
 
-void *
+static void *
 realloc_impl(mem_allocator_t *self, const char *file, int line, 
         const void *ptr, ham_size_t size)
 {
@@ -85,7 +85,7 @@ realloc_impl(mem_allocator_t *self, const char *file, int line,
     return (desc->data);
 }
 
-void 
+static void 
 close_impl(mem_allocator_t *self)
 {
     (void)self;
