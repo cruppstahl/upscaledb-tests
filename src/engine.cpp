@@ -326,12 +326,11 @@ engine::fullcheck(void)
                     rec[0].size, rec[1].size);
         }
 
-    /*
-if (key[0].data && *(unsigned *)key[0].data==12 && rec[0].size==835) {
+/*
+if (key[0].data && *(unsigned *)key[0].data==997) {
 	printf("hit\n");
 }
-    */
-
+*/
 
         if (!compare_status(st))
             return false;
