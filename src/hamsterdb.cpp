@@ -73,14 +73,10 @@ hamsterdb::create()
 
     params[0].name=HAM_PARAM_CACHESIZE;
     params[0].value=m_config->cachesize;
-    params[1].name=HAM_PARAM_KEYSIZE;
-    params[1].value=m_config->keysize;
-    params[2].name=HAM_PARAM_PAGESIZE;
-    params[2].value=m_config->pagesize;
-    params[3].name=HAM_PARAM_DATA_ACCESS_MODE;
-    params[3].value=m_config->data_access_mode;
-    params[4].name=0;
-    params[4].value=0;
+    params[1].name=HAM_PARAM_PAGESIZE;
+    params[1].value=m_config->pagesize;
+    params[2].name=0;
+    params[2].value=0;
 
     flags|=m_config->inmemory?HAM_IN_MEMORY_DB:0; 
     flags|=m_config->no_mmap?HAM_DISABLE_MMAP:0; 
@@ -102,7 +98,7 @@ hamsterdb::create()
      * !!
      * currently, all other parameters are ignored
      */
-    st=ham_env_create_ex(m_env, DB_PATH "test-ham.db", flags, 0664, 0);
+    st=ham_env_create_ex(m_env, DB_PATH "test-ham.db", flags, 0664, &params[0]);
     if (st)
         return (st);
     patch_device();
@@ -111,7 +107,15 @@ hamsterdb::create()
         if (st)
             return (st);
     }
-    st=ham_env_create_db(m_env, m_db, 1, 0, 0);
+
+    params[0].name=HAM_PARAM_KEYSIZE;
+    params[0].value=m_config->keysize;
+    params[1].name=HAM_PARAM_DATA_ACCESS_MODE;
+    params[1].value=m_config->data_access_mode;
+    params[2].name=0;
+    params[2].value=0;
+
+    st=ham_env_create_db(m_env, m_db, 1, 0, &params[0]);
     if (st)
         return (st);
 
@@ -156,8 +160,8 @@ hamsterdb::open()
             return (st);
     }
 
-    params[0].name=HAM_PARAM_DATA_ACCESS_MODE;
-    params[0].value=m_config->data_access_mode;
+    params[0].name=HAM_PARAM_CACHESIZE;
+    params[0].value=m_config->cachesize;
     params[1].name=0;
     params[1].value=0;
 
@@ -170,7 +174,7 @@ hamsterdb::open()
     /*
      * aes encrypted databases are opened from an environment
      */
-    st=ham_env_open_ex(m_env, DB_PATH "test-ham.db", flags, 0);
+    st=ham_env_open_ex(m_env, DB_PATH "test-ham.db", flags, &params[0]);
     if (st)
         return (st);
     patch_device();
@@ -179,6 +183,11 @@ hamsterdb::open()
         if (st)
             return (st);
     }
+
+    params[0].name=HAM_PARAM_DATA_ACCESS_MODE;
+    params[0].value=m_config->data_access_mode;
+    params[1].name=0;
+    params[1].value=0;
     flags=m_config->sort_dupes?HAM_SORT_DUPLICATES:0;
     st=ham_env_open_db(m_env, m_db, 1, flags, &params[0]);
     if (st)
@@ -355,7 +364,7 @@ hamsterdb::txn_begin(void)
         m_cursor=0;
     }
 
-    st=ham_txn_begin(&m_txn, m_db, 0);
+    st=ham_txn_begin(&m_txn, ham_get_env(m_db), 0, 0, 0);
     if (st)
         return (st);
 
