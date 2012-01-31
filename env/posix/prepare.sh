@@ -7,6 +7,7 @@ HAM=/home/chris/prj/hamsterdb/
 
 # update the header files
 cp $HAM/include/ham/*.h ../common/ham/
+cp $HAM/src/mem.h ../common/ham/
 
 # make the hamsterdb library
 cd $HAM/src

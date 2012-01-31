@@ -29,7 +29,7 @@ public:
         m_num_read_page(0), m_num_write_page(0), m_num_alloc(0),
         m_num_alloc_page(0)
     {
-        m_mt=memtracker_new();
+        m_mt=new TrackingAllocator();
     }
 
     ~hamsterdb(void);
@@ -62,7 +62,7 @@ protected:
     ham_env_t *m_env;
     ham_txn_t *m_txn;
     ham_cursor_t *m_cursor;
-    memtracker_t *m_mt;
+    TrackingAllocator *m_mt;
     unsigned long m_num_flushes;
     unsigned long m_num_read;
     unsigned long m_num_write;
