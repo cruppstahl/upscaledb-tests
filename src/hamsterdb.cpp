@@ -62,7 +62,7 @@ hamsterdb::create()
         st=ham_env_new(&m_env);
         if (st)
             return (st);
-        ham_env_set_allocator(m_env, (mem_allocator_t *)m_mt);
+        //ham_env_set_allocator(m_env, (mem_allocator_t *)m_mt);
     }
 
     if (!m_db) {
@@ -101,7 +101,7 @@ hamsterdb::create()
     st=ham_env_create_ex(m_env, DB_PATH "test-ham.db", flags, 0664, &params[0]);
     if (st)
         return (st);
-    patch_device();
+    //patch_device();
     if (m_config->aes_encrypt) {
         st=ham_env_enable_encryption(m_env, aeskey, 0);
         if (st)
@@ -151,7 +151,7 @@ hamsterdb::open()
         st=ham_env_new(&m_env);
         if (st)
             return (st);
-        ham_env_set_allocator(m_env, (mem_allocator_t *)m_mt);
+        //ham_env_set_allocator(m_env, (mem_allocator_t *)m_mt);
     }
 
     if (!m_db) {
@@ -177,7 +177,7 @@ hamsterdb::open()
     st=ham_env_open_ex(m_env, DB_PATH "test-ham.db", flags, &params[0]);
     if (st)
         return (st);
-    patch_device();
+    //patch_device();
     if (m_config->aes_encrypt) {
         st=ham_env_enable_encryption(m_env, aeskey, 0);
         if (st)
@@ -464,9 +464,9 @@ hamsterdb::close_cursor(void *cursor)
 void 
 hamsterdb::print_specific_profile(void)
 {
-    printf("\tmem-num-allocs\t\t%lu\n", memtracker_get_allocs(m_mt));
-    printf("\tmem-peak-bytes\t\t%lu bytes\n", memtracker_get_peak(m_mt));
-    printf("\tmem-total-bytes\t\t%lu bytes\n", memtracker_get_total(m_mt));
+    //printf("\tmem-num-allocs\t\t%lu\n", memtracker_get_allocs(m_mt));
+    //printf("\tmem-peak-bytes\t\t%lu bytes\n", memtracker_get_peak(m_mt));
+    //printf("\tmem-total-bytes\t\t%lu bytes\n", memtracker_get_total(m_mt));
     printf("\tio-num-flushes\t\t%lu\n", m_num_flushes);
     printf("\tio-num-read\t\t%lu\n", m_num_read);
     printf("\tio-num-read-page\t%lu\n", m_num_read_page);

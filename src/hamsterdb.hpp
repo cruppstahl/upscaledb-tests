@@ -29,7 +29,7 @@ public:
         m_num_read_page(0), m_num_write_page(0), m_num_alloc(0),
         m_num_alloc_page(0)
     {
-        m_mt=memtracker_new();
+        //m_mt=memtracker_new();
     }
 
     ~hamsterdb(void);
