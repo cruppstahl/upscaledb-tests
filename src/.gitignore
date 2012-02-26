@@ -3,3 +3,5 @@
 *.exe
 test
 gmon.out
+*.jrn*
+*.log*

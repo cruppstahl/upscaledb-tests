@@ -6,16 +6,16 @@
 #include "database.hpp"
 #include "memtracker.hpp"
 
-class hamsterdb : public database
+class Hamsterdb : public Database
 {
 public:
-    hamsterdb(config *c)
-    : database(c), m_db(0), m_env(0), m_txn(0), m_cursor(0), m_mt(0)
+    Hamsterdb(int id, config *c)
+    : Database(id, c), m_db(0), m_env(0), m_txn(0), m_cursor(0), m_mt(0)
     {
         m_mt=new TrackingAllocator();
     }
 
-    ~hamsterdb(void);
+    ~Hamsterdb(void);
 
     virtual ham_status_t create(void);
     virtual ham_status_t open(void);
@@ -27,8 +27,6 @@ public:
     virtual ham_status_t txn_begin(void);
     virtual ham_status_t txn_commit(void);
 
-    virtual const char *get_name(void);
-
     virtual ham_status_t check_integrity(void);
 
     virtual void *create_cursor(void);
@@ -38,7 +36,7 @@ public:
                     ham_record_t *record, int flags);
     virtual void close_cursor(void *cursor);
 
-    virtual void print_metrics(void);
+    virtual void collect_metrics(void);
 
 protected:
     ham_db_t *m_db;

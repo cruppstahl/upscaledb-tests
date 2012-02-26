@@ -14,7 +14,7 @@
 
 #define ARG_HELP                        1
 #define ARG_VERBOSE                     2
-#define ARG_PROFILE                     3
+#define ARG_QUIET                       3
 #define ARG_INMEMORY                   10
 #define ARG_OVERWRITE                  11
 #define ARG_PROGRESS                   12
@@ -61,10 +61,10 @@ static option_t opts[]={
         "be verbose",
         0 },
     {
-        ARG_PROFILE,
-        0,
-        "profile",
-        "enable profiling",
+        ARG_QUIET,
+        "q",
+        "quiet",
+        "do not print profiling metrics",
         0 },
     {
         ARG_INMEMORY,
@@ -247,8 +247,8 @@ parse_config(int argc, char **argv, config *c)
             getopts_usage(&opts[0]);
             exit(0);
         }
-        else if (opt==ARG_PROFILE) {
-            c->profile=true;
+        else if (opt==ARG_QUIET) {
+            c->quiet=true;
         }
         else if (opt==ARG_VERBOSE) {
             c->verbose++;
@@ -402,8 +402,8 @@ main(int argc, char **argv)
     config c;
     parse_config(argc, argv, &c);
 
-    engine e(&c);
-    parser p(&c, &e, c.filename, 0);
+    Engine e(&c);
+    Parser p(&c, &e, c.filename, 0);
     e.set_parser(&p);
 
     bool ok = p.process();
@@ -413,16 +413,11 @@ main(int argc, char **argv)
     else
         printf("[FAIL] %s\n", c.filename);
 
-    if (ok) {
-        /* always print the hamsterdb profile. print berkeleydb only if it's 
-         * requested */
-        database::print_profile(e.get_db(0));
-        if (1 || c.profile) {
-            std::cout << "berkeleydb profile:" << std::endl;
-            database::print_profile(e.get_db(1));
-        }
+    if (ok && !c.quiet) {
+        e.get_db(0)->collect_metrics();
+        e.get_db(1)->collect_metrics();
+        Metrics::get_instance()->print();
     }
-
 
 	return (ok ? 0 : 1);
 }

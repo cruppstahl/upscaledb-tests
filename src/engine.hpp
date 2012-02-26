@@ -4,16 +4,16 @@
 
 #include "database.hpp"
 
-class parser;
+class Parser;
 struct config;
 
-class engine
+class Engine
 {
 public:
-    engine(config *c);
-    ~engine();
+    Engine(config *c);
+    ~Engine();
 
-    void set_parser(parser *p);
+    void set_parser(Parser *p);
 
     bool create(bool numeric);
     bool open(bool numeric);
@@ -26,7 +26,7 @@ public:
     bool txn_begin(void);
     bool txn_commit(void);
 
-    database *get_db(int i) { return m_db[i]; }
+    Database *get_db(int i) { return m_db[i]; }
 
 protected:
     bool compare_records(ham_record_t *rec1, ham_record_t *rec2);
@@ -34,9 +34,9 @@ protected:
 
     bool compare_status(ham_status_t st[2]);
 
-    database *m_db[2];
+    Database *m_db[2];
     config *m_config;
-    parser *m_parser;
+    Parser *m_parser;
     unsigned m_opcount;
 };
 

@@ -6,14 +6,14 @@
 
 #include <stdio.h>
 
-class engine;
+class Engine;
 struct config;
 
-class parser
+class Parser
 {
 public:
-    parser(config *c, engine *e, const char *filename, config *cfg);
-    ~parser(void);
+    Parser(config *c, Engine *e, const char *filename, config *cfg);
+    ~Parser(void);
 
 public:
     bool process(void);
@@ -29,7 +29,7 @@ protected:
 
 private:
     config *m_config;
-    engine *m_engine;
+    Engine *m_engine;
     FILE *m_f;
     unsigned m_lineno;
 };

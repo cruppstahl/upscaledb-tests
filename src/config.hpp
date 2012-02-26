@@ -13,7 +13,7 @@ typedef struct config
 {
     config()
     {
-        profile=false;
+        profile=true;
         verbose=0;
         overwrite=false;
         duplicate=false;
@@ -45,6 +45,7 @@ typedef struct config
         enable_transactions=false;
         txn_group=0;
         use_writethrough=false;
+        quiet=false;
     }
 
     ~config()
@@ -91,6 +92,7 @@ typedef struct config
     bool enable_transactions;
     unsigned txn_group;
     bool use_writethrough;
+    bool quiet;
 } config;
 
 #endif /* CONFIG_HPP__ */

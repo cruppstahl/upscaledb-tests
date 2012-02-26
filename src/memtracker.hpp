@@ -14,7 +14,6 @@
 #include <cstring>
 
 #include <ham/hamsterdb.h>
-#include <ham/mem.h>
 #include "../../hamsterdb/src/mem.h"
 #include "metrics.hpp"
 
@@ -32,7 +31,8 @@ class TrackingAllocator : public Allocator
 {
   public:
     TrackingAllocator()
-    : Allocator() {
+    : Allocator(), m_mem_allocs(0), m_mem_peak(0), m_mem_current(0), 
+        m_mem_total(0) {
     }
 
     virtual void *alloc(ham_size_t size) {
@@ -43,9 +43,11 @@ class TrackingAllocator : public Allocator
         desc->size=size;
         desc->magic=MAGIC;
 
-        Metrics::get_instance()->inc_mem_total(size);
-        Metrics::get_instance()->inc_mem_allocs();
-        Metrics::get_instance()->inc_mem_current(size);
+        m_mem_total+=size;
+        m_mem_allocs++;
+        m_mem_current+=size;
+        if (m_mem_current>m_mem_peak)
+            m_mem_peak=m_mem_current;
 
         return (desc->data);
     }
@@ -54,7 +56,7 @@ class TrackingAllocator : public Allocator
         memdesc_t *desc=get_descriptor(ptr);
         verify_mem_desc(desc);
 
-        Metrics::get_instance()->dec_mem_current(desc->size);
+        m_mem_current-=desc->size;
         ::free(desc);
     }
 
@@ -74,6 +76,10 @@ class TrackingAllocator : public Allocator
         return (desc->data);
     }
 
+    unsigned long get_num_allocs() { return m_mem_allocs; }
+    unsigned long get_peak_bytes() { return m_mem_peak; }
+    unsigned long get_total_bytes() { return m_mem_total; }
+
   private:
     memdesc_t *get_descriptor(const void *p) {
         return ((memdesc_t *)((char *)p-OFFSETOF(memdesc_t, data)));
@@ -85,5 +91,11 @@ class TrackingAllocator : public Allocator
         if (desc->magic!=MAGIC)
             throw std::out_of_range("memory blob descriptor is corrupt");
     }
+
+    unsigned long m_mem_allocs;
+    unsigned long m_mem_peak;
+    unsigned long m_mem_current;
+    unsigned long m_mem_total;
+
 };
 

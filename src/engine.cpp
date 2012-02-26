@@ -10,14 +10,14 @@
 #include "misc.hpp"
 
 
-engine::engine(config *c)
+Engine::Engine(config *c)
 :   m_config(c), m_parser(0), m_opcount(0)
 {
-    m_db[0]=new hamsterdb(m_config);
-    m_db[1]=new berkeleydb(m_config);
+    m_db[0]=new Hamsterdb(0, m_config);
+    m_db[1]=new Berkeleydb(1, m_config);
 }
 
-engine::~engine()
+Engine::~Engine()
 {
     for (int i=0; i<2; i++) {
         if (m_db[i]) {
@@ -29,13 +29,13 @@ engine::~engine()
 }
 
 void
-engine::set_parser(parser *p)
+Engine::set_parser(Parser *p)
 {
     m_parser=p;
 }
 
 bool 
-engine::create(bool numeric)
+Engine::create(bool numeric)
 {
     if (numeric)
         m_config->numeric=true;
@@ -56,7 +56,7 @@ engine::create(bool numeric)
 }
 
 bool 
-engine::open(bool numeric)
+Engine::open(bool numeric)
 {
     if (numeric)
         m_config->numeric=true;
@@ -73,7 +73,7 @@ engine::open(bool numeric)
 }
 
 bool 
-engine::insert(const char *keytok, const char *data)
+Engine::insert(const char *keytok, const char *data)
 {
     ham_u32_t numkey=0;
     ham_size_t data_size;
@@ -152,7 +152,7 @@ engine::insert(const char *keytok, const char *data)
 }
 
 bool 
-engine::erase(const char *keytok)
+Engine::erase(const char *keytok)
 {
     ham_u32_t numkey=0;
     ham_key_t key;
@@ -194,7 +194,7 @@ engine::erase(const char *keytok)
 }
 
 bool 
-engine::find(const char *keytok)
+Engine::find(const char *keytok)
 {
     ham_u32_t numkey=0;
     ham_key_t key;
@@ -244,7 +244,7 @@ engine::find(const char *keytok)
 }
 
 bool 
-engine::fullcheck(void)
+Engine::fullcheck(void)
 {
     ham_key_t key[2];
     ham_record_t rec[2];
@@ -349,7 +349,7 @@ if (key[0].data && *(unsigned *)key[0].data==997) {
 }
 
 bool 
-engine::close(bool noreopen/* =false */)
+Engine::close(bool noreopen/* =false */)
 {
     for (int i=0; i<2; i++) {
         ham_status_t st=m_db[i]->close();
@@ -373,7 +373,7 @@ engine::close(bool noreopen/* =false */)
 }
 
 bool 
-engine::flush(void)
+Engine::flush(void)
 {
     for (int i=0; i<2; i++) {
         ham_status_t st=m_db[i]->flush();
@@ -387,7 +387,7 @@ engine::flush(void)
 }
 
 bool 
-engine::txn_begin(void)
+Engine::txn_begin(void)
 {
     for (int i=0; i<2; i++) {
         ham_status_t st=m_db[i]->txn_begin();
@@ -401,7 +401,7 @@ engine::txn_begin(void)
 }
 
 bool 
-engine::txn_commit(void)
+Engine::txn_commit(void)
 {
     for (int i=0; i<2; i++) {
         ham_status_t st=m_db[i]->txn_commit();
@@ -415,7 +415,7 @@ engine::txn_commit(void)
 }
 
 bool 
-engine::compare_records(ham_record_t *rec1, ham_record_t *rec2)
+Engine::compare_records(ham_record_t *rec1, ham_record_t *rec2)
 {
     if (rec1->size!=rec2->size)
         return (false);
@@ -429,7 +429,7 @@ engine::compare_records(ham_record_t *rec1, ham_record_t *rec2)
 }
 
 bool 
-engine::inc_opcount(void)
+Engine::inc_opcount(void)
 {
     if (++m_opcount>=m_config->txn_group) {
         if (!txn_commit())
@@ -443,7 +443,7 @@ engine::inc_opcount(void)
 }
 
 bool 
-engine::compare_status(ham_status_t st[2])
+Engine::compare_status(ham_status_t st[2])
 {
     if (st[0]!=st[1]) {
         TRACE(("status mismatch - %d vs %d\n"

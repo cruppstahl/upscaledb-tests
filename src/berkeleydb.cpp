@@ -9,7 +9,7 @@
 
 
 static int
-my_compare_db(DB *db, const DBT *dbt1, const DBT *dbt2)
+compare_db(DB *db, const DBT *dbt1, const DBT *dbt2)
 {
     int l, r;
     memcpy(&l, dbt1->data, sizeof(l));
@@ -24,13 +24,13 @@ my_compare_db(DB *db, const DBT *dbt1, const DBT *dbt2)
     return (0);
 }
 
-berkeleydb::~berkeleydb(void)
+Berkeleydb::~Berkeleydb(void)
 {
     close();
 }
 
 ham_status_t 
-berkeleydb::create(void)
+Berkeleydb::create(void)
 {
     timer t(this, timer::misc);
 
@@ -41,7 +41,7 @@ berkeleydb::create(void)
         return (db2ham(ret));
 
     if (m_config->numeric) {
-        ret=m_db->set_bt_compare(m_db, my_compare_db);
+        ret=m_db->set_bt_compare(m_db, compare_db);
         if (ret)
             return (db2ham(ret));
     }
@@ -54,7 +54,7 @@ berkeleydb::create(void)
 
     /* don't change dupe sorting - they're records and therefore never numeric!
      * if (m_config->sort_dupes && m_config->numeric) {
-     *    ret=m_db->set_dup_compare(m_db, my_compare_db);
+     *    ret=m_db->set_dup_compare(m_db, compare_db);
      *    if (ret)
      *        return (db2ham(ret));
      * }
@@ -75,7 +75,7 @@ berkeleydb::create(void)
 }
 
 ham_status_t 
-berkeleydb::open(void)
+Berkeleydb::open(void)
 {
     timer t(this, timer::misc);
 
@@ -84,13 +84,13 @@ berkeleydb::open(void)
         return (db2ham(ret));
 
     if (m_config->numeric) {
-        ret=m_db->set_bt_compare(m_db, my_compare_db);
+        ret=m_db->set_bt_compare(m_db, compare_db);
         if (ret)
             return (db2ham(ret));
     }
 
     if (m_config->sort_dupes && m_config->numeric) {
-        ret=m_db->set_dup_compare(m_db, my_compare_db);
+        ret=m_db->set_dup_compare(m_db, compare_db);
         if (ret)
             return (db2ham(ret));
     }
@@ -113,7 +113,7 @@ berkeleydb::open(void)
 }
 
 ham_status_t 
-berkeleydb::close(void)
+Berkeleydb::close(void)
 {
     int ret;
     timer t(this, timer::misc);
@@ -136,7 +136,7 @@ berkeleydb::close(void)
 }
 
 ham_status_t 
-berkeleydb::flush(void)
+Berkeleydb::flush(void)
 {
     timer t(this, timer::misc);
     int ret=m_db->sync(m_db, 0);
@@ -146,7 +146,7 @@ berkeleydb::flush(void)
 }
 
 ham_status_t 
-berkeleydb::insert(ham_key_t *key, ham_record_t *record)
+Berkeleydb::insert(ham_key_t *key, ham_record_t *record)
 {
     int ret;
     DBT k, r;
@@ -180,7 +180,7 @@ berkeleydb::insert(ham_key_t *key, ham_record_t *record)
 }
 
 ham_status_t 
-berkeleydb::erase(ham_key_t *key)
+Berkeleydb::erase(ham_key_t *key)
 {
     int ret;
     DBT k, r;
@@ -206,7 +206,7 @@ berkeleydb::erase(ham_key_t *key)
 }
 
 ham_status_t 
-berkeleydb::find(ham_key_t *key, ham_record_t *record)
+Berkeleydb::find(ham_key_t *key, ham_record_t *record)
 {
     int ret;
     DBT k, r;
@@ -236,19 +236,19 @@ berkeleydb::find(ham_key_t *key, ham_record_t *record)
 }
 
 ham_status_t 
-berkeleydb::txn_begin(void)
+Berkeleydb::txn_begin(void)
 {
     return (0);
 }
 
 ham_status_t 
-berkeleydb::txn_commit(void)
+Berkeleydb::txn_commit(void)
 {
     return (0);
 }
 
 ham_status_t 
-berkeleydb::db2ham(int ret)
+Berkeleydb::db2ham(int ret)
 {
     switch (ret) {
       case 0: return (HAM_SUCCESS);
@@ -260,20 +260,14 @@ berkeleydb::db2ham(int ret)
     return ((ham_status_t)ret);
 }
 
-const char *
-berkeleydb::get_name(void)
-{
-    return ("berkeleydb");
-}
-
 ham_status_t 
-berkeleydb::check_integrity(void)
+Berkeleydb::check_integrity(void)
 {
 	return 0;
 }
 
 void *
-berkeleydb::create_cursor(void)
+Berkeleydb::create_cursor(void)
 {
     DBC *cursor;
 
@@ -287,7 +281,7 @@ berkeleydb::create_cursor(void)
 }
 
 ham_status_t 
-berkeleydb::get_previous(void *cursor, ham_key_t *key, 
+Berkeleydb::get_previous(void *cursor, ham_key_t *key, 
                     ham_record_t *record, int flags)
 {
     DBT k, r;
@@ -313,7 +307,7 @@ berkeleydb::get_previous(void *cursor, ham_key_t *key,
 }
 
 ham_status_t
-berkeleydb::get_next(void *cursor, ham_key_t *key, ham_record_t *record,
+Berkeleydb::get_next(void *cursor, ham_key_t *key, ham_record_t *record,
                 int flags)
 {
     DBT k, r;
@@ -339,7 +333,7 @@ berkeleydb::get_next(void *cursor, ham_key_t *key, ham_record_t *record,
 }
 
 void 
-berkeleydb::close_cursor(void *cursor)
+Berkeleydb::close_cursor(void *cursor)
 {
     DBC *c=(DBC *)cursor;
 
@@ -351,8 +345,9 @@ berkeleydb::close_cursor(void *cursor)
 }
 
 void 
-berkeleydb::print_metrics(void)
+Berkeleydb::collect_metrics(void)
 {
-    Metrics::get_instance()->print_metric("bdb-filesize", 
+    Database::collect_metrics();
+    Metrics::get_instance()->add_metric(get_id(), "filesize", 
             os::get_filesize("test-berk.db"));
 }

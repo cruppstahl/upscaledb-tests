@@ -5,7 +5,7 @@
 #include "metrics.hpp"
 
 void 
-database::print_profile(database *db)
+Database::collect_metrics()
 {
     static const char *s[]={
         "perf-misc  \t", 
@@ -18,22 +18,14 @@ database::print_profile(database *db)
     float f, total=0;
 
     for (int i=0; i<5; i++) {
-        f=(float)db->m_profile[i];
+        f=(float)m_profile[i];
         total+=f;
-        f/=1000.f;
-        printf("\t%s\t%f sec\n", s[i], f);
+        f*=1000000.f;
+        Metrics::get_instance()->add_metric(get_id(), s[i], (unsigned long)f);
     }
 
-    total/=1000.f;
-    printf("\tperf-total\t\t%f sec\n", total);
-
-    Metrics::get_instance()->print();
-
-    db->print_metrics();
+    total*=1000000.f;
+    Metrics::get_instance()->add_metric(get_id(), "perf-total", 
+            (unsigned long)total);
 }
 
-const char *
-database::get_name(void)
-{
-    return ("database");
-}

@@ -16,9 +16,9 @@ static ham_u8_t aeskey[16]={
 };
 
 static int 
-my_compare_keys(ham_db_t *db,
-                const ham_u8_t *lhs, ham_size_t lhs_length, 
-                const ham_u8_t *rhs, ham_size_t rhs_length)
+compare_keys(ham_db_t *db,
+            const ham_u8_t *lhs, ham_size_t lhs_length, 
+            const ham_u8_t *rhs, ham_size_t rhs_length)
 {
     unsigned ulhs, urhs;
 
@@ -36,7 +36,7 @@ my_compare_keys(ham_db_t *db,
     return 1;
 }
 
-hamsterdb::~hamsterdb()
+Hamsterdb::~Hamsterdb()
 {
     if (m_db) {
         ham_delete(m_db);
@@ -50,7 +50,7 @@ hamsterdb::~hamsterdb()
 }
 
 ham_status_t 
-hamsterdb::create()
+Hamsterdb::create()
 {
     ham_status_t st;
     ham_u32_t flags=0;
@@ -123,7 +123,7 @@ hamsterdb::create()
     }
 
     if (m_config->numeric) {
-        st=ham_set_compare_func(m_db, my_compare_keys);
+        st=ham_set_compare_func(m_db, compare_keys);
         if (st)
             return (st);
     }
@@ -136,7 +136,7 @@ hamsterdb::create()
 }
 
 ham_status_t 
-hamsterdb::open()
+Hamsterdb::open()
 {
     ham_status_t st;
     ham_u32_t flags=0;
@@ -196,11 +196,11 @@ hamsterdb::open()
     }
 
     if (m_config->numeric) {
-        st=ham_set_compare_func(m_db, my_compare_keys);
+        st=ham_set_compare_func(m_db, compare_keys);
         if (st)
             return (st);
         if (m_config->sort_dupes) {
-            st=ham_set_duplicate_compare_func(m_db, my_compare_keys);
+            st=ham_set_duplicate_compare_func(m_db, compare_keys);
             if (st)
                 return (st);
         }
@@ -214,7 +214,7 @@ hamsterdb::open()
 }
 
 ham_status_t 
-hamsterdb::close()
+Hamsterdb::close()
 {
     timer t(this, timer::misc);
     ham_status_t st=0;
@@ -247,7 +247,7 @@ hamsterdb::close()
 }
 
 ham_status_t 
-hamsterdb::flush()
+Hamsterdb::flush()
 {
     timer t(this, timer::misc);
 
@@ -255,7 +255,7 @@ hamsterdb::flush()
 }
 
 ham_status_t 
-hamsterdb::insert(ham_key_t *key, ham_record_t *record)
+Hamsterdb::insert(ham_key_t *key, ham_record_t *record)
 {
     ham_u32_t flags=0;
 
@@ -292,7 +292,7 @@ hamsterdb::insert(ham_key_t *key, ham_record_t *record)
 }
 
 ham_status_t 
-hamsterdb::erase(ham_key_t *key)
+Hamsterdb::erase(ham_key_t *key)
 {
     ham_status_t st;
     ham_u32_t flags=0;
@@ -318,7 +318,7 @@ hamsterdb::erase(ham_key_t *key)
 }
 
 ham_status_t 
-hamsterdb::find(ham_key_t *key, ham_record_t *record)
+Hamsterdb::find(ham_key_t *key, ham_record_t *record)
 {
     ham_status_t st;
     ham_u32_t flags=0;
@@ -347,7 +347,7 @@ hamsterdb::find(ham_key_t *key, ham_record_t *record)
 }
 
 ham_status_t 
-hamsterdb::txn_begin(void)
+Hamsterdb::txn_begin(void)
 {
     ham_status_t st;
 
@@ -374,7 +374,7 @@ hamsterdb::txn_begin(void)
 }
 
 ham_status_t 
-hamsterdb::txn_commit(void)
+Hamsterdb::txn_commit(void)
 {
     ham_status_t st;
 
@@ -394,21 +394,14 @@ hamsterdb::txn_commit(void)
     return (0);
 }
 
-const char *
-hamsterdb::get_name(void)
-{
-    return ("hamsterdb");
-}
-
-
 ham_status_t 
-hamsterdb::check_integrity(void)
+Hamsterdb::check_integrity(void)
 {
 	return ham_check_integrity(m_db, m_txn);
 }
 
 void *
-hamsterdb::create_cursor(void)
+Hamsterdb::create_cursor(void)
 {
     ham_cursor_t *cursor;
 
@@ -422,7 +415,7 @@ hamsterdb::create_cursor(void)
 }
 
 ham_status_t 
-hamsterdb::get_previous(void *cursor, ham_key_t *key, 
+Hamsterdb::get_previous(void *cursor, ham_key_t *key, 
                     ham_record_t *record, int flags)
 {
     timer t(this, timer::cursor);
@@ -435,7 +428,7 @@ hamsterdb::get_previous(void *cursor, ham_key_t *key,
 }
 
 ham_status_t
-hamsterdb::get_next(void *cursor, ham_key_t *key, ham_record_t *record, 
+Hamsterdb::get_next(void *cursor, ham_key_t *key, ham_record_t *record, 
                 int flags)
 {
     timer t(this, timer::cursor);
@@ -448,7 +441,7 @@ hamsterdb::get_next(void *cursor, ham_key_t *key, ham_record_t *record,
 }
 
 void 
-hamsterdb::close_cursor(void *cursor)
+Hamsterdb::close_cursor(void *cursor)
 {
     ham_status_t st=ham_cursor_close((ham_cursor_t *)cursor);
     if (st) {
@@ -458,8 +451,16 @@ hamsterdb::close_cursor(void *cursor)
 }
 
 void 
-hamsterdb::print_metrics(void)
+Hamsterdb::collect_metrics(void)
 {
-    Metrics::get_instance()->print_metric("ham-filesize", 
+    Database::collect_metrics();
+    Metrics::get_instance()->add_metric(get_id(), "filesize", 
             os::get_filesize("test-ham.db"));
+    Metrics::get_instance()->add_metric(get_id(), "mem-num-allocs", 
+            m_mt->get_num_allocs());
+    Metrics::get_instance()->add_metric(get_id(), "mem-peak-bytes",
+            m_mt->get_peak_bytes());
+    Metrics::get_instance()->add_metric(get_id(), "mem-total-bytes",
+            m_mt->get_total_bytes());
 }
+

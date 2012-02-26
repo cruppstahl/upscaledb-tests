@@ -6,7 +6,7 @@
 #include "config.hpp"
 
 
-parser::parser(config *c, engine *e, const char *filename, config *cfg)
+Parser::Parser(config *c, Engine *e, const char *filename, config *cfg)
     :   m_config(c), m_engine(e), m_f(0), m_lineno(0)
 {
     if (filename)
@@ -20,14 +20,14 @@ parser::parser(config *c, engine *e, const char *filename, config *cfg)
     }
 }
 
-parser::~parser(void)
+Parser::~Parser(void)
 {
     if (m_f!=stdin)
         fclose(m_f);
 }
 
 bool 
-parser::process(void)
+Parser::process(void)
 {
     bool ret=true;
     char *line=(char *)malloc(1024*16);
@@ -53,7 +53,7 @@ parser::process(void)
 }
 
 bool 
-parser::process_line(char *line)
+Parser::process_line(char *line)
 {
     unsigned pos=0;
     char *tok=get_token(line, &pos);
@@ -112,13 +112,13 @@ parser::process_line(char *line)
 }
 
 unsigned 
-parser::get_lineno(void)
+Parser::get_lineno(void)
 {
     return (m_lineno);
 }
 
 char *
-parser::get_token(char *line, unsigned *pos)
+Parser::get_token(char *line, unsigned *pos)
 {
     char *r=&line[*pos];
     while (*r && (*r==' ' || *r=='\t' || *r=='\r' || *r=='\n'))
@@ -133,7 +133,7 @@ parser::get_token(char *line, unsigned *pos)
 }
 
 char *
-parser::strtok(char *s, char *t)
+Parser::strtok(char *s, char *t)
 {
     char *e, *p=::strtok(s, t);
     if (!p) {

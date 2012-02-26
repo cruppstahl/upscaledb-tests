@@ -13,38 +13,28 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <string>
+#include <vector>
+#include <map>
+
 #ifndef METRICS_HPP__
 #define METRICS_HPP__
 
 class Metrics
 {
   public:
-    void inc_mem_allocs() {
-        m_mem_allocs++;
-    }
-
-    void inc_mem_current(unsigned size) {
-        m_mem_current+=size;
-        if (m_mem_current>m_mem_peak)
-            m_mem_peak=m_mem_current;
-    }
-
-    void dec_mem_current(unsigned size) {
-        m_mem_current-=size;
-    }
-
-    void inc_mem_total(unsigned size) {
-        m_mem_total+=size;
-    }
-
-    void print_metric(const char *name, unsigned long value) {
-        printf("\t%s\t\t%lu\n", name, value);
+    void add_metric(int idx, const char *name, unsigned long value) {
+        m_metrics[idx][name]=value;
     }
 
     void print() {
-        print_metric("mem-num-allocs", m_mem_allocs);
-        print_metric("mem-peak-bytes", m_mem_peak);
-        print_metric("mem-total-bytes", m_mem_total);
+        for (int i=0; i<2; i++) {
+            printf("%s\n", i ? "berkeleydb" : "hamsterdb");
+            std::map<std::string, unsigned long> &m=m_metrics[i];
+            std::map<std::string, unsigned long>::iterator it;
+            for (it=m.begin(); it!=m.end(); ++it)
+                printf("\t%s\t\t%lu\n", it->first.c_str(), it->second);
+        }
     }
 
     static Metrics *get_instance() {
@@ -57,13 +47,15 @@ class Metrics
 
   private:
     Metrics()
-      : m_mem_allocs(0), m_mem_peak(0), m_mem_current(0), m_mem_total(0) {
+      : m_metrics(10) {
     }
 
     unsigned long m_mem_allocs;
     unsigned long m_mem_peak;
     unsigned long m_mem_current;
     unsigned long m_mem_total;
+
+    std::vector<std::map<std::string, unsigned long> > m_metrics;
 };
 
 
