@@ -9,7 +9,17 @@
  * See files COPYING.* for License information.
  */
 
+#include <stdexcept>
+#include <cstdlib>
+#include <cstring>
+
 #include <ham/hamsterdb.h>
+#include <ham/mem.h>
+#include "../../hamsterdb/src/mem.h"
+#include "metrics.hpp"
+
+#define MAGIC           0x12345678
+#define OFFSETOF(type, member) ((size_t) &((type *)0)->member)
 
 typedef struct memdesc_t
 {
@@ -18,56 +28,62 @@ typedef struct memdesc_t
     char data[1];
 } memdesc_t;
 
-typedef struct 
+class TrackingAllocator : public Allocator
 {
-    unsigned long peak;
-    unsigned long current;
-    unsigned long allocs;
-    unsigned long total;
-} memtracker_priv_t;
+  public:
+    TrackingAllocator()
+    : Allocator() {
+    }
 
-/* copied from mem.h */
-typedef void *(*alloc_func_t)(struct mem_allocator_t *self, const char *file, 
-                   int line, ham_size_t size);
-typedef void  (*free_func_t) (struct mem_allocator_t *self, const char *file, 
-                   int line, const void *ptr);
-typedef void *(*realloc_func_t) (struct mem_allocator_t *self, const char *file, 
-                   int line, const void *ptr, ham_size_t size);
-typedef void  (*close_func_t)(struct mem_allocator_t *self);
-struct mem_allocator_t
-{
-    alloc_func_t alloc;
-    free_func_t  free;
-    realloc_func_t realloc;
-    close_func_t close;
-    void *priv;
+    virtual void *alloc(ham_size_t size) {
+        memdesc_t *desc=(memdesc_t *)::malloc(sizeof(*desc)+size-1);
+        if (!desc)
+            return (0);
+        memset(desc, 0, sizeof(*desc));
+        desc->size=size;
+        desc->magic=MAGIC;
+
+        Metrics::get_instance()->inc_mem_total(size);
+        Metrics::get_instance()->inc_mem_allocs();
+        Metrics::get_instance()->inc_mem_current(size);
+
+        return (desc->data);
+    }
+
+    virtual void free(const void *ptr) {
+        memdesc_t *desc=get_descriptor(ptr);
+        verify_mem_desc(desc);
+
+        Metrics::get_instance()->dec_mem_current(desc->size);
+        ::free(desc);
+    }
+
+    virtual void *realloc(const void *ptr, ham_size_t size) {
+        /* ptr is NULL -> always alloc */
+        if (!ptr)
+            return (alloc(size));
+
+        /* only resize if requested new size is > old size */
+        memdesc_t *desc=get_descriptor(ptr);
+        if (size<desc->size)
+            return ((void *)ptr);
+
+        /* otherwise just realloc the existing pointer */
+        desc=(memdesc_t  *)::realloc(desc, sizeof(*desc)+size-1);
+        desc->size=size;
+        return (desc->data);
+    }
+
+  private:
+    memdesc_t *get_descriptor(const void *p) {
+        return ((memdesc_t *)((char *)p-OFFSETOF(memdesc_t, data)));
+    }
+
+    void verify_mem_desc(memdesc_t *desc) {
+        if (desc->size==0)
+            throw std::out_of_range("memory blob size is 0");
+        if (desc->magic!=MAGIC)
+            throw std::out_of_range("memory blob descriptor is corrupt");
+    }
 };
-
-
-typedef struct 
-{
-    alloc_func_t alloc;
-    free_func_t  free;
-    realloc_func_t realloc;
-    close_func_t close;
-
-    memtracker_priv_t *priv;
-
-} memtracker_t;
-
-extern memtracker_t *
-memtracker_new(void);
-
-extern unsigned long
-memtracker_get_peak(memtracker_t *mt);
-
-extern unsigned long
-memtracker_get_current(memtracker_t *mt);
-
-extern unsigned long
-memtracker_get_total(memtracker_t *mt);
-
-extern unsigned long
-memtracker_get_allocs(memtracker_t *mt);
-
 

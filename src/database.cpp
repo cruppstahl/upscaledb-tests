@@ -2,6 +2,7 @@
 #include "porting.hpp"
 #include "config.hpp"
 #include "database.hpp"
+#include "metrics.hpp"
 
 void 
 database::print_profile(database *db)
@@ -25,7 +26,10 @@ database::print_profile(database *db)
 
     total/=1000.f;
     printf("\tperf-total\t\t%f sec\n", total);
-    db->print_specific_profile();
+
+    Metrics::get_instance()->print();
+
+    db->print_metrics();
 }
 
 const char *

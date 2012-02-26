@@ -37,8 +37,7 @@ public:
     virtual ham_status_t get_next(void *cursor, ham_key_t *key, 
                     ham_record_t *record, int flags);
     virtual void close_cursor(void *cursor);
-
-    virtual void print_specific_profile(void) { };
+    virtual void print_metrics(void);
 
 protected:
     ham_status_t db2ham(int ret);

@@ -17,7 +17,7 @@ if PROFILE
 endif
 
 test_SOURCES    = parser.cpp engine.cpp main.cpp getopts.c hamsterdb.cpp \
-				  berkeleydb.cpp os.cpp database.cpp memtracker.cpp
+				  berkeleydb.cpp os.cpp database.cpp
 test_LDFLAGS    = 
 test_LDADD      = $(top_builddir)/env/posix/libhamsterdb.a \
 				  -ldb -lpthread -lcurl -lprotobuf
