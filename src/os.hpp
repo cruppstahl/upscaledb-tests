@@ -30,6 +30,8 @@ public:
     static const char *hostname(void);
 
     static const char *architecture(void);
+
+    static unsigned long get_filesize(const char *path);
 };
 
 #endif /* OS_HPP__ */

@@ -5,10 +5,8 @@
 #include "endian.hpp"
 #include "os.hpp"
 #include "misc.hpp"
-#include "device.h"
 
 #include <ham/hamsterdb_int.h>
-#include "device.h"
 
 static ham_u8_t aeskey[16]={ 
     0x00, 0x01, 0x02, 0x03, 
@@ -101,7 +99,6 @@ hamsterdb::create()
     st=ham_env_create_ex(m_env, DB_PATH "test-ham.db", flags, 0664, &params[0]);
     if (st)
         return (st);
-    patch_device();
     if (m_config->aes_encrypt) {
         st=ham_env_enable_encryption(m_env, aeskey, 0);
         if (st)
@@ -177,7 +174,6 @@ hamsterdb::open()
     st=ham_env_open_ex(m_env, DB_PATH "test-ham.db", flags, &params[0]);
     if (st)
         return (st);
-    patch_device();
     if (m_config->aes_encrypt) {
         st=ham_env_enable_encryption(m_env, aeskey, 0);
         if (st)
@@ -462,92 +458,8 @@ hamsterdb::close_cursor(void *cursor)
 }
 
 void 
-hamsterdb::print_specific_profile(void)
+hamsterdb::print_metrics(void)
 {
-    printf("\tmem-num-allocs\t\t%lu\n", m_mt->get_allocs());
-    printf("\tmem-peak-bytes\t\t%lu bytes\n", m_mt->get_peak());
-    printf("\tmem-total-bytes\t\t%lu bytes\n", m_mt->get_total());
-    printf("\tio-num-flushes\t\t%lu\n", m_num_flushes);
-    printf("\tio-num-read\t\t%lu\n", m_num_read);
-    printf("\tio-num-read-page\t%lu\n", m_num_read_page);
-    printf("\tio-num-write\t\t%lu\n", m_num_write);
-    printf("\tio-num-write-page\t%lu\n", m_num_write_page);
-    printf("\tio-num-alloc\t\t%lu\n", m_num_alloc);
-    printf("\tio-num-alloc-page\t%lu\n", m_num_alloc_page);
-}
-
-static hamsterdb *m_instance;
-
-ham_status_t 
-hamsterdb::dev_new_flush(ham_device_t *dev)
-{
-    m_instance->m_num_flushes++;
-    return (m_instance->m_dev_old_flush(dev));
-}
-
-ham_status_t 
-hamsterdb::dev_new_read(ham_device_t *dev, ham_offset_t o, void *p, 
-        ham_offset_t s)
-{
-    m_instance->m_num_read++;
-    return (m_instance->m_dev_old_read(dev, o, p, s));
-}
-
-ham_status_t 
-hamsterdb::dev_new_write(ham_device_t *dev, ham_offset_t o, void *p, 
-        ham_offset_t s)
-{
-    m_instance->m_num_write++;
-    return (m_instance->m_dev_old_write(dev, o, p, s));
-}
-
-ham_status_t 
-hamsterdb::dev_new_read_page(ham_device_t *dev, struct ham_page_t *p)
-{
-    m_instance->m_num_read_page++;
-    return (m_instance->m_dev_old_read_page(dev, p));
-}
-
-ham_status_t 
-hamsterdb::dev_new_write_page(ham_device_t *dev, struct ham_page_t *p)
-{
-    m_instance->m_num_write_page++;
-    return (m_instance->m_dev_old_write_page(dev, p));
-}
-
-ham_status_t 
-hamsterdb::dev_new_alloc_page(ham_device_t *dev, struct ham_page_t *p)
-{
-    m_instance->m_num_alloc_page++;
-    return (m_instance->m_dev_old_alloc_page(dev, p));
-}
-
-ham_status_t 
-hamsterdb::dev_new_alloc(ham_device_t *dev, ham_size_t s, 
-            ham_offset_t *o)
-{
-    m_instance->m_num_alloc++;
-    return (m_instance->m_dev_old_alloc(dev, s, o));
-}
-
-void 
-hamsterdb::patch_device(void)
-{
-    m_instance=this;
-
-    ham_device_t *dev=ham_env_get_device(m_env);
-    m_dev_old_flush=dev->flush;
-    dev->flush=hamsterdb::dev_new_flush;
-    m_dev_old_read=dev->read;
-    dev->read=dev_new_read;
-    m_dev_old_write=dev->write;
-    dev->write=dev_new_write;
-    m_dev_old_read_page=dev->read_page;
-    dev->read_page=dev_new_read_page;
-    m_dev_old_write_page=dev->write_page;
-    dev->write_page=dev_new_write_page;
-    m_dev_old_alloc=dev->alloc;
-    dev->alloc=dev_new_alloc;
-    m_dev_old_alloc_page=dev->alloc_page;
-    dev->alloc_page=dev_new_alloc_page;
+    Metrics::get_instance()->print_metric("ham-filesize", 
+            os::get_filesize("test-ham.db"));
 }

@@ -7,6 +7,7 @@
 #include "getopts.h"
 #include "hamsterdb.hpp"
 #include "berkeleydb.hpp"
+#include "metrics.hpp"
 #include <iostream>
 
 
@@ -40,6 +41,8 @@
 #define ARG_DIRECT_ACCESS              39
 #define ARG_USE_TRANSACTIONS           41
 #define ARG_WRITETHROUGH               42
+
+Metrics *Metrics::instance;
 
 /*
  * command line parameters
@@ -414,7 +417,7 @@ main(int argc, char **argv)
         /* always print the hamsterdb profile. print berkeleydb only if it's 
          * requested */
         database::print_profile(e.get_db(0));
-        if (c.profile) {
+        if (1 || c.profile) {
             std::cout << "berkeleydb profile:" << std::endl;
             database::print_profile(e.get_db(1));
         }

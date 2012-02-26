@@ -70,7 +70,7 @@ public:
     virtual void close_cursor(void *cursor)=0;
 
     static void print_profile(database *db);
-    virtual void print_specific_profile(void)=0;
+    virtual void print_metrics(void)=0;
 
 protected:
     config *m_config;

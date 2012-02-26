@@ -15,11 +15,11 @@
 
 #include <ham/hamsterdb.h>
 #include <ham/mem.h>
+#include "../../hamsterdb/src/mem.h"
+#include "metrics.hpp"
 
-#define MAGIC     0x12345678
-
+#define MAGIC           0x12345678
 #define OFFSETOF(type, member) ((size_t) &((type *)0)->member)
-
 
 typedef struct memdesc_t
 {
@@ -32,7 +32,7 @@ class TrackingAllocator : public Allocator
 {
   public:
     TrackingAllocator()
-    : Allocator(), m_peak(0), m_current(0), m_allocs(0), m_total(0) {
+    : Allocator() {
     }
 
     virtual void *alloc(ham_size_t size) {
@@ -43,11 +43,9 @@ class TrackingAllocator : public Allocator
         desc->size=size;
         desc->magic=MAGIC;
 
-        m_allocs++;
-        m_total+=size;
-        m_current+=size;
-        if (m_current>m_peak)
-            m_peak=m_current;
+        Metrics::get_instance()->inc_mem_total(size);
+        Metrics::get_instance()->inc_mem_allocs();
+        Metrics::get_instance()->inc_mem_current(size);
 
         return (desc->data);
     }
@@ -56,7 +54,7 @@ class TrackingAllocator : public Allocator
         memdesc_t *desc=get_descriptor(ptr);
         verify_mem_desc(desc);
 
-        m_current-=desc->size;
+        Metrics::get_instance()->dec_mem_current(desc->size);
         ::free(desc);
     }
 
@@ -76,22 +74,6 @@ class TrackingAllocator : public Allocator
         return (desc->data);
     }
 
-    unsigned long get_peak() {
-        return (m_peak);
-    }
-
-    unsigned long get_current() {
-        return (m_current);
-    }
-
-    unsigned long get_total() {
-        return (m_total);
-    }
-
-    unsigned long get_allocs() {
-        return (m_allocs);
-    }
-
   private:
     memdesc_t *get_descriptor(const void *p) {
         return ((memdesc_t *)((char *)p-OFFSETOF(memdesc_t, data)));
@@ -103,10 +85,5 @@ class TrackingAllocator : public Allocator
         if (desc->magic!=MAGIC)
             throw std::out_of_range("memory blob descriptor is corrupt");
     }
-
-    unsigned long m_peak;
-    unsigned long m_current;
-    unsigned long m_allocs;
-    unsigned long m_total;
 };
 

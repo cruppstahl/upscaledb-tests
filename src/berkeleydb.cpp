@@ -5,6 +5,7 @@
 #include "berkeleydb.hpp"
 #include "endian.hpp"
 #include "misc.hpp"
+#include "metrics.hpp"
 
 
 static int
@@ -347,4 +348,11 @@ berkeleydb::close_cursor(void *cursor)
         TRACE(("failed to close cursor: %d\n", ret));
         exit(-1);
     }
+}
+
+void 
+berkeleydb::print_metrics(void)
+{
+    Metrics::get_instance()->print_metric("bdb-filesize", 
+            os::get_filesize("test-berk.db"));
 }

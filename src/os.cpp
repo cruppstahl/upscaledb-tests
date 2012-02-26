@@ -1,4 +1,8 @@
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include "porting.hpp"
 #include "os.hpp"
 
@@ -42,3 +46,11 @@ os::architecture(void)
     return (&arch[0]);
 }
 
+unsigned long 
+os::get_filesize(const char *path)
+{
+    struct stat buf;
+    if (stat(path, &buf)<0)
+        return (0);
+    return ((unsigned long)buf.st_size);
+}
