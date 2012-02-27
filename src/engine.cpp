@@ -14,7 +14,10 @@ Engine::Engine(config *c)
 :   m_config(c), m_parser(0), m_opcount(0)
 {
     m_db[0]=new Hamsterdb(0, m_config);
-    m_db[1]=new Berkeleydb(1, m_config);
+    if (!m_config->no_bdb)
+        m_db[1]=new Berkeleydb(1, m_config);
+    else
+        m_db[1]=0;
 }
 
 Engine::~Engine()
@@ -41,6 +44,8 @@ Engine::create(bool numeric)
         m_config->numeric=true;
 
     for (int i=0; i<2; i++) {
+        if (!m_db[i])
+            continue;
         ham_status_t st=m_db[i]->create();
         if (st) {
             TRACE(("db[%d]: create failed w/ status %d\n", i, st));
@@ -62,6 +67,8 @@ Engine::open(bool numeric)
         m_config->numeric=true;
 
     for (int i=0; i<2; i++) {
+        if (!m_db[i])
+            continue;
         ham_status_t st=m_db[i]->open();
         if (st) {
             TRACE(("db[%d]: open failed w/ status %d\n", i, st));
@@ -139,12 +146,14 @@ Engine::insert(const char *keytok, const char *data)
     }
 
     for (int i=0; i<2; i++) {
+        if (!m_db[i])
+            continue;
         st[i]=m_db[i]->insert(&key, &rec);
         if (st[i])
             VERBOSE(("db[%d]: insert failed w/ status %d\n", i, st[i]));
     }
 
-    if (!compare_status(st))
+    if (m_config->no_bdb==false && !compare_status(st))
         return (false);
     if (m_config->txn_group>0)
         return (inc_opcount());
@@ -181,12 +190,14 @@ Engine::erase(const char *keytok)
     }
 
     for (int i=0; i<2; i++) {
+        if (!m_db[i])
+            continue;
         st[i]=m_db[i]->erase(&key);
         if (st[i])
             VERBOSE(("db[%d]: erase failed w/ status %d\n", i, st[i]));
     }
 
-    if (!compare_status(st))
+    if (m_config->no_bdb==false && !compare_status(st))
         return (false);
     if (m_config->txn_group>0)
         return (inc_opcount());
@@ -226,17 +237,19 @@ Engine::find(const char *keytok)
     }
 
     for (int i=0; i<2; i++) {
+        if (!m_db[i])
+            continue;
         st[i]=m_db[i]->find(&key, &rec[i]);
         if (st[i])
             VERBOSE(("db[%d]: find failed w/ status %d\n", i, st[i]));
     }
 
-    if (!compare_records(&rec[0], &rec[1])) {
+    if (m_config->no_bdb==false && !compare_records(&rec[0], &rec[1])) {
         TRACE(("record mismatch\n"));
         return false;
     }
 
-    if (!compare_status(st))
+    if (m_config->no_bdb==false && !compare_status(st))
         return (false);
     if (m_config->txn_group>0)
         return (inc_opcount());
@@ -249,15 +262,23 @@ Engine::fullcheck(void)
     ham_key_t key[2];
     ham_record_t rec[2];
 
-    void *c[2];
-    ham_status_t st[2];
-    st[0]=m_db[0]->check_integrity();
-    st[1]=m_db[1]->check_integrity();
+    void *c[2]={0};
+    ham_status_t st[2]={0};
+    if (m_db[0])
+        st[0]=m_db[0]->check_integrity();
+    if (m_db[1])
+        st[1]=m_db[1]->check_integrity();
     if (!compare_status(st))
         return false;
 
-    c[0]=m_db[0]->create_cursor();
-    c[1]=m_db[1]->create_cursor();
+    // fullcheck does not make sense if berkeleydb is disabled
+    if (m_config->no_bdb)
+        return true;
+
+    if (m_db[0])
+        c[0]=m_db[0]->create_cursor();
+    if (m_db[1])
+        c[1]=m_db[1]->create_cursor();
 
     for(;;) {
         memset(key, 0, sizeof(key));
@@ -270,8 +291,8 @@ Engine::fullcheck(void)
             assert(USER_MALLOC_KEYRECSIZE > 65530);
             key[0].size=65530;
 
-            rec[0].data = static_cast<char *>(m_config->puseralloc) + 65530;
-            rec[0].size = USER_MALLOC_KEYRECSIZE - 65530;
+            rec[0].data=static_cast<char *>(m_config->puseralloc)+65530;
+            rec[0].size=USER_MALLOC_KEYRECSIZE-65530;
             rec[0].flags=HAM_RECORD_USER_ALLOC;
         }
 
@@ -352,6 +373,8 @@ bool
 Engine::close(bool noreopen/* =false */)
 {
     for (int i=0; i<2; i++) {
+        if (!m_db[i])
+            continue;
         ham_status_t st=m_db[i]->close();
         if (st) {
             TRACE(("db[%d]: close failed w/ status %d\n", i, st));
@@ -376,6 +399,8 @@ bool
 Engine::flush(void)
 {
     for (int i=0; i<2; i++) {
+        if (!m_db[i])
+            continue;
         ham_status_t st=m_db[i]->flush();
         if (st) {
             TRACE(("db[%d]: flush failed w/ status %d\n", i, st));
@@ -390,6 +415,8 @@ bool
 Engine::txn_begin(void)
 {
     for (int i=0; i<2; i++) {
+        if (!m_db[i])
+            continue;
         ham_status_t st=m_db[i]->txn_begin();
         if (st) {
             TRACE(("db[%d]: txn_begin failed w/ status %d\n", i, st));
@@ -404,6 +431,8 @@ bool
 Engine::txn_commit(void)
 {
     for (int i=0; i<2; i++) {
+        if (!m_db[i])
+            continue;
         ham_status_t st=m_db[i]->txn_commit();
         if (st) {
             TRACE(("db[%d]: txn_begin failed w/ status %d\n", i, st));
@@ -446,7 +475,7 @@ bool
 Engine::compare_status(ham_status_t st[2])
 {
     if (st[0]!=st[1]) {
-        TRACE(("status mismatch - %d vs %d\n"
+        TRACE(("status mismatch - hamsterdb %d vs berkeleydb %d\n"
             "       ----> (%s) vs (%s)\n", 
             st[0], st[1],
             ham_strerror(st[0]), ham_strerror(st[1])));

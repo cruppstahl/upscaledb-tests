@@ -41,6 +41,7 @@
 #define ARG_DIRECT_ACCESS              39
 #define ARG_USE_TRANSACTIONS           41
 #define ARG_WRITETHROUGH               42
+#define ARG_NO_BDB                     43
 
 Metrics *Metrics::instance;
 
@@ -228,6 +229,12 @@ static option_t opts[]={
         "writethrough",
         "sets the HAM_WRITE_THROUGH flag",
         0 },
+    {
+        ARG_NO_BDB,
+        "no_bdb",
+        "no-berkeleydb",
+        "disables berkeleydb (and FULLCHECK)",
+        0 },
     { 0, 0, 0, 0, 0 }
 };
 
@@ -353,6 +360,9 @@ parse_config(int argc, char **argv, config *c)
         else if (opt==ARG_WRITETHROUGH) {
             c->use_writethrough=true;
         }
+        else if (opt==ARG_NO_BDB) {
+            c->no_bdb=true;
+        }
         else if (opt==ARG_USE_TRANSACTIONS) {
             c->enable_transactions=true;
             if (strcmp("tmp", param)==0)
@@ -414,8 +424,10 @@ main(int argc, char **argv)
         printf("[FAIL] %s\n", c.filename);
 
     if (ok && !c.quiet) {
-        e.get_db(0)->collect_metrics();
-        e.get_db(1)->collect_metrics();
+        if (e.get_db(0))
+            e.get_db(0)->collect_metrics();
+        if (e.get_db(1))
+            e.get_db(1)->collect_metrics();
         Metrics::get_instance()->print();
     }
 

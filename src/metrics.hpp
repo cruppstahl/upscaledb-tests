@@ -29,9 +29,10 @@ class Metrics
 
     void print() {
         for (int i=0; i<2; i++) {
-            printf("%s\n", i ? "berkeleydb" : "hamsterdb");
             std::map<std::string, unsigned long> &m=m_metrics[i];
             std::map<std::string, unsigned long>::iterator it;
+            if (!m.empty())
+                printf("%s\n", i ? "berkeleydb" : "hamsterdb");
             for (it=m.begin(); it!=m.end(); ++it)
                 printf("\t%s\t\t%lu\n", it->first.c_str(), it->second);
         }

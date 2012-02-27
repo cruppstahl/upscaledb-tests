@@ -7,7 +7,7 @@
 
 struct config;
 
-class Database
+class database
 {
 protected:
     class timer
@@ -21,7 +21,7 @@ protected:
             cursor
         };
 
-        timer(Database *db, Database::timer::idx store)
+        timer(database *db, database::timer::idx store)
         :   m_db(db), m_store(store)
         {
             m_start=os::now();
@@ -32,19 +32,19 @@ protected:
             m_db->m_profile[m_store]+=os::now()-m_start;
         }
     private:
-        Database *m_db;
-        Database::timer::idx m_store;
+        database *m_db;
+        database::timer::idx m_store;
         ham_u64_t m_start;
     };
 
 public:
-    Database(int id, config *c)
+    database(int id, config *c)
     : m_id(id), m_config(c)
     {
         memset(m_profile, 0, sizeof(m_profile));
     }
 
-    virtual ~Database(void)
+    virtual ~database(void)
     {
     }
 

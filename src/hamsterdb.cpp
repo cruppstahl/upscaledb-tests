@@ -453,7 +453,7 @@ Hamsterdb::close_cursor(void *cursor)
 void 
 Hamsterdb::collect_metrics(void)
 {
-    Database::collect_metrics();
+    database::collect_metrics();
     Metrics::get_instance()->add_metric(get_id(), "filesize", 
             os::get_filesize("test-ham.db"));
     Metrics::get_instance()->add_metric(get_id(), "mem-num-allocs", 

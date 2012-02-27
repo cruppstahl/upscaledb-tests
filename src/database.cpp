@@ -5,7 +5,7 @@
 #include "metrics.hpp"
 
 void 
-Database::collect_metrics()
+database::collect_metrics()
 {
     static const char *s[]={
         "perf-misc  \t", 

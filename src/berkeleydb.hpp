@@ -7,11 +7,11 @@
 #include "database.hpp"
 
 
-class Berkeleydb : public Database
+class Berkeleydb : public database
 {
 public:
     Berkeleydb(int id, config *c)
-    : Database(id, c), m_db(0), m_cursor(0)
+    : database(id, c), m_db(0), m_cursor(0)
     {
     }
 

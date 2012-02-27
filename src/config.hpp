@@ -46,6 +46,7 @@ typedef struct config
         txn_group=0;
         use_writethrough=false;
         quiet=false;
+        no_bdb=false;
     }
 
     ~config()
@@ -93,6 +94,7 @@ typedef struct config
     unsigned txn_group;
     bool use_writethrough;
     bool quiet;
+    bool no_bdb;
 } config;
 
 #endif /* CONFIG_HPP__ */

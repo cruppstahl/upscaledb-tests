@@ -6,11 +6,11 @@
 #include "database.hpp"
 #include "memtracker.hpp"
 
-class Hamsterdb : public Database
+class Hamsterdb : public database
 {
 public:
     Hamsterdb(int id, config *c)
-    : Database(id, c), m_db(0), m_env(0), m_txn(0), m_cursor(0), m_mt(0)
+    : database(id, c), m_db(0), m_env(0), m_txn(0), m_cursor(0), m_mt(0)
     {
         m_mt=new TrackingAllocator();
     }

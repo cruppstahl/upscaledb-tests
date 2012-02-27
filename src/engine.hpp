@@ -26,7 +26,7 @@ public:
     bool txn_begin(void);
     bool txn_commit(void);
 
-    Database *get_db(int i) { return m_db[i]; }
+    database *get_db(int i) { return m_db[i]; }
 
 protected:
     bool compare_records(ham_record_t *rec1, ham_record_t *rec2);
@@ -34,7 +34,7 @@ protected:
 
     bool compare_status(ham_status_t st[2]);
 
-    Database *m_db[2];
+    database *m_db[2];
     config *m_config;
     Parser *m_parser;
     unsigned m_opcount;
