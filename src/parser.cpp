@@ -7,49 +7,39 @@
 
 
 Parser::Parser(config *c, Engine *e, const char *filename, config *cfg)
-    :   m_config(c), m_engine(e), m_f(0), m_lineno(0)
+    :   m_config(c), m_engine(e), m_lineno(0)
 {
+    FILE *f=stdin;
     if (filename)
-        m_f=fopen(filename, "rt");
-    else
-        m_f=stdin;
+        f=fopen(filename, "rt");
 
-    if (!m_f) {
+    if (!f) {
         TRACE(("failed to open %s\n", filename));
         exit(-1);
     }
-}
 
-Parser::~Parser(void)
-{
-    if (m_f!=stdin)
-        fclose(m_f);
+    char line[1024*16];
+
+    while (!feof(f)) {
+        char *p=fgets(line, sizeof(line), f);
+        if (!p)
+            break;
+
+        m_lines.push_back(p);
+    }
+
+    if (f!=stdin)
+        fclose(f);
 }
 
 bool 
 Parser::process(void)
 {
-    bool ret=true;
-    char *line=(char *)malloc(1024*16);
-
-    while (!feof(m_f)) {
-		char *p;
-        m_lineno++;
-
-        /* read from the file */
-        p=fgets(line, 1024*16, m_f);
-        if (!p)
-            break;
-
-		ret=process_line(line);
-        if (!ret)
-            break;
-
-        // VERBOSE2(("---- line %04d ----", config.cur_line));
+    for (m_lineno=0; m_lineno<m_lines.size(); m_lineno++) {
+        if (!process_line((char *)m_lines[m_lineno].c_str()))
+            return (false);
     }
-
-    free(line);
-    return (ret);
+    return (true);
 }
 
 bool 

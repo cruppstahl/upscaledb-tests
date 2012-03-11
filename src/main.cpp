@@ -9,7 +9,7 @@
 #include "berkeleydb.hpp"
 #include "metrics.hpp"
 #include <iostream>
-
+#include <boost/thread.hpp>
 
 
 #define ARG_HELP                        1
@@ -42,6 +42,7 @@
 #define ARG_USE_TRANSACTIONS           41
 #define ARG_WRITETHROUGH               42
 #define ARG_NO_BDB                     43
+#define ARG_NUM_THREADS                44
 
 Metrics *Metrics::instance;
 
@@ -235,6 +236,12 @@ static option_t opts[]={
         "no-berkeleydb",
         "disables berkeleydb (and FULLCHECK)",
         0 },
+    {
+        ARG_NUM_THREADS,
+        0,
+        "num-threads",
+        "sets the number of threads (default: 1)",
+        GETOPTS_NEED_ARGUMENT },
     { 0, 0, 0, 0, 0 }
 };
 
@@ -396,6 +403,13 @@ parse_config(int argc, char **argv, config *c)
         else if (opt==ARG_FULLCHECK_BACKWARDS) {
             c->fullcheck_backwards=true;
         }
+        else if (opt==ARG_NUM_THREADS) {
+            c->num_threads=strtoul(param, 0, 0);
+            if (!c->num_threads) {
+                printf("invalid parameter for 'num-threads'\n");
+                exit(-1);
+            }
+        }
         else if (opt==GETOPTS_PARAMETER) {
             c->filename=param;
         }
@@ -405,6 +419,32 @@ parse_config(int argc, char **argv, config *c)
         }
     }
 }
+
+class Thread
+{
+  public:
+    Thread(int id, config &c, Parser &p)
+      : m_id(id), m_fail(false) {
+        run();
+    }
+
+    void run() {
+        printf("running thread %d\n", m_id);
+    }
+
+    bool success() {
+        return !m_fail;
+    }
+
+    void join() {
+        m_thread.join();
+    }
+
+  private:
+    int m_id;
+    bool m_fail;
+    boost::thread m_thread;
+};
 
 int
 main(int argc, char **argv)
@@ -416,7 +456,22 @@ main(int argc, char **argv)
     Parser p(&c, &e, c.filename, 0);
     e.set_parser(&p);
 
-    bool ok = p.process();
+    bool ok=true;
+    if (c.num_threads==1) {
+        ok=p.process();
+    }
+    else {
+        std::vector<Thread *> threads;
+        for (int i=0; i<c.num_threads; i++) {
+            threads.push_back(new Thread(i+1, c, p));
+        }
+        for (int i=0; i<c.num_threads; i++) {
+            threads[i]->join();
+            if (!threads[i]->success())
+                ok=false;
+            delete threads[i];
+        }
+    }
 
     if (ok)
         printf("[OK] %s\n", c.filename);

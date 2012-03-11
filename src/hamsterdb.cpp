@@ -128,11 +128,7 @@ Hamsterdb::create()
             return (st);
     }
 
-    st=ham_cursor_create(m_db, m_txn, 0, &m_cursor);
-    if (st)
-        return (st);
-
-    return (0);
+    return (ham_cursor_create(m_db, m_txn, 0, &m_cursor));
 }
 
 ham_status_t 

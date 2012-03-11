@@ -4,7 +4,8 @@
 
 #include "config.hpp"
 
-#include <stdio.h>
+#include <string>
+#include <vector>
 
 class Engine;
 struct config;
@@ -13,9 +14,7 @@ class Parser
 {
 public:
     Parser(config *c, Engine *e, const char *filename, config *cfg);
-    ~Parser(void);
 
-public:
     bool process(void);
 
     bool process_line(char *line);
@@ -30,8 +29,8 @@ protected:
 private:
     config *m_config;
     Engine *m_engine;
-    FILE *m_f;
     unsigned m_lineno;
+    std::vector<std::string> m_lines;
 };
 
 #endif /* PARSER_HPP__ */

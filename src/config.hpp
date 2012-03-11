@@ -47,6 +47,7 @@ typedef struct config
         use_writethrough=false;
         quiet=false;
         no_bdb=false;
+        num_threads=1;
     }
 
     ~config()
@@ -95,6 +96,7 @@ typedef struct config
     bool use_writethrough;
     bool quiet;
     bool no_bdb;
+    int num_threads;
 } config;
 
 #endif /* CONFIG_HPP__ */
