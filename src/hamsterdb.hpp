@@ -10,15 +10,17 @@ class Hamsterdb : public database
 {
 public:
     Hamsterdb(int id, config *c)
-    : database(id, c), m_db(0), m_env(0), m_txn(0), m_cursor(0), m_mt(0)
+    : database(id, c), m_db(0), m_txn(0), m_cursor(0), m_mt(0)
     {
         m_mt=new TrackingAllocator();
     }
 
     ~Hamsterdb(void);
 
-    virtual ham_status_t create(void);
-    virtual ham_status_t open(void);
+    virtual ham_status_t create_env(void);
+    virtual ham_status_t create_db(void);
+    virtual ham_status_t open_env(void);
+    virtual ham_status_t open_db(void);
     virtual ham_status_t close(void);
     virtual ham_status_t flush(void);
     virtual ham_status_t insert(ham_key_t *key, ham_record_t *record);
@@ -39,8 +41,8 @@ public:
     virtual void collect_metrics(void);
 
 protected:
+    static ham_env_t *ms_env;
     ham_db_t *m_db;
-    ham_env_t *m_env;
     ham_txn_t *m_txn;
     ham_cursor_t *m_cursor;
     TrackingAllocator *m_mt;

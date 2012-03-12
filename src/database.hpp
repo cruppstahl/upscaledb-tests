@@ -48,8 +48,10 @@ public:
     {
     }
 
-    virtual ham_status_t create(void)=0;
-    virtual ham_status_t open(void)=0;
+    virtual ham_status_t create_env(void)=0;
+    virtual ham_status_t create_db(void)=0;
+    virtual ham_status_t open_env(void)=0;
+    virtual ham_status_t open_db(void)=0;
     virtual ham_status_t close(void)=0;
     virtual ham_status_t flush(void)=0;
     virtual ham_status_t insert(ham_key_t *key, ham_record_t *record)=0;

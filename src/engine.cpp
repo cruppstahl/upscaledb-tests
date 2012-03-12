@@ -40,15 +40,22 @@ Engine::set_parser(Parser *p)
 bool 
 Engine::create(bool numeric)
 {
+    ham_status_t st;
+
     if (numeric)
         m_config->numeric=true;
 
     for (int i=0; i<2; i++) {
         if (!m_db[i])
             continue;
-        ham_status_t st=m_db[i]->create();
+        st=m_db[i]->create_env();
         if (st) {
-            TRACE(("db[%d]: create failed w/ status %d\n", i, st));
+            TRACE(("db[%d]: create_env failed w/ status %d\n", i, st));
+            return (false);
+        }
+        st=m_db[i]->create_db();
+        if (st) {
+            TRACE(("db[%d]: create_db failed w/ status %d\n", i, st));
             return (false);
         }
     }
@@ -63,15 +70,22 @@ Engine::create(bool numeric)
 bool 
 Engine::open(bool numeric)
 {
+    ham_status_t st;
+
     if (numeric)
         m_config->numeric=true;
 
     for (int i=0; i<2; i++) {
         if (!m_db[i])
             continue;
-        ham_status_t st=m_db[i]->open();
+        st=m_db[i]->open_env();
         if (st) {
-            TRACE(("db[%d]: open failed w/ status %d\n", i, st));
+            TRACE(("db[%d]: open_env failed w/ status %d\n", i, st));
+            return (false);
+        }
+        ham_status_t st=m_db[i]->open_db();
+        if (st) {
+            TRACE(("db[%d]: open_db failed w/ status %d\n", i, st));
             return (false);
         }
     }

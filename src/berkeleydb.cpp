@@ -30,7 +30,7 @@ Berkeleydb::~Berkeleydb(void)
 }
 
 ham_status_t 
-Berkeleydb::create(void)
+Berkeleydb::create_env(void)
 {
     timer t(this, timer::misc);
 
@@ -39,6 +39,8 @@ Berkeleydb::create(void)
     ret=db_create(&m_db, 0, 0);
     if (ret)
         return (db2ham(ret));
+
+    os::unlink(DB_PATH "test-berk.db");
 
     if (m_config->numeric) {
         ret=m_db->set_bt_compare(m_db, compare_db);
@@ -59,11 +61,18 @@ Berkeleydb::create(void)
      *        return (db2ham(ret));
      * }
      */
+    return (0);
+}
 
-    os::unlink(DB_PATH "test-berk.db");
+ham_status_t 
+Berkeleydb::create_db(void)
+{
+    timer t(this, timer::misc);
+
+    int ret;
 
     ret=m_db->open(m_db, 0, m_config->inmemory ? 0 : DB_PATH "test-berk.db", 
-            0, DB_BTREE, DB_CREATE, 0);
+            /* const char *dbname */ 0, DB_BTREE, DB_CREATE, 0);
     if (ret)
         return (db2ham(ret));
 
@@ -75,7 +84,7 @@ Berkeleydb::create(void)
 }
 
 ham_status_t 
-Berkeleydb::open(void)
+Berkeleydb::open_env(void)
 {
     timer t(this, timer::misc);
 
@@ -100,6 +109,16 @@ Berkeleydb::open(void)
         if (ret)
             return (db2ham(ret));
     }
+
+    return (0);
+}
+
+ham_status_t 
+Berkeleydb::open_db(void)
+{
+    timer t(this, timer::misc);
+
+    int ret;
 
     ret=m_db->open(m_db, 0, DB_PATH "test-berk.db", 0, DB_BTREE, 0, 0);
     if (ret)

@@ -17,8 +17,10 @@ public:
 
     ~Berkeleydb(void);
 
-    virtual ham_status_t create(void);
-    virtual ham_status_t open(void);
+    virtual ham_status_t create_env(void);
+    virtual ham_status_t create_db(void);
+    virtual ham_status_t open_env(void);
+    virtual ham_status_t open_db(void);
     virtual ham_status_t close(void);
     virtual ham_status_t flush(void);
     virtual ham_status_t insert(ham_key_t *key, ham_record_t *record);

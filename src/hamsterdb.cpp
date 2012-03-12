@@ -8,6 +8,8 @@
 
 #include <ham/hamsterdb_int.h>
 
+ham_env_t *Hamsterdb::ms_env;
+
 static ham_u8_t aeskey[16]={ 
     0x00, 0x01, 0x02, 0x03, 
     0x04, 0x05, 0x06, 0x07, 
@@ -43,30 +45,24 @@ Hamsterdb::~Hamsterdb()
         m_db=0;
     }
 
-    if (m_env) {
-        ham_env_delete(m_env);
-        m_env=0;
+    if (ms_env) {
+        ham_env_delete(ms_env);
+        ms_env=0;
     }
 }
 
 ham_status_t 
-Hamsterdb::create()
+Hamsterdb::create_env()
 {
     ham_status_t st;
     ham_u32_t flags=0;
     ham_parameter_t params[6];
 
-    if (!m_env) {
-        st=ham_env_new(&m_env);
+    if (!ms_env) {
+        st=ham_env_new(&ms_env);
         if (st)
             return (st);
-        ham_env_set_allocator(m_env, m_mt);
-    }
-
-    if (!m_db) {
-        st=ham_new(&m_db);
-        if (st)
-            return (st);
+        ham_env_set_allocator(ms_env, m_mt);
     }
 
     params[0].name=HAM_PARAM_CACHESIZE;
@@ -96,14 +92,32 @@ Hamsterdb::create()
      * !!
      * currently, all other parameters are ignored
      */
-    st=ham_env_create_ex(m_env, DB_PATH "test-ham.db", flags, 0664, &params[0]);
+    st=ham_env_create_ex(ms_env, DB_PATH "test-ham.db", flags, 0664, 
+            &params[0]);
     if (st)
         return (st);
     if (m_config->aes_encrypt) {
-        st=ham_env_enable_encryption(m_env, aeskey, 0);
+        st=ham_env_enable_encryption(ms_env, aeskey, 0);
         if (st)
             return (st);
     }
+
+    return 0;
+}
+
+ham_status_t 
+Hamsterdb::create_db()
+{
+    ham_status_t st;
+    ham_parameter_t params[6];
+
+    if (!m_db) {
+        st=ham_new(&m_db);
+        if (st)
+            return (st);
+    }
+
+    timer t(this, timer::misc);
 
     params[0].name=HAM_PARAM_KEYSIZE;
     params[0].value=m_config->keysize;
@@ -112,7 +126,7 @@ Hamsterdb::create()
     params[2].name=0;
     params[2].value=0;
 
-    st=ham_env_create_db(m_env, m_db, 1, 0, &params[0]);
+    st=ham_env_create_db(ms_env, m_db, 1, 0, &params[0]);
     if (st)
         return (st);
 
@@ -132,7 +146,7 @@ Hamsterdb::create()
 }
 
 ham_status_t 
-Hamsterdb::open()
+Hamsterdb::open_env()
 {
     ham_status_t st;
     ham_u32_t flags=0;
@@ -140,17 +154,11 @@ Hamsterdb::open()
 
     timer t(this, timer::misc);
 
-    if (!m_env) {
-        st=ham_env_new(&m_env);
+    if (!ms_env) {
+        st=ham_env_new(&ms_env);
         if (st)
             return (st);
-        ham_env_set_allocator(m_env, m_mt);
-    }
-
-    if (!m_db) {
-        st=ham_new(&m_db);
-        if (st)
-            return (st);
+        ham_env_set_allocator(ms_env, m_mt);
     }
 
     params[0].name=HAM_PARAM_CACHESIZE;
@@ -167,11 +175,28 @@ Hamsterdb::open()
     /*
      * aes encrypted databases are opened from an environment
      */
-    st=ham_env_open_ex(m_env, DB_PATH "test-ham.db", flags, &params[0]);
+    st=ham_env_open_ex(ms_env, DB_PATH "test-ham.db", flags, &params[0]);
     if (st)
         return (st);
     if (m_config->aes_encrypt) {
-        st=ham_env_enable_encryption(m_env, aeskey, 0);
+        st=ham_env_enable_encryption(ms_env, aeskey, 0);
+        if (st)
+            return (st);
+    }
+
+    return (0);
+}
+
+ham_status_t 
+Hamsterdb::open_db()
+{
+    ham_status_t st;
+    ham_parameter_t params[6];
+
+    timer t(this, timer::misc);
+
+    if (!m_db) {
+        st=ham_new(&m_db);
         if (st)
             return (st);
     }
@@ -180,8 +205,9 @@ Hamsterdb::open()
     params[0].value=m_config->data_access_mode;
     params[1].name=0;
     params[1].value=0;
-    flags=m_config->sort_dupes?HAM_SORT_DUPLICATES:0;
-    st=ham_env_open_db(m_env, m_db, 1, flags, &params[0]);
+    
+    ham_u32_t flags=m_config->sort_dupes?HAM_SORT_DUPLICATES:0;
+    st=ham_env_open_db(ms_env, m_db, 1, flags, &params[0]);
     if (st)
         return (st);
 
@@ -237,8 +263,8 @@ Hamsterdb::close()
         m_db=0;
     }
 
-    if (m_env)
-        st=ham_env_close(m_env, 0);
+    if (ms_env)
+        st=ham_env_close(ms_env, 0);
     return (st);
 }
 
