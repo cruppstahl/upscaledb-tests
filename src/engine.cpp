@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #include "porting.hpp"
 #include "config.hpp"
@@ -10,31 +11,22 @@
 #include "misc.hpp"
 
 
-Engine::Engine(config *c)
-:   m_config(c), m_parser(0), m_opcount(0)
+Engine::Engine(config *c, Parser *p, const std::string &name)
+:   m_config(c), m_parser(p), m_opcount(0)
 {
-    m_db[0]=new Hamsterdb(0, m_config);
-    if (!m_config->no_bdb)
-        m_db[1]=new Berkeleydb(1, m_config);
+    if (name=="hamsterdb")
+        m_db=new Hamsterdb(0, m_config);
     else
-        m_db[1]=0;
+        m_db=new Berkeleydb(1, m_config);
 }
 
 Engine::~Engine()
 {
-    for (int i=0; i<2; i++) {
-        if (m_db[i]) {
-            m_db[i]->close();
-            delete m_db[i];
-            m_db[i]=0;
-        }
+    if (m_db) {
+        m_db->close();
+        delete m_db;
+        m_db=0;
     }
-}
-
-void
-Engine::set_parser(Parser *p)
-{
-    m_parser=p;
 }
 
 bool 
@@ -45,24 +37,19 @@ Engine::create(bool numeric)
     if (numeric)
         m_config->numeric=true;
 
-    for (int i=0; i<2; i++) {
-        if (!m_db[i])
-            continue;
-        st=m_db[i]->create_env();
-        if (st) {
-            TRACE(("db[%d]: create_env failed w/ status %d\n", i, st));
-            return (false);
-        }
-        st=m_db[i]->create_db();
-        if (st) {
-            TRACE(("db[%d]: create_db failed w/ status %d\n", i, st));
-            return (false);
-        }
+    st=m_db->create_env();
+    if (st) {
+        TRACE(("db: create_env failed w/ status %d\n", st));
+        return (false);
+    }
+    st=m_db->create_db();
+    if (st) {
+        TRACE(("db: create_db failed w/ status %d\n", st));
+        return (false);
     }
 
-    if (m_config->txn_group) {
+    if (m_config->txn_group)
         return (txn_begin());
-    }
 
     return (true);
 }
@@ -75,32 +62,28 @@ Engine::open(bool numeric)
     if (numeric)
         m_config->numeric=true;
 
-    for (int i=0; i<2; i++) {
-        if (!m_db[i])
-            continue;
-        st=m_db[i]->open_env();
-        if (st) {
-            TRACE(("db[%d]: open_env failed w/ status %d\n", i, st));
-            return (false);
-        }
-        ham_status_t st=m_db[i]->open_db();
-        if (st) {
-            TRACE(("db[%d]: open_db failed w/ status %d\n", i, st));
-            return (false);
-        }
+    st=m_db->open_env();
+    if (st) {
+        TRACE(("db: open_env failed w/ status %d\n", st));
+        return (false);
+    }
+    st=m_db->open_db();
+    if (st) {
+        TRACE(("db: open_db failed w/ status %d\n", st));
+        return (false);
     }
 
     return (true);
 }
 
 bool 
-Engine::insert(const char *keytok, const char *data)
+Engine::insert(unsigned lineno, const char *keytok, const char *data)
 {
     ham_u32_t numkey=0;
     ham_size_t data_size;
     ham_key_t key;
     ham_record_t rec;
-    ham_status_t st[2];
+    ham_status_t st;
 
     VERBOSE(("insert: key: %s, data: %s\n", keytok, data));
 
@@ -113,7 +96,7 @@ Engine::insert(const char *keytok, const char *data)
     if (m_config->numeric) {
         numkey=strtoul(keytok, 0, 0);
         if (!numkey) {
-            TRACE(("line %d: key is invalid\n", m_parser->get_lineno()));
+            TRACE(("key is invalid\n"));
             return (false);
         }
         numkey=ham_h2db32(numkey);
@@ -142,33 +125,23 @@ Engine::insert(const char *keytok, const char *data)
         if (data_size>m_config->data_size) {
             m_config->data_size=data_size;
             m_config->data_ptr=realloc(m_config->data_ptr, data_size);
-            if (!m_config->data_ptr) {
-                TRACE(("line %d: out of memory\n", m_parser->get_lineno()));
-                return 0;
-            }
         }
         /* always start with a random number - otherwise berkeleydb fails
          * too often when duplicate keys are inserted with duplicate
          * records */
         for (ham_size_t i=0; i<data_size; i++)
-            ((char *)m_config->data_ptr)[i]=(m_parser->get_lineno()+i)&0xff;
+            ((char *)m_config->data_ptr)[i]=(lineno+i)&0xff;
         if (data_size>=sizeof(unsigned))
-            *(unsigned *)m_config->data_ptr=m_parser->get_lineno();
+            *(unsigned *)m_config->data_ptr=lineno;
 
         rec.data=m_config->data_ptr;
         rec.size=data_size;
     }
 
-    for (int i=0; i<2; i++) {
-        if (!m_db[i])
-            continue;
-        st[i]=m_db[i]->insert(&key, &rec);
-        if (st[i])
-            VERBOSE(("db[%d]: insert failed w/ status %d\n", i, st[i]));
-    }
+    st=m_db->insert(&key, &rec);
+    if (st)
+        VERBOSE(("db: insert failed w/ status %d\n", st));
 
-    if (m_config->no_bdb==false && !compare_status(st))
-        return (false);
     if (m_config->txn_group>0)
         return (inc_opcount());
     return (true);
@@ -179,7 +152,7 @@ Engine::erase(const char *keytok)
 {
     ham_u32_t numkey=0;
     ham_key_t key;
-    ham_status_t st[2];
+    ham_status_t st;
 
     VERBOSE(("erase: key: %s\n", keytok));
 
@@ -191,7 +164,7 @@ Engine::erase(const char *keytok)
     if (m_config->numeric) {
         numkey=strtoul(keytok, 0, 0);
         if (!numkey) {
-            TRACE(("line %d: key is invalid\n", m_parser->get_lineno()));
+            TRACE(("key is invalid\n"));
             return (false);
         }
         numkey=ham_h2db32(numkey);
@@ -203,18 +176,13 @@ Engine::erase(const char *keytok)
         key.size=(ham_size_t)strlen(keytok);
     }
 
-    for (int i=0; i<2; i++) {
-        if (!m_db[i])
-            continue;
-        st[i]=m_db[i]->erase(&key);
-        if (st[i])
-            VERBOSE(("db[%d]: erase failed w/ status %d\n", i, st[i]));
-    }
+    st=m_db->erase(&key);
+    if (st)
+        VERBOSE(("db: erase failed w/ status %d\n", st));
 
-    if (m_config->no_bdb==false && !compare_status(st))
-        return (false);
     if (m_config->txn_group>0)
         return (inc_opcount());
+
     return (true);
 }
 
@@ -223,14 +191,13 @@ Engine::find(const char *keytok)
 {
     ham_u32_t numkey=0;
     ham_key_t key;
-    ham_record_t rec[2];
-    ham_status_t st[2];
+    ham_record_t rec;
+    ham_status_t st;
 
     VERBOSE(("find: key: %s\n", keytok));
 
     memset(&key, 0, sizeof(key));
-    memset(&rec[0], 0, sizeof(rec[0]));
-    memset(&rec[1], 0, sizeof(rec[1]));
+    memset(&rec, 0, sizeof(rec));
 
     /*
      * check flag NUMERIC_KEY
@@ -238,7 +205,7 @@ Engine::find(const char *keytok)
     if (m_config->numeric) {
         numkey=strtoul(keytok, 0, 0);
         if (!numkey) {
-            TRACE(("line %d: key is invalid\n", m_parser->get_lineno()));
+            TRACE(("key is invalid\n"));
             return (false);
         }
         numkey=ham_h2db32(numkey);
@@ -250,26 +217,17 @@ Engine::find(const char *keytok)
         key.size=(ham_size_t)strlen(keytok);
     }
 
-    for (int i=0; i<2; i++) {
-        if (!m_db[i])
-            continue;
-        st[i]=m_db[i]->find(&key, &rec[i]);
-        if (st[i])
-            VERBOSE(("db[%d]: find failed w/ status %d\n", i, st[i]));
-    }
+    st=m_db->find(&key, &rec);
+    if (st)
+        VERBOSE(("db: find failed w/ status %d\n", st));
 
-    if (m_config->no_bdb==false && !compare_records(&rec[0], &rec[1])) {
-        TRACE(("record mismatch\n"));
-        return false;
-    }
-
-    if (m_config->no_bdb==false && !compare_status(st))
-        return (false);
     if (m_config->txn_group>0)
         return (inc_opcount());
+
     return (true);
 }
 
+#if 0
 bool 
 Engine::fullcheck(void)
 {
@@ -382,26 +340,23 @@ if (key[0].data && *(unsigned *)key[0].data==997) {
     m_db[1]->close_cursor(c[1]);
     return (true);
 }
+#endif
 
 bool 
-Engine::close(bool noreopen/* =false */)
+Engine::close(bool noreopen /* =false */)
 {
-    for (int i=0; i<2; i++) {
-        if (!m_db[i])
-            continue;
-        ham_status_t st=m_db[i]->close();
-        if (st) {
-            TRACE(("db[%d]: close failed w/ status %d\n", i, st));
-            return (false);
-        }
+    ham_status_t st=m_db->close();
+    if (st) {
+        TRACE(("db: close failed w/ status %d\n", st));
+        return (false);
     }
 
     if (!noreopen && m_config->reopen) {
         VERBOSE(("reopen\n"));
         if (!open(m_config->numeric))
             return (false);
-        if (!fullcheck())
-            return (false);
+        //if (!fullcheck()) TODO wieder rein
+            //return (false);
         if (!close(true))
             return (false);
     }
@@ -412,14 +367,10 @@ Engine::close(bool noreopen/* =false */)
 bool 
 Engine::flush(void)
 {
-    for (int i=0; i<2; i++) {
-        if (!m_db[i])
-            continue;
-        ham_status_t st=m_db[i]->flush();
-        if (st) {
-            TRACE(("db[%d]: flush failed w/ status %d\n", i, st));
-            return (false);
-        }
+    ham_status_t st=m_db->flush();
+    if (st) {
+        TRACE(("db: flush failed w/ status %d\n", st));
+        return (false);
     }
 
     return (true);
@@ -428,14 +379,10 @@ Engine::flush(void)
 bool 
 Engine::txn_begin(void)
 {
-    for (int i=0; i<2; i++) {
-        if (!m_db[i])
-            continue;
-        ham_status_t st=m_db[i]->txn_begin();
-        if (st) {
-            TRACE(("db[%d]: txn_begin failed w/ status %d\n", i, st));
-            return (false);
-        }
+    ham_status_t st=m_db->txn_begin();
+    if (st) {
+        TRACE(("db: txn_begin failed w/ status %d\n", st));
+        return (false);
     }
 
     return (true);
@@ -444,19 +391,16 @@ Engine::txn_begin(void)
 bool 
 Engine::txn_commit(void)
 {
-    for (int i=0; i<2; i++) {
-        if (!m_db[i])
-            continue;
-        ham_status_t st=m_db[i]->txn_commit();
-        if (st) {
-            TRACE(("db[%d]: txn_begin failed w/ status %d\n", i, st));
-            return (false);
-        }
+    ham_status_t st=m_db->txn_commit();
+    if (st) {
+        TRACE(("db: txn_begin failed w/ status %d\n", st));
+        return (false);
     }
 
     return (true);
 }
 
+#if 0
 bool 
 Engine::compare_records(ham_record_t *rec1, ham_record_t *rec2)
 {
@@ -470,6 +414,7 @@ Engine::compare_records(ham_record_t *rec1, ham_record_t *rec2)
         return (true);
     return (memcmp(rec1->data, rec2->data, rec1->size)==0);
 }
+#endif
 
 bool 
 Engine::inc_opcount(void)
@@ -485,6 +430,7 @@ Engine::inc_opcount(void)
     return (true);
 }
 
+#if 0
 bool 
 Engine::compare_status(ham_status_t st[2])
 {
@@ -498,3 +444,5 @@ Engine::compare_status(ham_status_t st[2])
 
     return (true);
 }
+#endif
+

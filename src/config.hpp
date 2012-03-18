@@ -96,7 +96,7 @@ typedef struct config
     bool use_writethrough;
     bool quiet;
     bool no_bdb;
-    int num_threads;
+    unsigned num_threads;
 } config;
 
 #endif /* CONFIG_HPP__ */

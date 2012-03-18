@@ -6,8 +6,8 @@
 #include "config.hpp"
 
 
-Parser::Parser(config *c, Engine *e, const char *filename, config *cfg)
-    :   m_config(c), m_engine(e), m_lineno(0)
+Parser::Parser(config *c, const char *filename)
+    :   m_config(c)
 {
     FILE *f=stdin;
     if (filename)
@@ -32,34 +32,25 @@ Parser::Parser(config *c, Engine *e, const char *filename, config *cfg)
         fclose(f);
 }
 
-bool 
-Parser::process(void)
-{
-    for (m_lineno=0; m_lineno<m_lines.size(); m_lineno++) {
-        if (!process_line((char *)m_lines[m_lineno].c_str()))
-            return (false);
-    }
-    return (true);
-}
-
-bool 
-Parser::process_line(char *line)
+bool
+Parser::process_line(unsigned lineno, Engine *engine)
 {
     unsigned pos=0;
+    char *line=(char *)m_lines[lineno].c_str();
     char *tok=get_token(line, &pos);
     if (!tok || tok[0]==0)
         return 1;
     VERBOSE(("%u: reading token '%s' .......................\n", 
-                m_lineno, tok));
+                lineno, tok));
     if (strstr(tok, "--")) {
         return 1;
     }
     else if (!strcasecmp(tok, "CREATE")) {
-        return (m_engine->create(strstr(line+pos, "NUMERIC_KEY") 
+        return (engine->create(strstr(line+pos, "NUMERIC_KEY") 
                     ? true : false));
     }
     else if (!strcasecmp(tok, "OPEN")) {
-        return (m_engine->open(strstr(line+pos, "NUMERIC_KEY") 
+        return (engine->open(strstr(line+pos, "NUMERIC_KEY") 
                     ? true : false));
     }
     else if (!strcasecmp(tok, "BREAK")) {
@@ -73,38 +64,32 @@ Parser::process_line(char *line)
         if (!data)
             data="";
         (void)flags;
-        return (m_engine->insert(keytok, data));
+        return (engine->insert(lineno, keytok, data));
     }
     else if (!strcasecmp(tok, "ERASE")) {
         const char *flags =strtok(&line[pos], (char *)",");
         const char *keytok=strtok(0, (char *)",");
         (void)flags;
-        return (m_engine->erase(keytok));
+        return (engine->erase(keytok));
     }
     else if (!strcasecmp(tok, "FIND")) {
         const char *flags =strtok(&line[pos], (char *)",");
         const char *keytok=strtok(0, (char *)",");
         (void)flags;
-        return (m_engine->find(keytok));
+        return (engine->find(keytok));
     }
     else if (!strcasecmp(tok, "FULLCHECK")) {
-        return (m_engine->fullcheck());
+        return true; // TODO return (engine->fullcheck());
     }
     else if (!strcasecmp(tok, "CLOSE")) {
-        return (m_engine->close());
+        return (engine->close());
     }
     else if (!strcasecmp(tok, "FLUSH")) {
-        return (m_engine->flush());
+        return (engine->flush());
     }
 
-    TRACE(("line %d: invalid token '%s'\n", m_lineno, tok));
+    TRACE(("line %d: invalid token '%s'\n", lineno, tok));
     return (false);
-}
-
-unsigned 
-Parser::get_lineno(void)
-{
-    return (m_lineno);
 }
 
 char *
@@ -127,7 +112,7 @@ Parser::strtok(char *s, char *t)
 {
     char *e, *p=::strtok(s, t);
     if (!p) {
-        TRACE(("line %d: expected token '%s'\n", m_lineno, t));
+        TRACE(("expected token '%s'\n", t));
         exit(-1);
     }
     while (*p==' ' || *p=='\t' || *p=='\n' || *p=='\r' || *p=='(' || *p=='"')

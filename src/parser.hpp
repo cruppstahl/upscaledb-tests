@@ -7,19 +7,19 @@
 #include <string>
 #include <vector>
 
-class Engine;
 struct config;
+class Engine;
 
 class Parser
 {
 public:
-    Parser(config *c, Engine *e, const char *filename, config *cfg);
+    Parser(config *c, const char *filename);
 
-    bool process(void);
+    bool process_line(unsigned lineno, Engine *engine);
 
-    bool process_line(char *line);
-
-    unsigned get_lineno(void);
+    unsigned get_max_lines() {
+        return m_lines.size();
+    }
 
 protected:
     char *get_token(char *line, unsigned *pos);
@@ -28,8 +28,6 @@ protected:
 
 private:
     config *m_config;
-    Engine *m_engine;
-    unsigned m_lineno;
     std::vector<std::string> m_lines;
 };
 

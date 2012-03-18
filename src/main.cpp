@@ -423,13 +423,20 @@ parse_config(int argc, char **argv, config *c)
 class Thread
 {
   public:
-    Thread(int id, config &c, Parser &p)
-      : m_id(id), m_fail(false) {
+    Thread(int id, config &c, Parser &p, const char *backend)
+      : m_id(id), m_fail(false), m_engine(&c, &p, backend), m_parser(&p) {
         run();
     }
 
     void run() {
         printf("running thread %d\n", m_id);
+        for (unsigned i=0; i<m_parser->get_max_lines(); i++) {
+            bool ok=m_parser->process_line(i, &m_engine);
+            if (!ok) {
+                m_fail=true;
+                return;
+            }
+        }
     }
 
     bool success() {
@@ -437,6 +444,7 @@ class Thread
     }
 
     void join() {
+        m_engine.get_db()->collect_metrics();
         m_thread.join();
     }
 
@@ -444,6 +452,8 @@ class Thread
     int m_id;
     bool m_fail;
     boost::thread m_thread;
+    Engine m_engine;
+    Parser *m_parser;
 };
 
 int
@@ -452,39 +462,32 @@ main(int argc, char **argv)
     config c;
     parse_config(argc, argv, &c);
 
-    Engine e(&c);
-    Parser p(&c, &e, c.filename, 0);
-    e.set_parser(&p);
+    Parser p(&c, c.filename);
 
+    unsigned i=0;
     bool ok=true;
-    if (c.num_threads==1) {
-        ok=p.process();
+
+    std::vector<Thread *> threads;
+    for (i=0; i<c.num_threads; i++)
+        threads.push_back(new Thread(i+1, c, p, "hamsterdb"));
+    if (!c.no_bdb)
+        threads.push_back(new Thread(i+1, c, p, "berkeleydb"));
+
+    for (i=0; i<threads.size(); i++) {
+        threads[i]->join();
+        if (!threads[i]->success())
+            ok=false;
+        delete threads[i];
     }
-    else {
-        std::vector<Thread *> threads;
-        for (int i=0; i<c.num_threads; i++) {
-            threads.push_back(new Thread(i+1, c, p));
-        }
-        for (int i=0; i<c.num_threads; i++) {
-            threads[i]->join();
-            if (!threads[i]->success())
-                ok=false;
-            delete threads[i];
-        }
-    }
+    threads.clear();
 
     if (ok)
         printf("[OK] %s\n", c.filename);
     else
         printf("[FAIL] %s\n", c.filename);
 
-    if (ok && !c.quiet) {
-        if (e.get_db(0))
-            e.get_db(0)->collect_metrics();
-        if (e.get_db(1))
-            e.get_db(1)->collect_metrics();
+    if (ok && !c.quiet)
         Metrics::get_instance()->print();
-    }
 
 	return (ok ? 0 : 1);
 }
