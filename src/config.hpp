@@ -2,6 +2,8 @@
 #ifndef CONFIG_HPP__
 #define CONFIG_HPP__
 
+#include <malloc.h>
+#include <boost/thread.hpp>
 
 #define USER_MALLOC_KEYRECSIZE  (1024*1024*64)
 
@@ -62,13 +64,21 @@ typedef struct config
         }
     }
 
+    void set_numeric(bool b) {
+        boost::mutex::scoped_lock lock(m_mutex);
+        numeric=b;
+    }
+    bool is_numeric() {
+        boost::mutex::scoped_lock lock(m_mutex);
+        return numeric;
+    }
+
     bool profile;
     unsigned verbose;
     bool overwrite;
     bool duplicate;
     bool inmemory;
     bool use_cursors;
-    bool numeric;
     bool progress;
     bool no_mmap;
     unsigned keysize;
@@ -97,6 +107,10 @@ typedef struct config
     bool quiet;
     bool no_bdb;
     unsigned num_threads;
+    boost::mutex m_mutex;
+
+  private:
+    bool numeric;
 } config;
 
 #endif /* CONFIG_HPP__ */

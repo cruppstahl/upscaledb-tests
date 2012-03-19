@@ -10,6 +10,8 @@
 struct config;
 class Engine;
 
+using namespace std;
+
 class Parser
 {
 public:
@@ -26,6 +28,7 @@ protected:
 
     char *strtok(char *s, char *t);
 
+    vector<string> tokenize(const string &str);
 private:
     config *m_config;
     std::vector<std::string> m_lines;

@@ -11,37 +11,56 @@
 #include "misc.hpp"
 
 
-Engine::Engine(config *c, Parser *p, const std::string &name)
+Engine::Engine(int id, config *c, Parser *p, const std::string &name)
 :   m_config(c), m_parser(p), m_opcount(0)
 {
+    boost::mutex::scoped_lock lock(m_mutex);
     if (name=="hamsterdb")
-        m_db=new Hamsterdb(0, m_config);
+        m_db=new Hamsterdb(id, m_config);
     else
-        m_db=new Berkeleydb(1, m_config);
+        m_db=new Berkeleydb(id, m_config);
 }
 
 Engine::~Engine()
 {
+    boost::mutex::scoped_lock lock(m_mutex);
     if (m_db) {
-        m_db->close();
+        m_db->close_db();
+        m_db->close_env();
         delete m_db;
         m_db=0;
     }
 }
 
 bool 
-Engine::create(bool numeric)
+Engine::create_env()
 {
-    ham_status_t st;
+    boost::mutex::scoped_lock lock(m_mutex);
 
-    if (numeric)
-        m_config->numeric=true;
+    // the Environment is only created by thread #1
+    if (!owns_env())
+        return true;
+
+    ham_status_t st;
 
     st=m_db->create_env();
     if (st) {
         TRACE(("db: create_env failed w/ status %d\n", st));
         return (false);
     }
+
+    return (true);
+}
+
+bool 
+Engine::create_db(bool numeric)
+{
+    boost::mutex::scoped_lock lock(m_mutex);
+    ham_status_t st;
+
+    if (numeric)
+        m_config->set_numeric(true);
+
     st=m_db->create_db();
     if (st) {
         TRACE(("db: create_db failed w/ status %d\n", st));
@@ -55,18 +74,33 @@ Engine::create(bool numeric)
 }
 
 bool 
-Engine::open(bool numeric)
+Engine::open_env()
 {
+    boost::mutex::scoped_lock lock(m_mutex);
     ham_status_t st;
 
-    if (numeric)
-        m_config->numeric=true;
+    // the Environment is only created by thread #1
+    if (!owns_env())
+        return true;
 
     st=m_db->open_env();
     if (st) {
         TRACE(("db: open_env failed w/ status %d\n", st));
         return (false);
     }
+
+    return (true);
+}
+
+bool 
+Engine::open_db(bool numeric)
+{
+    boost::mutex::scoped_lock lock(m_mutex);
+    ham_status_t st;
+
+    if (numeric)
+        m_config->set_numeric(true);
+
     st=m_db->open_db();
     if (st) {
         TRACE(("db: open_db failed w/ status %d\n", st));
@@ -79,6 +113,7 @@ Engine::open(bool numeric)
 bool 
 Engine::insert(unsigned lineno, const char *keytok, const char *data)
 {
+    boost::mutex::scoped_lock lock(m_mutex);
     ham_u32_t numkey=0;
     ham_size_t data_size;
     ham_key_t key;
@@ -93,7 +128,7 @@ Engine::insert(unsigned lineno, const char *keytok, const char *data)
     /*
      * check flag NUMERIC_KEY
      */
-    if (m_config->numeric) {
+    if (m_config->is_numeric()) {
         numkey=strtoul(keytok, 0, 0);
         if (!numkey) {
             TRACE(("key is invalid\n"));
@@ -150,6 +185,7 @@ Engine::insert(unsigned lineno, const char *keytok, const char *data)
 bool 
 Engine::erase(const char *keytok)
 {
+    boost::mutex::scoped_lock lock(m_mutex);
     ham_u32_t numkey=0;
     ham_key_t key;
     ham_status_t st;
@@ -161,7 +197,7 @@ Engine::erase(const char *keytok)
     /*
      * check flag NUMERIC_KEY
      */
-    if (m_config->numeric) {
+    if (m_config->is_numeric()) {
         numkey=strtoul(keytok, 0, 0);
         if (!numkey) {
             TRACE(("key is invalid\n"));
@@ -189,6 +225,7 @@ Engine::erase(const char *keytok)
 bool 
 Engine::find(const char *keytok)
 {
+    boost::mutex::scoped_lock lock(m_mutex);
     ham_u32_t numkey=0;
     ham_key_t key;
     ham_record_t rec;
@@ -202,7 +239,7 @@ Engine::find(const char *keytok)
     /*
      * check flag NUMERIC_KEY
      */
-    if (m_config->numeric) {
+    if (m_config->is_numeric()) {
         numkey=strtoul(keytok, 0, 0);
         if (!numkey) {
             TRACE(("key is invalid\n"));
@@ -231,6 +268,7 @@ Engine::find(const char *keytok)
 bool 
 Engine::fullcheck(void)
 {
+    boost::mutex::scoped_lock lock(m_mutex);
     ham_key_t key[2];
     ham_record_t rec[2];
 
@@ -305,7 +343,7 @@ Engine::fullcheck(void)
             st[0]=m_db[0]->get_next(c[0], &key[0], &rec[0], 0);
 
         if (m_config->verbose>1) {
-            if (m_config->numeric)
+            if (m_config->is_numeric())
                 printf("fullcheck: %d/%d, keys %d/%d, blob size %d/%d\n", 
                     st[0], st[1], 
                     key[0].data ? *(int *)key[0].data : 0, 
@@ -343,23 +381,49 @@ if (key[0].data && *(unsigned *)key[0].data==997) {
 #endif
 
 bool 
-Engine::close(bool noreopen /* =false */)
+Engine::close_db()
 {
-    ham_status_t st=m_db->close();
+    boost::mutex::scoped_lock lock(m_mutex);
+    ham_status_t st=m_db->close_db();
+    if (st) {
+        TRACE(("db: close_db failed w/ status %d\n", st));
+        return (false);
+    }
+
+    return (true);
+}
+
+bool 
+Engine::close_env()
+{
+    boost::mutex::scoped_lock lock(m_mutex);
+
+    // collect metrics before the memory allocator is deleted in ham_env_close
+    m_db->collect_metrics();
+
+    // the Environment is only closed by thread #1
+    if (!owns_env())
+        return true;
+
+    ham_status_t st=m_db->close_env();
     if (st) {
         TRACE(("db: close failed w/ status %d\n", st));
         return (false);
     }
 
+#if 0
     if (!noreopen && m_config->reopen) {
         VERBOSE(("reopen\n"));
-        if (!open(m_config->numeric))
+        if (!open(m_config->is_numeric()))
             return (false);
         //if (!fullcheck()) TODO wieder rein
             //return (false);
-        if (!close(true))
+        if (!close_db())
+            return (false);
+        if (!close_env())
             return (false);
     }
+#endif
 
     return (true);
 }
@@ -367,6 +431,7 @@ Engine::close(bool noreopen /* =false */)
 bool 
 Engine::flush(void)
 {
+    boost::mutex::scoped_lock lock(m_mutex);
     ham_status_t st=m_db->flush();
     if (st) {
         TRACE(("db: flush failed w/ status %d\n", st));
@@ -379,6 +444,7 @@ Engine::flush(void)
 bool 
 Engine::txn_begin(void)
 {
+    boost::mutex::scoped_lock lock(m_mutex);
     ham_status_t st=m_db->txn_begin();
     if (st) {
         TRACE(("db: txn_begin failed w/ status %d\n", st));
@@ -391,6 +457,7 @@ Engine::txn_begin(void)
 bool 
 Engine::txn_commit(void)
 {
+    boost::mutex::scoped_lock lock(m_mutex);
     ham_status_t st=m_db->txn_commit();
     if (st) {
         TRACE(("db: txn_begin failed w/ status %d\n", st));
@@ -404,6 +471,7 @@ Engine::txn_commit(void)
 bool 
 Engine::compare_records(ham_record_t *rec1, ham_record_t *rec2)
 {
+    boost::mutex::scoped_lock lock(m_mutex);
     if (rec1->size!=rec2->size)
         return (false);
     if (!rec1->size && !rec2->size)
@@ -419,6 +487,7 @@ Engine::compare_records(ham_record_t *rec1, ham_record_t *rec2)
 bool 
 Engine::inc_opcount(void)
 {
+    boost::mutex::scoped_lock lock(m_mutex);
     if (++m_opcount>=m_config->txn_group) {
         if (!txn_commit())
             return (false);
@@ -434,6 +503,7 @@ Engine::inc_opcount(void)
 bool 
 Engine::compare_status(ham_status_t st[2])
 {
+    boost::mutex::scoped_lock lock(m_mutex);
     if (st[0]!=st[1]) {
         TRACE(("status mismatch - hamsterdb %d vs berkeleydb %d\n"
             "       ----> (%s) vs (%s)\n", 

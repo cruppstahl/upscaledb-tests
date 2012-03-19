@@ -25,102 +25,136 @@ Parser::Parser(config *c, const char *filename)
         if (!p)
             break;
 
-        m_lines.push_back(p);
+        if (strstr(p, "CREATE")) {
+            m_lines.push_back("CREATE_ENV");
+            m_lines.push_back(p);
+        }
+        else if (strstr(p, "OPEN")) {
+            m_lines.push_back("OPEN_ENV");
+            m_lines.push_back(p);
+        }
+        else if (strstr(p, "CLOSE")) {
+            m_lines.push_back(p);
+            m_lines.push_back("CLOSE_ENV");
+        }
+        else
+            m_lines.push_back(p);
     }
 
     if (f!=stdin)
         fclose(f);
+
+    if (m_config->reopen) {
+        m_lines.push_back("OPEN_ENV");
+        m_lines.push_back("OPEN");
+        m_lines.push_back("FULLCHECK");
+        m_lines.push_back("CLOSE");
+        m_lines.push_back("CLOSE_ENV");
+    }
 }
 
 bool
 Parser::process_line(unsigned lineno, Engine *engine)
 {
     unsigned pos=0;
-    char *line=(char *)m_lines[lineno].c_str();
-    char *tok=get_token(line, &pos);
-    if (!tok || tok[0]==0)
+    // create a local copy because the string will be modified
+    std::string tmp=m_lines[lineno];
+    char *line=(char *)tmp.c_str();
+    vector<string> tokens=tokenize(m_lines[lineno]);
+    if (tokens.empty())
         return 1;
-    VERBOSE(("%u: reading token '%s' .......................\n", 
-                lineno, tok));
-    if (strstr(tok, "--")) {
+    VERBOSE(("%d: line %u: reading token '%s' .......................\n", 
+                engine->get_id(), lineno, tokens[0].c_str()));
+    if (tokens[0]=="--") {
         return 1;
     }
-    else if (!strcasecmp(tok, "CREATE")) {
-        return (engine->create(strstr(line+pos, "NUMERIC_KEY") 
+    else if (tokens[0]=="CREATE_ENV") {
+        return (engine->create_env());
+    }
+    else if (tokens[0]=="CREATE") {
+        return (engine->create_db(strstr(line+pos, "NUMERIC_KEY") 
                     ? true : false));
     }
-    else if (!strcasecmp(tok, "OPEN")) {
-        return (engine->open(strstr(line+pos, "NUMERIC_KEY") 
+    else if (tokens[0]=="OPEN_ENV") {
+        return (engine->open_env());
+    }
+    else if (tokens[0]=="OPEN") {
+        return (engine->open_db(strstr(line+pos, "NUMERIC_KEY") 
                     ? true : false));
     }
-    else if (!strcasecmp(tok, "BREAK")) {
+    else if (tokens[0]=="BREAK") {
         printf("break at %s:%u\n", __FILE__, __LINE__);
         return 1;
     }
-    else if (!strcasecmp(tok, "INSERT")) {
-        const char *flags =strtok(&line[pos], (char *)",");
-        const char *keytok=strtok(0, (char *)",");
-        const char *data  =strtok(0, (char *)",");
+    else if (tokens[0]=="INSERT") {
+        if (tokens.size()!=4) {
+            TRACE(("line %d (INSERT): parser error\n", lineno+1));
+            exit(-1);
+        }
+
+        const char *flags =tokens[1].c_str();
+        const char *keytok=tokens[2].c_str();
+        const char *data  =tokens[3].c_str();
         if (!data)
             data="";
         (void)flags;
         return (engine->insert(lineno, keytok, data));
     }
-    else if (!strcasecmp(tok, "ERASE")) {
-        const char *flags =strtok(&line[pos], (char *)",");
-        const char *keytok=strtok(0, (char *)",");
+    else if (tokens[0]=="ERASE") {
+        if (tokens.size()!=3) {
+            TRACE(("line %d (ERASE): parser error\n", lineno+1));
+            exit(-1);
+        }
+        const char *flags =tokens[1].c_str();
+        const char *keytok=tokens[2].c_str();
         (void)flags;
         return (engine->erase(keytok));
     }
-    else if (!strcasecmp(tok, "FIND")) {
-        const char *flags =strtok(&line[pos], (char *)",");
-        const char *keytok=strtok(0, (char *)",");
+    else if (tokens[0]=="FIND") {
+        if (tokens.size()!=3) {
+            TRACE(("line %d (FIND): parser error\n", lineno+1));
+            exit(-1);
+        }
+        const char *flags =tokens[1].c_str();
+        const char *keytok=tokens[2].c_str();
         (void)flags;
         return (engine->find(keytok));
     }
-    else if (!strcasecmp(tok, "FULLCHECK")) {
+    else if (tokens[0]=="FULLCHECK") {
         return true; // TODO return (engine->fullcheck());
     }
-    else if (!strcasecmp(tok, "CLOSE")) {
-        return (engine->close());
+    else if (tokens[0]=="CLOSE") {
+        return (engine->close_db());
     }
-    else if (!strcasecmp(tok, "FLUSH")) {
+    else if (tokens[0]=="CLOSE_ENV") {
+        return (engine->close_env());
+    }
+    else if (tokens[0]=="FLUSH") {
         return (engine->flush());
     }
 
-    TRACE(("line %d: invalid token '%s'\n", lineno, tok));
+    TRACE(("line %d: invalid token '%s'\n", lineno, tokens[0].c_str()));
     return (false);
 }
 
-char *
-Parser::get_token(char *line, unsigned *pos)
+vector<string> 
+Parser::tokenize(const string &str)
 {
-    char *r=&line[*pos];
-    while (*r && (*r==' ' || *r=='\t' || *r=='\r' || *r=='\n'))
-        r++;
-    line=r;
-    while (*line && *line!=' ' && *line!='\t' && *line!='\r' && *line!='\n')
-        line++;
-    *line=0;
-    *pos=(unsigned)(line-r+1);
+    vector<string> tokens;
+    string delimiters = " \t\n\r()\",";
+    // Skip delimiters at beginning.
+    string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+    // Find first "non-delimiter".
+    string::size_type pos     = str.find_first_of(delimiters, lastPos);
 
-    return (r);
-}
-
-char *
-Parser::strtok(char *s, char *t)
-{
-    char *e, *p=::strtok(s, t);
-    if (!p) {
-        TRACE(("expected token '%s'\n", t));
-        exit(-1);
+    while (string::npos != pos || string::npos != lastPos) {
+        // Found a token, add it to the vector.
+        tokens.push_back(str.substr(lastPos, pos - lastPos));
+        // Skip delimiters.  Note the "not_of"
+        lastPos = str.find_first_not_of(delimiters, pos);
+        // Find next "non-delimiter"
+        pos = str.find_first_of(delimiters, lastPos);
     }
-    while (*p==' ' || *p=='\t' || *p=='\n' || *p=='\r' || *p=='(' || *p=='"')
-        p++;
-    e=p+strlen(p)-1;
-    while (*e==' ' || *e=='\t' || *e=='\n' || *e=='\r' || *e==')' || *e=='"')
-        e--;
-    *(e+1)=0;
-    return p;
+    return tokens;
 }
 

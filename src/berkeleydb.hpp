@@ -11,34 +11,34 @@ class Berkeleydb : public database
 {
 public:
     Berkeleydb(int id, config *c)
-    : database(id, c), m_db(0), m_cursor(0)
-    {
+      : database(id, c), m_db(0), m_cursor(0) {
     }
 
     ~Berkeleydb(void);
 
-    virtual ham_status_t create_env(void);
-    virtual ham_status_t create_db(void);
-    virtual ham_status_t open_env(void);
-    virtual ham_status_t open_db(void);
-    virtual ham_status_t close(void);
-    virtual ham_status_t flush(void);
+    virtual ham_status_t create_env();
+    virtual ham_status_t create_db();
+    virtual ham_status_t open_env();
+    virtual ham_status_t open_db();
+    virtual ham_status_t close_env();
+    virtual ham_status_t close_db();
+    virtual ham_status_t flush();
     virtual ham_status_t insert(ham_key_t *key, ham_record_t *record);
     virtual ham_status_t erase(ham_key_t *key);
     virtual ham_status_t find(ham_key_t *key, ham_record_t *record);
-    virtual ham_status_t txn_begin(void);
-    virtual ham_status_t txn_commit(void);
+    virtual ham_status_t txn_begin();
+    virtual ham_status_t txn_commit();
 
-    virtual ham_status_t check_integrity(void);
+    virtual ham_status_t check_integrity();
 
-    virtual void *create_cursor(void);
+    virtual void *create_cursor();
     virtual ham_status_t get_previous(void *cursor, ham_key_t *key, 
                     ham_record_t *record, int flags);
     virtual ham_status_t get_next(void *cursor, ham_key_t *key, 
                     ham_record_t *record, int flags);
     virtual void close_cursor(void *cursor);
 
-    virtual void collect_metrics(void);
+    virtual void collect_metrics();
 
 protected:
     ham_status_t db2ham(int ret);

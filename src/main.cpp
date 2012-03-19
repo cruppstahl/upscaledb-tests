@@ -1,6 +1,5 @@
 
 #include "porting.hpp"
-#include "porting.hpp"
 #include "config.hpp"
 #include "engine.hpp"
 #include "parser.hpp"
@@ -8,8 +7,9 @@
 #include "hamsterdb.hpp"
 #include "berkeleydb.hpp"
 #include "metrics.hpp"
+#include "controller.hpp"
+#include "thread.hpp"
 #include <iostream>
-#include <boost/thread.hpp>
 
 
 #define ARG_HELP                        1
@@ -310,7 +310,7 @@ parse_config(int argc, char **argv, config *c)
             c->recovery=true;
         }
         else if (opt==ARG_NUMERIC) {
-            c->numeric=true;
+            c->set_numeric(true);
         }
         else if (opt==ARG_PROGRESS) {
             c->progress=true;
@@ -420,41 +420,10 @@ parse_config(int argc, char **argv, config *c)
     }
 }
 
-class Thread
-{
-  public:
-    Thread(int id, config &c, Parser &p, const char *backend)
-      : m_id(id), m_fail(false), m_engine(&c, &p, backend), m_parser(&p) {
-        run();
-    }
-
-    void run() {
-        printf("running thread %d\n", m_id);
-        for (unsigned i=0; i<m_parser->get_max_lines(); i++) {
-            bool ok=m_parser->process_line(i, &m_engine);
-            if (!ok) {
-                m_fail=true;
-                return;
-            }
-        }
-    }
-
-    bool success() {
-        return !m_fail;
-    }
-
-    void join() {
-        m_engine.get_db()->collect_metrics();
-        m_thread.join();
-    }
-
-  private:
-    int m_id;
-    bool m_fail;
-    boost::thread m_thread;
-    Engine m_engine;
-    Parser *m_parser;
-};
+extern "C" {
+extern void curl_global_cleanup();
+extern void proto_shutdown();
+}
 
 int
 main(int argc, char **argv)
@@ -463,22 +432,26 @@ main(int argc, char **argv)
     parse_config(argc, argv, &c);
 
     Parser p(&c, c.filename);
+    Controller ctrl(p);
 
     unsigned i=0;
     bool ok=true;
 
     std::vector<Thread *> threads;
     for (i=0; i<c.num_threads; i++)
-        threads.push_back(new Thread(i+1, c, p, "hamsterdb"));
+        threads.push_back(new Thread(i+1, ctrl, c, p, "hamsterdb"));
     if (!c.no_bdb)
-        threads.push_back(new Thread(i+1, c, p, "berkeleydb"));
+        threads.push_back(new Thread(i+1, ctrl, c, p, "berkeleydb"));
+
+    ctrl.run(threads);
 
     for (i=0; i<threads.size(); i++) {
         threads[i]->join();
         if (!threads[i]->success())
             ok=false;
-        delete threads[i];
     }
+    for (i=0; i<threads.size(); i++)
+        delete threads[i];
     threads.clear();
 
     if (ok)
@@ -488,6 +461,10 @@ main(int argc, char **argv)
 
     if (ok && !c.quiet)
         Metrics::get_instance()->print();
+
+    curl_global_cleanup();
+    proto_shutdown();
+    delete Metrics::get_instance();
 
 	return (ok ? 0 : 1);
 }

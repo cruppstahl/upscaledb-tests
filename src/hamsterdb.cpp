@@ -9,6 +9,7 @@
 #include <ham/hamsterdb_int.h>
 
 ham_env_t *Hamsterdb::ms_env;
+boost::mutex Hamsterdb::ms_mutex;
 
 static ham_u8_t aeskey[16]={ 
     0x00, 0x01, 0x02, 0x03, 
@@ -57,6 +58,10 @@ Hamsterdb::create_env()
     ham_status_t st;
     ham_u32_t flags=0;
     ham_parameter_t params[6];
+
+    boost::mutex::scoped_lock lock(ms_mutex);
+    if (ms_env)
+        return (0);
 
     if (!ms_env) {
         st=ham_env_new(&ms_env);
@@ -126,9 +131,11 @@ Hamsterdb::create_db()
     params[2].name=0;
     params[2].value=0;
 
-    st=ham_env_create_db(ms_env, m_db, 1, 0, &params[0]);
-    if (st)
+    st=ham_env_create_db(ms_env, m_db, 1+m_id, 0, &params[0]);
+    if (st) {
+        TRACE(("failed to create database %d: %d\n", 1+m_id, st));
         return (st);
+    }
 
     if (m_config->compression) {
         st=ham_enable_compression(m_db, 0, 0);
@@ -136,7 +143,7 @@ Hamsterdb::create_db()
             return (st);
     }
 
-    if (m_config->numeric) {
+    if (m_config->is_numeric()) {
         st=ham_set_compare_func(m_db, compare_keys);
         if (st)
             return (st);
@@ -207,7 +214,7 @@ Hamsterdb::open_db()
     params[1].value=0;
     
     ham_u32_t flags=m_config->sort_dupes?HAM_SORT_DUPLICATES:0;
-    st=ham_env_open_db(ms_env, m_db, 1, flags, &params[0]);
+    st=ham_env_open_db(ms_env, m_db, 1+m_id, flags, &params[0]);
     if (st)
         return (st);
 
@@ -217,7 +224,7 @@ Hamsterdb::open_db()
             return (st);
     }
 
-    if (m_config->numeric) {
+    if (m_config->is_numeric()) {
         st=ham_set_compare_func(m_db, compare_keys);
         if (st)
             return (st);
@@ -236,7 +243,7 @@ Hamsterdb::open_db()
 }
 
 ham_status_t 
-Hamsterdb::close()
+Hamsterdb::close_db()
 {
     timer t(this, timer::misc);
     ham_status_t st=0;
@@ -262,6 +269,15 @@ Hamsterdb::close()
         ham_delete(m_db);
         m_db=0;
     }
+
+    return (st);
+}
+
+ham_status_t 
+Hamsterdb::close_env()
+{
+    timer t(this, timer::misc);
+    ham_status_t st=0;
 
     if (ms_env)
         st=ham_env_close(ms_env, 0);

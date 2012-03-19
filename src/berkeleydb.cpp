@@ -26,7 +26,8 @@ compare_db(DB *db, const DBT *dbt1, const DBT *dbt2)
 
 Berkeleydb::~Berkeleydb(void)
 {
-    close();
+    close_db();
+    close_env();
 }
 
 ham_status_t 
@@ -42,7 +43,7 @@ Berkeleydb::create_env(void)
 
     os::unlink(DB_PATH "test-berk.db");
 
-    if (m_config->numeric) {
+    if (m_config->is_numeric()) {
         ret=m_db->set_bt_compare(m_db, compare_db);
         if (ret)
             return (db2ham(ret));
@@ -92,13 +93,13 @@ Berkeleydb::open_env(void)
     if (ret)
         return (db2ham(ret));
 
-    if (m_config->numeric) {
+    if (m_config->is_numeric()) {
         ret=m_db->set_bt_compare(m_db, compare_db);
         if (ret)
             return (db2ham(ret));
     }
 
-    if (m_config->sort_dupes && m_config->numeric) {
+    if (m_config->sort_dupes && m_config->is_numeric()) {
         ret=m_db->set_dup_compare(m_db, compare_db);
         if (ret)
             return (db2ham(ret));
@@ -132,7 +133,23 @@ Berkeleydb::open_db(void)
 }
 
 ham_status_t 
-Berkeleydb::close(void)
+Berkeleydb::close_env()
+{
+    int ret;
+    timer t(this, timer::misc);
+
+    if (m_db) {
+        ret=m_db->close(m_db, 0);
+        if (ret)
+            return (db2ham(ret));
+        m_db=0;
+    }
+
+    return (0);
+}
+
+ham_status_t 
+Berkeleydb::close_db()
 {
     int ret;
     timer t(this, timer::misc);
@@ -142,13 +159,6 @@ Berkeleydb::close(void)
         if (ret)
             return (db2ham(ret));
         m_cursor=0;
-    }
-
-    if (m_db) {
-        ret=m_db->close(m_db, 0);
-        if (ret)
-            return (db2ham(ret));
-        m_db=0;
     }
 
     return (0);
