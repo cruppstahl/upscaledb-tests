@@ -19,6 +19,8 @@ public:
 
     bool process_line(unsigned lineno, Engine *engine);
 
+    const std::string &get_line(unsigned lineno);
+
     unsigned get_max_lines() {
         return m_lines.size();
     }

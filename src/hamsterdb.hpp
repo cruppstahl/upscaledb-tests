@@ -13,9 +13,10 @@ public:
     Hamsterdb(int id, config *c)
       : database(id, c), m_db(0), m_txn(0), m_cursor(0), m_mt(0) {
         m_mt=new TrackingAllocator();
+        m_useralloc=malloc(1024*1024*10);
     }
 
-    ~Hamsterdb(void);
+    ~Hamsterdb();
 
     virtual ham_status_t create_env();
     virtual ham_status_t create_db();
@@ -48,6 +49,7 @@ protected:
     ham_txn_t *m_txn;
     ham_cursor_t *m_cursor;
     TrackingAllocator *m_mt;
+    void *m_useralloc;
 };
 
 #endif /* HAMSTERDB_HPP__ */

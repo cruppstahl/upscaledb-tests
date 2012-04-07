@@ -46,6 +46,18 @@ class Thread
         m_cond.notify_one();
     }
 
+    ham_status_t get_status() { return m_engine.get_status(); }
+
+    database *get_db() { return m_engine.get_db(); }
+
+    bool check_integrity() { return m_engine.check_integrity(); }
+
+    void *create_cursor() { return m_engine.create_cursor(); }
+
+    void close_cursor(void *c) { return m_engine.close_cursor(c); }
+
+    const ham_record_t &get_record() { return m_engine.get_record(); }
+
   private:
     void run() {
         while (get_lineno()<m_parser->get_max_lines()) {

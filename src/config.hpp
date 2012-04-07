@@ -29,10 +29,7 @@ typedef struct config
         cachesize=0;
         reopen=false;
         lock_excl=false;
-        puseralloc=0;
         filename=0;
-        data_size=0;
-        data_ptr=0;
         fullcheck_find=false;
         fullcheck_backwards=false;
         dupe_flags=0;
@@ -50,18 +47,6 @@ typedef struct config
         quiet=false;
         no_bdb=false;
         num_threads=1;
-    }
-
-    ~config()
-    {
-        if (puseralloc) {
-            free(puseralloc);
-            puseralloc=0;
-        }
-        if (data_ptr) {
-            free(data_ptr);
-            data_ptr=0;
-        }
     }
 
     void set_numeric(bool b) {
@@ -86,10 +71,7 @@ typedef struct config
     unsigned cachesize;
     bool reopen;
     bool lock_excl;
-    void *puseralloc;
     const char *filename;
-    unsigned data_size;
-    void *data_ptr;
     bool fullcheck_find;
     bool fullcheck_backwards;
     unsigned dupe_flags;

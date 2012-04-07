@@ -53,6 +53,12 @@ Parser::Parser(config *c, const char *filename)
     }
 }
 
+const std::string &
+Parser::get_line(unsigned lineno)
+{
+    return m_lines[lineno];
+}
+
 bool
 Parser::process_line(unsigned lineno, Engine *engine)
 {
@@ -121,7 +127,7 @@ Parser::process_line(unsigned lineno, Engine *engine)
         return (engine->find(keytok));
     }
     else if (tokens[0]=="FULLCHECK") {
-        return true; // TODO return (engine->fullcheck());
+        return true; // this is executed in Controller.cpp
     }
     else if (tokens[0]=="CLOSE") {
         return (engine->close_db());

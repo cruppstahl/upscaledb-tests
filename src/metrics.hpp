@@ -48,7 +48,7 @@ class Metrics
 
   private:
     Metrics()
-      : m_metrics(10) {
+      : m_metrics(100) {
     }
 
     unsigned long m_mem_allocs;

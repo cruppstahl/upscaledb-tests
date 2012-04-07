@@ -391,11 +391,7 @@ parse_config(int argc, char **argv, config *c)
             c->lock_excl=true;
         }
         else if (opt==ARG_USERALLOC) {
-            c->puseralloc=malloc(USER_MALLOC_KEYRECSIZE);
-            if (!c->puseralloc) {
-                printf("out of memory\n");
-                exit(-1);
-            }
+            // deprecated
         }
         else if (opt==ARG_FULLCHECK_FIND) {
             c->fullcheck_find=true;
@@ -432,7 +428,7 @@ main(int argc, char **argv)
     parse_config(argc, argv, &c);
 
     Parser p(&c, c.filename);
-    Controller ctrl(p);
+    Controller ctrl(&c, p);
 
     unsigned i=0;
     bool ok=true;

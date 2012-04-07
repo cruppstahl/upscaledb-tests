@@ -27,9 +27,10 @@ public:
     bool fullcheck(void);
     bool close_db();
     bool close_env();
-    bool flush(void);
-    bool txn_begin(void);
-    bool txn_commit(void);
+    bool flush();
+    bool check_integrity();
+    void *create_cursor();
+    void close_cursor(void *cursor);
 
     int get_id() {
         return get_db()->get_id();
@@ -40,21 +41,36 @@ public:
         return m_db; 
     }
 
+    ham_status_t get_status() {
+        boost::mutex::scoped_lock lock(m_mutex);
+        return m_status; 
+    }
+
+    const ham_record_t &get_record() {
+        boost::mutex::scoped_lock lock(m_mutex);
+        return m_record; 
+    }
+
 protected:
     bool owns_env() {
-        return (dynamic_cast<Berkeleydb *>(m_db) || m_db->get_id()!=1);
+        return (dynamic_cast<Berkeleydb *>(m_db) || m_db->get_id()==1);
     }
+
+    bool txn_begin();
+    bool txn_commit();
 
     //bool compare_records(ham_record_t *rec1, ham_record_t *rec2);
     bool inc_opcount(void);
-
-    //bool compare_status(ham_status_t st[2]);
 
     database *m_db;
     config *m_config;
     Parser *m_parser;
     unsigned m_opcount;
     boost::mutex m_mutex;
+    ham_status_t m_status;
+    ham_record_t m_record;
+    unsigned m_data_size;
+    void *m_data_ptr;
 };
 
 #endif /* ENGINE_HPP__ */

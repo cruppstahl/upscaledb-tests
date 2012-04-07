@@ -41,6 +41,8 @@ compare_keys(ham_db_t *db,
 
 Hamsterdb::~Hamsterdb()
 {
+    free(m_useralloc);
+
     if (m_db) {
         ham_delete(m_db);
         m_db=0;
@@ -74,8 +76,10 @@ Hamsterdb::create_env()
     params[0].value=m_config->cachesize;
     params[1].name=HAM_PARAM_PAGESIZE;
     params[1].value=m_config->pagesize;
-    params[2].name=0;
-    params[2].value=0;
+    params[2].name=HAM_PARAM_MAX_ENV_DATABASES;
+    params[2].value=32;
+    params[3].name=0;
+    params[3].value=0;
 
     flags|=m_config->inmemory?HAM_IN_MEMORY_DB:0; 
     flags|=m_config->no_mmap?HAM_DISABLE_MMAP:0; 
@@ -371,6 +375,11 @@ Hamsterdb::find(ham_key_t *key, ham_record_t *record)
     if (m_config->direct_access && m_config->inmemory)
         flags|=HAM_DIRECT_ACCESS;
 
+    if (!m_txn) {
+        record->flags=HAM_RECORD_USER_ALLOC;
+        record->data=m_useralloc;
+    }
+
     if (m_config->use_cursors) {
         timer t(this, timer::cursor);
         st=ham_cursor_find(m_cursor, key, flags);
@@ -461,6 +470,11 @@ Hamsterdb::get_previous(void *cursor, ham_key_t *key,
     if (m_config->direct_access && m_config->inmemory)
         flags|=HAM_DIRECT_ACCESS;
 
+    if (!m_txn) {
+        record->flags=HAM_RECORD_USER_ALLOC;
+        record->data=m_useralloc;
+    }
+
     return (ham_cursor_move((ham_cursor_t *)cursor, key, record, 
                     HAM_CURSOR_PREVIOUS|flags));
 }
@@ -473,6 +487,11 @@ Hamsterdb::get_next(void *cursor, ham_key_t *key, ham_record_t *record,
 
     if (m_config->direct_access && m_config->inmemory)
         flags|=HAM_DIRECT_ACCESS;
+
+    if (!m_txn) {
+        record->flags=HAM_RECORD_USER_ALLOC;
+        record->data=m_useralloc;
+    }
 
     return (ham_cursor_move((ham_cursor_t *)cursor, key, record, 
                     HAM_CURSOR_NEXT|flags));
