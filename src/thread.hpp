@@ -32,6 +32,10 @@ class Thread
 
     unsigned get_lineno() {
         boost::mutex::scoped_lock lock(m_mutex);
+        return get_lineno_nolock();
+    }
+
+    unsigned get_lineno_nolock() {
         return m_lineno;
     }
 

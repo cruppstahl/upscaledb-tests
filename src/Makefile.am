@@ -20,4 +20,4 @@ test_SOURCES    = parser.cpp engine.cpp main.cpp getopts.c hamsterdb.cpp \
 				  controller.cpp berkeleydb.cpp os.cpp database.cpp
 test_LDFLAGS    = 
 test_LDADD      = $(top_builddir)/env/posix/libhamsterdb.a \
-				  -ldb -lboost_thread-mt -lpthread -lcurl -lprotobuf
+				  -ldb -lboost_thread -lpthread -lcurl -lprotobuf

@@ -11,7 +11,7 @@ cp $HAM/src/mem.h ../common/ham/
 
 # make the hamsterdb library
 cd $HAM/src
-make
+make -j 2
 cd $CUR
 
 # copy the library

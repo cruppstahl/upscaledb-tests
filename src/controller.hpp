@@ -18,6 +18,7 @@ class Controller
     }
 
     void wakeup() {
+        boost::mutex::scoped_lock lock(m_mutex);
         m_controller_cond.notify_one();
     }
 

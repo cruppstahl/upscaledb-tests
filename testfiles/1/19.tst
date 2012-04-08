@@ -4,7 +4,7 @@ INSERT (0, "2", 33)
 INSERT (0, "3", 128)
 INSERT (0, "4", 12)
 INSERT (0, "5", 52)
-ERASE (0, "5", 56)
-ERASE (0, "4", 36)
+ERASE (0, "5")
+ERASE (0, "4")
 FULLCHECK
 CLOSE

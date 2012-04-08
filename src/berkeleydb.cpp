@@ -43,6 +43,16 @@ Berkeleydb::create_env(void)
 
     os::unlink(DB_PATH "test-berk.db");
 
+    return (0);
+}
+
+ham_status_t 
+Berkeleydb::create_db(void)
+{
+    timer t(this, timer::misc);
+
+    int ret;
+
     if (m_config->is_numeric()) {
         ret=m_db->set_bt_compare(m_db, compare_db);
         if (ret)
@@ -62,15 +72,6 @@ Berkeleydb::create_env(void)
      *        return (db2ham(ret));
      * }
      */
-    return (0);
-}
-
-ham_status_t 
-Berkeleydb::create_db(void)
-{
-    timer t(this, timer::misc);
-
-    int ret;
 
     ret=m_db->open(m_db, 0, m_config->inmemory ? 0 : DB_PATH "test-berk.db", 
             /* const char *dbname */ 0, DB_BTREE, DB_CREATE, 0);
@@ -87,17 +88,18 @@ Berkeleydb::create_db(void)
 ham_status_t 
 Berkeleydb::open_env(void)
 {
+    int ret;
     timer t(this, timer::misc);
-
-    int ret=db_create(&m_db, 0, 0);
-    if (ret)
-        return (db2ham(ret));
 
     if (m_config->is_numeric()) {
         ret=m_db->set_bt_compare(m_db, compare_db);
         if (ret)
             return (db2ham(ret));
     }
+
+    ret=db_create(&m_db, 0, 0);
+    if (ret)
+        return (db2ham(ret));
 
     if (m_config->sort_dupes && m_config->is_numeric()) {
         ret=m_db->set_dup_compare(m_db, compare_db);

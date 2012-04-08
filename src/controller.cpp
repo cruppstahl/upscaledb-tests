@@ -13,9 +13,12 @@ Controller::run(std::vector<Thread *> &threads)
         for (it=threads.begin(); it!=threads.end(); it++)
             (*it)->wakeup();
 
-        while (!reached_line(threads, m_lineno)) {
+        while (true) {
             boost::mutex::scoped_lock lock(m_mutex);
-            m_controller_cond.wait(lock);
+            if (!reached_line(threads, m_lineno))
+                m_controller_cond.wait(lock);
+            else
+                break;
         }
         if (has_failure(threads)) {
             printf("got failure(s)\n");
@@ -152,7 +155,7 @@ Controller::reached_line(std::vector<Thread *> &threads, unsigned line)
 {
     std::vector<Thread *>::iterator it;
     for (it=threads.begin(); it!=threads.end(); it++) {
-        if ((*it)->get_lineno()!=line)
+        if ((*it)->get_lineno_nolock()!=line)
             return false;
     }
     return true;

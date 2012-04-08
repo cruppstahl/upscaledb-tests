@@ -107,7 +107,7 @@ Parser::process_line(unsigned lineno, Engine *engine)
         return (engine->insert(lineno, keytok, data));
     }
     else if (tokens[0]=="ERASE") {
-        if (tokens.size()!=3) {
+        if (tokens.size()<3) {
             TRACE(("line %d (ERASE): parser error\n", lineno+1));
             exit(-1);
         }
