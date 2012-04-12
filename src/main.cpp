@@ -426,6 +426,7 @@ main(int argc, char **argv)
 {
     config c;
     parse_config(argc, argv, &c);
+    Metrics::get_instance();
 
     Parser p(&c, c.filename);
     Controller ctrl(&c, p);

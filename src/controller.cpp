@@ -155,7 +155,7 @@ Controller::reached_line(std::vector<Thread *> &threads, unsigned line)
 {
     std::vector<Thread *>::iterator it;
     for (it=threads.begin(); it!=threads.end(); it++) {
-        if ((*it)->get_lineno_nolock()!=line)
+        if ((*it)->get_lineno()!=line)
             return false;
     }
     return true;

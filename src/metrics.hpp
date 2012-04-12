@@ -9,6 +9,9 @@
  * See files COPYING.* for License information.
  */
 
+#ifndef METRICS_HPP__
+#define METRICS_HPP__
+
 #include <stdexcept>
 #include <cstdlib>
 #include <cstring>
@@ -17,18 +20,20 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <boost/thread.hpp>
 
-#ifndef METRICS_HPP__
-#define METRICS_HPP__
+typedef boost::mutex::scoped_lock ScopedLock;
 
 class Metrics
 {
   public:
     void add_metric(int idx, const char *name, unsigned long value) {
+        ScopedLock lock(m_mutex);
         m_metrics[idx][name]=value;
     }
 
     void print() {
+        ScopedLock lock(m_mutex);
         for (int i=0; i<2; i++) {
             std::map<std::string, unsigned long> &m=m_metrics[i];
             std::map<std::string, unsigned long>::iterator it;
@@ -56,6 +61,7 @@ class Metrics
     unsigned long m_mem_peak;
     unsigned long m_mem_current;
     unsigned long m_mem_total;
+    boost::mutex m_mutex;
 
     std::vector<std::map<std::string, unsigned long> > m_metrics;
 };
