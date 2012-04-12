@@ -6,6 +6,7 @@
 #include "os.hpp"
 #include "misc.hpp"
 
+#include <boost/thread.hpp>
 #include <ham/hamsterdb_int.h>
 
 ham_env_t *Hamsterdb::ms_env;
@@ -247,7 +248,7 @@ Hamsterdb::open_db()
 }
 
 ham_status_t 
-Hamsterdb::close_db()
+Hamsterdb::close_txn()
 {
     timer t(this, timer::misc);
     ham_status_t st=0;
@@ -265,6 +266,15 @@ Hamsterdb::close_db()
             return (st);
         m_txn=0;
     }
+
+    return (st);
+}
+
+ham_status_t 
+Hamsterdb::close_db()
+{
+    timer t(this, timer::misc);
+    ham_status_t st=0;
 
     if (m_db) {
         st=ham_close(m_db, HAM_AUTO_CLEANUP);

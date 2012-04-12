@@ -50,8 +50,9 @@ public:
     virtual ham_status_t create_db()=0;
     virtual ham_status_t open_env()=0;
     virtual ham_status_t open_db()=0;
-    virtual ham_status_t close_env()=0;
+    virtual ham_status_t close_txn()=0;
     virtual ham_status_t close_db()=0;
+    virtual ham_status_t close_env()=0;
     virtual ham_status_t flush()=0;
     virtual ham_status_t insert(ham_key_t *key, ham_record_t *record)=0;
     virtual ham_status_t erase(ham_key_t *key)=0;

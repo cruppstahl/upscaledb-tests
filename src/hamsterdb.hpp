@@ -22,8 +22,9 @@ public:
     virtual ham_status_t create_db();
     virtual ham_status_t open_env();
     virtual ham_status_t open_db();
-    virtual ham_status_t close_env();
+    virtual ham_status_t close_txn();
     virtual ham_status_t close_db();
+    virtual ham_status_t close_env();
     virtual ham_status_t flush();
     virtual ham_status_t insert(ham_key_t *key, ham_record_t *record);
     virtual ham_status_t erase(ham_key_t *key);

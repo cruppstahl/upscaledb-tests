@@ -71,15 +71,14 @@ class Thread
             // printf("%d: line %d\n", m_engine.get_id(), m_lineno);
 
             bool ok=m_parser->process_line(m_lineno, &m_engine);
-            if (!ok) {
-                printf("failure!\n");
-                m_fail=true;
-                return;
-            }
-
             m_lineno++;
             m_running=false;
             m_controller.wakeup();
+
+            if (!ok) {
+                m_fail=true;
+                return;
+            }
         }
 
         m_eof=true;

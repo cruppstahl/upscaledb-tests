@@ -26,6 +26,7 @@ public:
     bool find(const char *keytok);
     bool fullcheck(void);
     bool close_db();
+    bool close_txn();
     bool close_env();
     bool flush();
     bool check_integrity();

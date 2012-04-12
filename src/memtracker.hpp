@@ -16,9 +16,12 @@
 #include <ham/hamsterdb.h>
 #include "../../hamsterdb/src/mem.h"
 #include "metrics.hpp"
+#include <boost/thread.hpp>
 
 #define MAGIC           0x12345678
 #define OFFSETOF(type, member) ((size_t) &((type *)0)->member)
+
+typedef boost::mutex::scoped_lock ScopedLock;
 
 typedef struct memdesc_t
 {
@@ -31,8 +34,7 @@ class TrackingAllocator : public Allocator
 {
   public:
     TrackingAllocator()
-    : Allocator(), m_mem_allocs(0), m_mem_peak(0), m_mem_current(0), 
-        m_mem_total(0) {
+    : Allocator() {
     }
 
     virtual void *alloc(ham_size_t size) {
@@ -43,11 +45,12 @@ class TrackingAllocator : public Allocator
         desc->size=size;
         desc->magic=MAGIC;
 
-        m_mem_total+=size;
-        m_mem_allocs++;
-        m_mem_current+=size;
-        if (m_mem_current>m_mem_peak)
-            m_mem_peak=m_mem_current;
+        ScopedLock(ms_mutex);
+        ms_mem_total+=size;
+        ms_mem_allocs++;
+        ms_mem_current+=size;
+        if (ms_mem_current>ms_mem_peak)
+            ms_mem_peak=ms_mem_current;
 
         return (desc->data);
     }
@@ -56,8 +59,11 @@ class TrackingAllocator : public Allocator
         memdesc_t *desc=get_descriptor(ptr);
         verify_mem_desc(desc);
 
-        m_mem_current-=desc->size;
+        ham_size_t s=desc->size;
         ::free(desc);
+
+        ScopedLock(ms_mutex);
+        ms_mem_current-=s;
     }
 
     virtual void *realloc(const void *ptr, ham_size_t size) {
@@ -76,9 +82,20 @@ class TrackingAllocator : public Allocator
         return (desc->data);
     }
 
-    unsigned long get_num_allocs() { return m_mem_allocs; }
-    unsigned long get_peak_bytes() { return m_mem_peak; }
-    unsigned long get_total_bytes() { return m_mem_total; }
+    static unsigned long get_num_allocs() { 
+        ScopedLock(ms_mutex);
+        return ms_mem_allocs; 
+    }
+
+    static unsigned long get_peak_bytes() { 
+        ScopedLock(ms_mutex);
+        return ms_mem_peak; 
+    }
+
+    static unsigned long get_total_bytes() { 
+        ScopedLock(ms_mutex);
+        return ms_mem_total; 
+    }
 
   private:
     memdesc_t *get_descriptor(const void *p) {
@@ -92,10 +109,10 @@ class TrackingAllocator : public Allocator
             throw std::out_of_range("memory blob descriptor is corrupt");
     }
 
-    unsigned long m_mem_allocs;
-    unsigned long m_mem_peak;
-    unsigned long m_mem_current;
-    unsigned long m_mem_total;
-
+    static unsigned long ms_mem_allocs;
+    static unsigned long ms_mem_peak;
+    static unsigned long ms_mem_current;
+    static unsigned long ms_mem_total;
+    static boost::mutex ms_mutex;
 };
 

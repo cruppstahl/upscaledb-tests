@@ -34,6 +34,7 @@ Parser::Parser(config *c, const char *filename)
             m_lines.push_back(p);
         }
         else if (strstr(p, "CLOSE")) {
+            m_lines.push_back("CLOSE_TXN");
             m_lines.push_back(p);
             m_lines.push_back("CLOSE_ENV");
         }
@@ -48,6 +49,7 @@ Parser::Parser(config *c, const char *filename)
         m_lines.push_back("OPEN_ENV");
         m_lines.push_back("OPEN");
         m_lines.push_back("FULLCHECK");
+        m_lines.push_back("CLOSE_TXN");
         m_lines.push_back("CLOSE");
         m_lines.push_back("CLOSE_ENV");
     }
@@ -128,6 +130,9 @@ Parser::process_line(unsigned lineno, Engine *engine)
     }
     else if (tokens[0]=="FULLCHECK") {
         return true; // this is executed in Controller.cpp
+    }
+    else if (tokens[0]=="CLOSE_TXN") {
+        return (engine->close_txn());
     }
     else if (tokens[0]=="CLOSE") {
         return (engine->close_db());

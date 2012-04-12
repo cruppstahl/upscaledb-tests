@@ -29,6 +29,7 @@ Engine::~Engine()
     if (m_data_ptr)
         free(m_data_ptr);
     if (m_db) {
+        m_db->close_txn();
         m_db->close_db();
         m_db->close_env();
         delete m_db;
@@ -260,14 +261,31 @@ Engine::find(const char *keytok)
 }
 
 bool 
+Engine::close_txn()
+{
+    boost::mutex::scoped_lock lock(m_mutex);
+
+    m_status=m_db->close_txn();
+    if (m_status) {
+        TRACE(("db: close_txn failed w/ status %d\n", m_status));
+        return (false);
+    }
+    return (true);
+}
+
+bool 
 Engine::close_db()
 {
     boost::mutex::scoped_lock lock(m_mutex);
+
     m_status=m_db->close_db();
     if (m_status) {
         TRACE(("db: close_db failed w/ status %d\n", m_status));
         return (false);
     }
+
+    // collect metrics before the memory allocator is deleted in ham_env_close
+    m_db->collect_metrics();
 
     return (true);
 }
@@ -276,9 +294,6 @@ bool
 Engine::close_env()
 {
     boost::mutex::scoped_lock lock(m_mutex);
-
-    // collect metrics before the memory allocator is deleted in ham_env_close
-    m_db->collect_metrics();
 
     // the Environment is only closed by thread #1
     if (!owns_env())

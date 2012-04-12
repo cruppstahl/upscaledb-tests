@@ -26,6 +26,7 @@ compare_db(DB *db, const DBT *dbt1, const DBT *dbt2)
 
 Berkeleydb::~Berkeleydb(void)
 {
+    close_txn();
     close_db();
     close_env();
 }
@@ -91,15 +92,15 @@ Berkeleydb::open_env(void)
     int ret;
     timer t(this, timer::misc);
 
+    ret=db_create(&m_db, 0, 0);
+    if (ret)
+        return (db2ham(ret));
+
     if (m_config->is_numeric()) {
         ret=m_db->set_bt_compare(m_db, compare_db);
         if (ret)
             return (db2ham(ret));
     }
-
-    ret=db_create(&m_db, 0, 0);
-    if (ret)
-        return (db2ham(ret));
 
     if (m_config->sort_dupes && m_config->is_numeric()) {
         ret=m_db->set_dup_compare(m_db, compare_db);
@@ -148,6 +149,12 @@ Berkeleydb::close_env()
     }
 
     return (0);
+}
+
+ham_status_t 
+Berkeleydb::close_txn()
+{
+    return 0;
 }
 
 ham_status_t 

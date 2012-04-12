@@ -12,6 +12,7 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <cstring>
+#include <cstdio>
 
 #include <string>
 #include <vector>

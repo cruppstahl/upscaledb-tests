@@ -21,8 +21,8 @@ Controller::run(std::vector<Thread *> &threads)
                 break;
         }
         if (has_failure(threads)) {
-            printf("got failure(s)\n");
-            return;
+            printf("FAIL\n");
+            exit(-1);
         }
 
         if (strstr(m_parser.get_line(m_lineno-1).c_str(), "FULLCHECK")) {
