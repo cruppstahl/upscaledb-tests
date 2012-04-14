@@ -386,6 +386,6 @@ void
 Berkeleydb::collect_metrics(void)
 {
     database::collect_metrics();
-    Metrics::get_instance()->add_metric(get_id(), "filesize", 
+    Metrics::get_instance()->add_metric(get_name(), "filesize", 
             os::get_filesize("test-berk.db"));
 }

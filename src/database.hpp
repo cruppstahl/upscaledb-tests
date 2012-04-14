@@ -22,15 +22,14 @@ protected:
         };
 
         timer(database *db, database::timer::idx store)
-        :   m_db(db), m_store(store)
-        {
+        :   m_db(db), m_store(store) {
             m_start=os::now();
         }
 
-        ~timer()
-        {
+        ~timer() {
             m_db->m_profile[m_store]+=os::now()-m_start;
         }
+
     private:
         database *m_db;
         database::timer::idx m_store;
@@ -61,6 +60,7 @@ public:
     virtual ham_status_t txn_commit()=0;
 
     int get_id() { return m_id; }
+    virtual const char *get_name()=0;
 
     virtual ham_status_t check_integrity()=0;
 

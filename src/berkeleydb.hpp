@@ -31,6 +31,7 @@ public:
     virtual ham_status_t txn_commit();
 
     virtual ham_status_t check_integrity();
+    virtual const char *get_name() { return "berkeleydb"; }
 
     virtual void *create_cursor();
     virtual ham_status_t get_previous(void *cursor, ham_key_t *key, 

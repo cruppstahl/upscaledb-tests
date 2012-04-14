@@ -26,21 +26,30 @@ typedef boost::mutex::scoped_lock ScopedLock;
 
 class Metrics
 {
+    typedef std::map<std::string, std::map<std::string, unsigned long> > MetricMap;
   public:
-    void add_metric(int idx, const char *name, unsigned long value) {
+    void add_metric(const char *idx, const char *name, unsigned long value) {
         ScopedLock lock(m_mutex);
         m_metrics[idx][name]=value;
     }
 
     void print() {
         ScopedLock lock(m_mutex);
-        for (int i=0; i<2; i++) {
-            std::map<std::string, unsigned long> &m=m_metrics[i];
-            std::map<std::string, unsigned long>::iterator it;
-            if (!m.empty())
-                printf("%s\n", i ? "berkeleydb" : "hamsterdb");
-            for (it=m.begin(); it!=m.end(); ++it)
-                printf("\t%s\t\t%lu\n", it->first.c_str(), it->second);
+        for (MetricMap::iterator it=m_metrics.begin(); 
+                it!=m_metrics.end(); ++it) {
+            std::map<std::string, unsigned long> &m=it->second;
+            std::map<std::string, unsigned long>::iterator it2;
+            if (m.empty())
+                continue;
+            printf("%s\n", it->first.c_str());
+            for (it2=m.begin(); it2!=m.end(); ++it2) {
+                if (!strstr(it2->first.c_str(), "perf-"))
+                    printf("\t%s\t\t%lu\n", it2->first.c_str(), 
+                            it2->second);
+                else
+                    printf("\t%s\t\t%f\n", it2->first.c_str(), 
+                            (double)it2->second/1000000000.);
+                }
         }
     }
 
@@ -53,8 +62,7 @@ class Metrics
     static Metrics *instance;
 
   private:
-    Metrics()
-      : m_metrics(100) {
+    Metrics() {
     }
 
     unsigned long m_mem_allocs;
@@ -63,7 +71,7 @@ class Metrics
     unsigned long m_mem_total;
     boost::mutex m_mutex;
 
-    std::vector<std::map<std::string, unsigned long> > m_metrics;
+    MetricMap m_metrics;
 };
 
 
