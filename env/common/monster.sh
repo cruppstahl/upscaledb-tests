@@ -13,12 +13,8 @@ t=../common/run-tests.sh
 
 $t 3 --reopen $1 $2 $3 $4 $5
 $t 3 --fullcheck-find $1 $2 $3 $4 $5
-$t 3 --reopen --useralloc $1 $2 $3 $4 $5
-$t 3 --fullcheck-find --useralloc $1 $2 $3 $4 $5
 $t 3 --overwrite --reopen $1 $2 $3 $4 $5
-$t 3 --overwrite --reopen --useralloc $1 $2 $3 $4 $5
 $t 3 --inmemorydb $1 $2 $3 $4 $5
-$t 3 --inmemorydb --useralloc $1 $2 $3 $4 $5
 $t 3 --overwrite --inmemorydb $1 $2 $3 $4 $5
 $t 3 --use-cursors --reopen $1 $2 $3 $4 $5
 $t 3 --use-cursors --overwrite --reopen $1 $2 $3 $4 $5
@@ -35,18 +31,12 @@ $t 3 --fullcheck-backwards --overwrite --reopen $1 $2 $3 $4 $5
 
 $t 3 --duplicate --reopen $1 $2 $3 $4 $5
 $t 3 --fullcheck-find $1 $2 $3 $4 $5
-$t 3 --duplicate --reopen --useralloc $1 $2 $3 $4 $5
-$t 3 --duplicate --fullcheck-find --useralloc $1 $2 $3 $4 $5
 $t 3 --duplicate --inmemorydb $1 $2 $3 $4 $5
-$t 3 --duplicate --inmemorydb --useralloc $1 $2 $3 $4 $5
 $t 3 --duplicate --use-cursors --reopen $1 $2 $3 $4 $5
 $t 3 --duplicate --use-cursors --inmemorydb $1 $2 $3 $4 $5
 
 $t 3 --duplicate --sort-duplicates --reopen $1 $2 $3 $4 $5
-$t 3 --duplicate --sort-duplicates --reopen --useralloc $1 $2 $3 $4 $5
-$t 3 --duplicate --sort-duplicates --fullcheck-find --useralloc $1 $2 $3 $4 $5
 $t 3 --duplicate --sort-duplicates --inmemorydb $1 $2 $3 $4 $5
-$t 3 --duplicate --sort-duplicates --inmemorydb --useralloc $1 $2 $3 $4 $5
 $t 3 --duplicate --sort-duplicates --use-cursors --reopen $1 $2 $3 $4 $5
 $t 3 --duplicate --sort-duplicates --use-cursors --inmemorydb $1 $2 $3 $4 $5
 
@@ -144,12 +134,9 @@ $t 3 --hints=HAM_HINT_PREPEND --use-cursors --inmemorydb $1 $2 $3 $4 $5
 # HAM_DIRECT_ACCESS
 $t 3 --direct-access --inmemorydb $1 $2 $3 $4 $5
 $t 3 --direct-access --inmemorydb --fullcheck-find $1 $2 $3 $4 $5
-$t 3 --direct-access --inmemorydb --useralloc $1 $2 $3 $4 $5
 $t 3 --direct-access --inmemorydb --overwrite $1 $2 $3 $4 $5
-$t 3 --direct-access --inmemorydb --overwrite --useralloc $1 $2 $3 $4
 $t 3 --direct-access --inmemorydb --use-cursors $1 $2 $3 $4 $5
 $t 3 --direct-access --inmemorydb --use-cursors --overwrite $1 $2 $3
-$t 3 --direct-access --inmemorydb --use-cursors --useralloc $1 $2 $3
 $t 3 --direct-access --inmemorydb --use-cursors --duplicate-first $1 $2 $3 $4 $5
 $t 3 --direct-access --inmemorydb --fullcheck-backwards $1 $2 $3 $4 $5
 
@@ -166,8 +153,6 @@ $t 2 --use-transactions=tmp --use-compression $1 $2 $3 $4 $5
 $t 2 --use-transactions=tmp --disable-mmap $1 $2 $3 $4 $5
 $t 2 --use-transactions=tmp --fullcheck-find $1 $2 $3 $4 $5
 $t 2 --use-transactions=tmp --fullcheck-backwards $1 $2 $3 $4 $5
-$t 2 --use-transactions=tmp --useralloc $1 $2 $3 $4 $5
-$t 2 --use-transactions=tmp --useralloc --use-cursors $1 $2 $3 $4 $5
 $t 2 --use-transactions=tmp --pagesize=1024 $1 $2 $3 $4 $5
 $t 2 --use-transactions=tmp --pagesize=10240 $1 $2 $3 $4 $5
 $t 2 --use-transactions=tmp --pagesize=102400 $1 $2 $3 $4 $5
@@ -188,8 +173,6 @@ $t 2 --use-transactions=20 --use-compression $1 $2 $3 $4 $5
 $t 2 --use-transactions=20 --disable-mmap $1 $2 $3 $4 $5
 $t 2 --use-transactions=20 --fullcheck-find $1 $2 $3 $4 $5
 $t 2 --use-transactions=20 --fullcheck-backwards $1 $2 $3 $4 $5
-$t 2 --use-transactions=20 --useralloc $1 $2 $3 $4 $5
-$t 2 --use-transactions=20 --useralloc --use-cursors $1 $2 $3 $4 $5
 $t 2 --use-transactions=20 --pagesize=1024 $1 $2 $3 $4 $5
 $t 2 --use-transactions=20 --pagesize=10240 $1 $2 $3 $4 $5
 $t 2 --use-transactions=20 --pagesize=102400 $1 $2 $3 $4 $5
@@ -210,8 +193,6 @@ $t 2 --use-transactions=200 --use-compression $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --disable-mmap $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --fullcheck-find $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --fullcheck-backwards $1 $2 $3 $4 $5
-$t 2 --use-transactions=200 --useralloc $1 $2 $3 $4 $5
-$t 2 --use-transactions=200 --useralloc --use-cursors $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --pagesize=1024 $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --pagesize=10240 $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --pagesize=102400 $1 $2 $3 $4 $5
@@ -232,8 +213,6 @@ $t 2 --use-transactions=10000 --use-compression $1 $2 $3 $4 $5
 $t 2 --use-transactions=10000 --disable-mmap $1 $2 $3 $4 $5
 $t 2 --use-transactions=10000 --fullcheck-find $1 $2 $3 $4 $5
 $t 2 --use-transactions=10000 --fullcheck-backwards $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --useralloc $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --useralloc --use-cursors $1 $2 $3 $4 $5
 $t 2 --use-transactions=10000 --pagesize=1024 $1 $2 $3 $4 $5
 $t 2 --use-transactions=10000 --pagesize=10240 $1 $2 $3 $4 $5
 $t 2 --use-transactions=10000 --pagesize=102400 $1 $2 $3 $4 $5
@@ -254,11 +233,91 @@ $t 2 --use-transactions=all --use-compression $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --disable-mmap $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --fullcheck-find $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --fullcheck-backwards $1 $2 $3 $4 $5
-$t 2 --use-transactions=all --useralloc $1 $2 $3 $4 $5
-$t 2 --use-transactions=all --useralloc --use-cursors $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --pagesize=1024 $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --pagesize=10240 $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --pagesize=102400 $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --cachesize=1024 $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --cachesize=102400 $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --cachesize=10240000 $1 $2 $3 $4 $5
+
+# use 2 threads
+$t 2 --num-threads=2 $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --overwrite $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --duplicate $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --use-cursors $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --use-cursors --overwrite $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --use-cursors --duplicate $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --use-cursors --duplicate-first $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --use-aes $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --use-compression $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --disable-mmap $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --fullcheck-find $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --fullcheck-backwards $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --pagesize=1024 $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --pagesize=10240 $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --pagesize=102400 $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --cachesize=1024 $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --cachesize=102400 $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --cachesize=10240000 $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --use-transactions=20 $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --use-transactions=20 --overwrite $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --use-transactions=20 --duplicate $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --use-transactions=20 --use-cursors $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --use-transactions=20 --use-cursors --overwrite $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --use-transactions=20 --use-cursors --duplicate $1 $2 $3 $4 $5
+$t 2 --num-threads=2 --use-cursors --duplicate-first $1 $2 $3 $4 $5
+
+# use 10 threads
+$t 2 --num-threads=10 $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --overwrite $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --duplicate $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --use-cursors $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --use-cursors --overwrite $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --use-cursors --duplicate $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --use-cursors --duplicate-first $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --use-aes $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --use-compression $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --disable-mmap $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --fullcheck-find $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --fullcheck-backwards $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --pagesize=1024 $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --pagesize=10240 $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --pagesize=102400 $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --cachesize=1024 $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --cachesize=102400 $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --cachesize=10240000 $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --use-transactions=20 $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --use-transactions=20 --overwrite $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --use-transactions=20 --duplicate $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --use-transactions=20 --use-cursors $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --use-transactions=20 --use-cursors --overwrite $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --use-transactions=20 --use-cursors --duplicate $1 $2 $3 $4 $5
+$t 2 --num-threads=10 --use-cursors --duplicate-first $1 $2 $3 $4 $5
+
+# use 20 threads
+$t 2 --num-threads=20 $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --overwrite $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --duplicate $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --use-cursors $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --use-cursors --overwrite $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --use-cursors --duplicate $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --use-cursors --duplicate-first $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --use-aes $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --use-compression $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --disable-mmap $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --fullcheck-find $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --fullcheck-backwards $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --pagesize=1024 $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --pagesize=10240 $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --pagesize=102400 $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --cachesize=1024 $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --cachesize=102400 $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --cachesize=10240000 $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --use-transactions=20 $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --use-transactions=20 --overwrite $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --use-transactions=20 --duplicate $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --use-transactions=20 --use-cursors $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --use-transactions=20 --use-cursors --overwrite $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --use-transactions=20 --use-cursors --duplicate $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --use-cursors --duplicate-first $1 $2 $3 $4 $5
+

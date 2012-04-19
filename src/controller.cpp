@@ -1,6 +1,7 @@
 
 #include "controller.hpp"
 #include "thread.hpp"
+#include <boost/thread/xtime.hpp>
 
 void 
 Controller::run(std::vector<Thread *> &threads) 
@@ -15,8 +16,12 @@ Controller::run(std::vector<Thread *> &threads)
 
         while (true) {
             boost::mutex::scoped_lock lock(m_mutex);
-            if (!reached_line(threads, m_lineno))
-                m_controller_cond.wait(lock);
+            if (!reached_line(threads, m_lineno)) {
+                boost::xtime t;
+                t.nsec+=10000;
+                xtime_get(&t, 1);
+                m_controller_cond.timed_wait(lock, t);
+            }
             else
                 break;
         }
