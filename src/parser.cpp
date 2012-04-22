@@ -95,14 +95,23 @@ Parser::process_line(unsigned lineno, Engine *engine)
         return 1;
     }
     else if (tokens[0]=="INSERT") {
-        if (tokens.size()!=4) {
+        const char *flags;
+        const char *keytok;
+        const char *data;
+        if (tokens.size()==3) {
+            flags =tokens[1].c_str();
+            keytok="";
+            data  =tokens[2].c_str();
+        }
+        else if (tokens.size()==4) {
+            flags =tokens[1].c_str();
+            keytok=tokens[2].c_str();
+            data  =tokens[3].c_str();
+        }
+        else {
             TRACE(("line %d (INSERT): parser error\n", lineno+1));
             exit(-1);
         }
-
-        const char *flags =tokens[1].c_str();
-        const char *keytok=tokens[2].c_str();
-        const char *data  =tokens[3].c_str();
         if (!data)
             data="";
         (void)flags;
