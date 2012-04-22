@@ -21,11 +21,11 @@ database::collect_metrics()
         f=(float)m_profile[i];
         total+=f;
         f*=1000000.f;
-        Metrics::get_instance()->add_metric(get_id(), s[i], (unsigned long)f);
+        Metrics::get_instance()->add_metric(get_name(), s[i], (unsigned long)f);
     }
 
     total*=1000000.f;
-    Metrics::get_instance()->add_metric(get_id(), "perf-total", 
+    Metrics::get_instance()->add_metric(get_name(), "perf-total", 
             (unsigned long)total);
 }
 

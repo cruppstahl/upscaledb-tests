@@ -9,7 +9,7 @@ class os
 public:
     static bool unlink(const char *path);
 
-    static ham_u64_t now(void) {
+    static ham_u64_t now() {
 #ifdef WIN32
 	    ham_u64_t usec, sec;
         union {
@@ -26,10 +26,6 @@ public:
         return (ham_u64_t)(tv.tv_sec)*1000+(ham_u64_t)(tv.tv_usec)/1000;
 #endif
     }
-
-    static const char *hostname(void);
-
-    static const char *architecture(void);
 
     static unsigned long get_filesize(const char *path);
 };

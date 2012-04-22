@@ -319,7 +319,6 @@ Hamsterdb::insert(ham_key_t *key, ham_record_t *record)
         flags|=HAM_HINT_UBER_FAST_ACCESS;
 
     if (m_config->use_cursors) {
-
         flags|=m_config->hints&HAM_HINT_APPEND;
 
         if (m_config->overwrite)
@@ -521,13 +520,13 @@ void
 Hamsterdb::collect_metrics(void)
 {
     database::collect_metrics();
-    Metrics::get_instance()->add_metric(get_id(), "filesize", 
+    Metrics::get_instance()->add_metric(get_name(), "filesize", 
             os::get_filesize("test-ham.db"));
-    Metrics::get_instance()->add_metric(get_id(), "mem-num-allocs", 
+    Metrics::get_instance()->add_metric(get_name(), "mem-num-allocs", 
             m_mt->get_num_allocs());
-    Metrics::get_instance()->add_metric(get_id(), "mem-peak-bytes",
+    Metrics::get_instance()->add_metric(get_name(), "mem-peak-bytes",
             m_mt->get_peak_bytes());
-    Metrics::get_instance()->add_metric(get_id(), "mem-total-bytes",
+    Metrics::get_instance()->add_metric(get_name(), "mem-total-bytes",
             m_mt->get_total_bytes());
 }
 
