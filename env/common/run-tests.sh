@@ -32,8 +32,11 @@ do
         $executable $1 $2 $3 $4 $5 $6 $7 $8 $9 $file
 
         if [ $? = 0 ]
-            then success=$(($success+1))
-            else errors=$(($errors+1))
+        then 
+            success=$(($success+1))
+        else
+            errors=$(($errors+1))
+            echo "[FAIL]"
         fi
         total=$(($total+1))
     done

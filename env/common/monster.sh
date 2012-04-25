@@ -269,55 +269,20 @@ $t 2 --num-threads=2 --use-cursors --duplicate-first $1 $2 $3 $4 $5
 
 # use 10 threads
 $t 2 --num-threads=10 $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --overwrite $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --duplicate $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --use-cursors $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --use-cursors --overwrite $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --use-cursors --duplicate $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --use-cursors --duplicate-first $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --use-aes $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --use-compression $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --disable-mmap $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --fullcheck-find $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --fullcheck-backwards $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --pagesize=1024 $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --pagesize=10240 $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --pagesize=102400 $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --cachesize=1024 $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --cachesize=102400 $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --cachesize=10240000 $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --use-transactions=20 $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --use-transactions=20 --overwrite $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --use-transactions=20 --duplicate $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --use-transactions=20 --use-cursors $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --use-transactions=20 --use-cursors --overwrite $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --use-transactions=20 --use-cursors --duplicate $1 $2 $3 $4 $5
-$t 2 --num-threads=10 --use-cursors --duplicate-first $1 $2 $3 $4 $5
+$t 1 --num-threads=10 --overwrite $1 $2 $3 $4 $5
+$t 1 --num-threads=10 --duplicate $1 $2 $3 $4 $5
+$t 1 --num-threads=10 --use-cursors $1 $2 $3 $4 $5
+$t 1 --num-threads=10 --use-cursors --overwrite $1 $2 $3 $4 $5
+$t 1 --num-threads=10 --use-cursors --duplicate $1 $2 $3 $4 $5
+$t 1 --num-threads=10 --fullcheck-find $1 $2 $3 $4 $5
+$t 1 --num-threads=10 --fullcheck-backwards $1 $2 $3 $4 $5
+$t 1 --num-threads=10 --cachesize=1024 $1 $2 $3 $4 $5
+$t 1 --num-threads=10 --cachesize=102400 $1 $2 $3 $4 $5
+$t 1 --num-threads=10 --disable-mmap --cachesize=10240000 $1 $2 $3 $4 $5
+$t 1 --num-threads=10 --disable-mmap --use-transactions=20 $1 $2 $3 $4 $5
 
 # use 20 threads
-$t 2 --num-threads=20 $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --overwrite $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --duplicate $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --use-cursors $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --use-cursors --overwrite $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --use-cursors --duplicate $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --use-cursors --duplicate-first $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --use-aes $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --use-compression $1 $2 $3 $4 $5
 $t 2 --num-threads=20 --disable-mmap $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --fullcheck-find $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --fullcheck-backwards $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --pagesize=1024 $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --pagesize=10240 $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --pagesize=102400 $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --cachesize=1024 $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --cachesize=102400 $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --cachesize=10240000 $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --use-transactions=20 $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --use-transactions=20 --overwrite $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --use-transactions=20 --duplicate $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --use-transactions=20 --use-cursors $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --use-transactions=20 --use-cursors --overwrite $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --use-transactions=20 --use-cursors --duplicate $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --use-cursors --duplicate-first $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --disable-mmap --duplicate $1 $2 $3 $4 $5
+$t 2 --num-threads=20 --disable-mmap --use-transactions --duplicate $1 $2 $3 $4 $5
 

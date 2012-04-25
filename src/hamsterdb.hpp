@@ -13,7 +13,7 @@ public:
     Hamsterdb(int id, config *c)
       : database(id, c), m_db(0), m_txn(0), m_cursor(0), m_mt(0) {
         m_mt=new TrackingAllocator();
-        m_useralloc=malloc(1024*1024*10);
+        m_useralloc=malloc(1024*1024*100);
     }
 
     ~Hamsterdb();
