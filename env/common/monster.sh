@@ -22,7 +22,7 @@ $t 3 --use-cursors --inmemorydb $1 $2 $3 $4 $5
 $t 3 --use-cursors --overwrite --inmemorydb $1 $2 $3 $4 $5
 $t 3 --use-cursors --duplicate-first --reopen $1 $2 $3 $4 $5
 $t 3 --use-aes --reopen $1 $2 $3 $4 $5
-$t 3 --use-compression --reopen $1 $2 $3 $4 $5
+#$t 3 --use-compression --reopen $1 $2 $3 $4 $5
 
 $t 3 --fullcheck-backwards --inmemorydb $1 $2 $3 $4 $5
 $t 3 --fullcheck-backwards --reopen $1 $2 $3 $4 $5
@@ -149,7 +149,7 @@ $t 2 --use-transactions=tmp --use-cursors --overwrite $1 $2 $3 $4 $5
 $t 2 --use-transactions=tmp --use-cursors --duplicate $1 $2 $3 $4 $5
 $t 2 --use-transactions=tmp --use-cursors --duplicate-first $1 $2 $3 $4 $5
 $t 2 --use-transactions=tmp --use-aes $1 $2 $3 $4 $5
-$t 2 --use-transactions=tmp --use-compression $1 $2 $3 $4 $5
+#$t 2 --use-transactions=tmp --use-compression $1 $2 $3 $4 $5
 $t 2 --use-transactions=tmp --disable-mmap $1 $2 $3 $4 $5
 $t 2 --use-transactions=tmp --fullcheck-find $1 $2 $3 $4 $5
 $t 2 --use-transactions=tmp --fullcheck-backwards $1 $2 $3 $4 $5
@@ -169,7 +169,7 @@ $t 2 --use-transactions=20 --use-cursors --overwrite $1 $2 $3 $4 $5
 $t 2 --use-transactions=20 --use-cursors --duplicate $1 $2 $3 $4 $5
 $t 2 --use-transactions=20 --use-cursors --duplicate-first $1 $2 $3 $4 $5
 $t 2 --use-transactions=20 --use-aes $1 $2 $3 $4 $5
-$t 2 --use-transactions=20 --use-compression $1 $2 $3 $4 $5
+#$t 2 --use-transactions=20 --use-compression $1 $2 $3 $4 $5
 $t 2 --use-transactions=20 --disable-mmap $1 $2 $3 $4 $5
 $t 2 --use-transactions=20 --fullcheck-find $1 $2 $3 $4 $5
 $t 2 --use-transactions=20 --fullcheck-backwards $1 $2 $3 $4 $5
@@ -189,7 +189,7 @@ $t 2 --use-transactions=200 --use-cursors --overwrite $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --use-cursors --duplicate $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --use-cursors --duplicate-first $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --use-aes $1 $2 $3 $4 $5
-$t 2 --use-transactions=200 --use-compression $1 $2 $3 $4 $5
+#$t 2 --use-transactions=200 --use-compression $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --disable-mmap $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --fullcheck-find $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --fullcheck-backwards $1 $2 $3 $4 $5
@@ -200,26 +200,6 @@ $t 2 --use-transactions=200 --cachesize=1024 $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --cachesize=102400 $1 $2 $3 $4 $5
 $t 2 --use-transactions=200 --cachesize=10240000 $1 $2 $3 $4 $5
 
-# use transactions: group 10000 ops in one txn
-$t 2 --use-transactions=10000 $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --overwrite $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --duplicate $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --use-cursors $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --use-cursors --overwrite $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --use-cursors --duplicate $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --use-cursors --duplicate-first $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --use-aes $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --use-compression $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --disable-mmap $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --fullcheck-find $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --fullcheck-backwards $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --pagesize=1024 $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --pagesize=10240 $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --pagesize=102400 $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --cachesize=1024 $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --cachesize=102400 $1 $2 $3 $4 $5
-$t 2 --use-transactions=10000 --cachesize=10240000 $1 $2 $3 $4 $5
-
 # use transactions: group ALL ops in one txn
 $t 2 --use-transactions=all $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --overwrite $1 $2 $3 $4 $5
@@ -229,7 +209,7 @@ $t 2 --use-transactions=all --use-cursors --overwrite $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --use-cursors --duplicate $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --use-cursors --duplicate-first $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --use-aes $1 $2 $3 $4 $5
-$t 2 --use-transactions=all --use-compression $1 $2 $3 $4 $5
+#$t 2 --use-transactions=all --use-compression $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --disable-mmap $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --fullcheck-find $1 $2 $3 $4 $5
 $t 2 --use-transactions=all --fullcheck-backwards $1 $2 $3 $4 $5
@@ -249,7 +229,7 @@ $t 2 --num-threads=2 --use-cursors --overwrite $1 $2 $3 $4 $5
 $t 2 --num-threads=2 --use-cursors --duplicate $1 $2 $3 $4 $5
 $t 2 --num-threads=2 --use-cursors --duplicate-first $1 $2 $3 $4 $5
 $t 2 --num-threads=2 --use-aes $1 $2 $3 $4 $5
-$t 2 --num-threads=2 --use-compression $1 $2 $3 $4 $5
+#$t 2 --num-threads=2 --use-compression $1 $2 $3 $4 $5
 $t 2 --num-threads=2 --disable-mmap $1 $2 $3 $4 $5
 $t 2 --num-threads=2 --fullcheck-find $1 $2 $3 $4 $5
 $t 2 --num-threads=2 --fullcheck-backwards $1 $2 $3 $4 $5
@@ -276,13 +256,11 @@ $t 1 --num-threads=10 --use-cursors --overwrite $1 $2 $3 $4 $5
 $t 1 --num-threads=10 --use-cursors --duplicate $1 $2 $3 $4 $5
 $t 1 --num-threads=10 --fullcheck-find $1 $2 $3 $4 $5
 $t 1 --num-threads=10 --fullcheck-backwards $1 $2 $3 $4 $5
-$t 1 --num-threads=10 --cachesize=1024 $1 $2 $3 $4 $5
-$t 1 --num-threads=10 --cachesize=102400 $1 $2 $3 $4 $5
 $t 1 --num-threads=10 --disable-mmap --cachesize=10240000 $1 $2 $3 $4 $5
 $t 1 --num-threads=10 --disable-mmap --use-transactions=20 $1 $2 $3 $4 $5
 
 # use 20 threads
 $t 2 --num-threads=20 --disable-mmap $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --disable-mmap --duplicate $1 $2 $3 $4 $5
-$t 2 --num-threads=20 --disable-mmap --use-transactions --duplicate $1 $2 $3 $4 $5
+$t 1 --num-threads=20 --disable-mmap --duplicate $1 $2 $3 $4 $5
+$t 1 --num-threads=20 --disable-mmap --use-transactions=20 --duplicate $1 $2 $3 $4 $5
 
