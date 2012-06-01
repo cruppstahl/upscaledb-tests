@@ -2,10 +2,14 @@
 #include "controller.hpp"
 #include "thread.hpp"
 #include <boost/thread/xtime.hpp>
+#include <boost/progress.hpp>
 
 void 
 Controller::run(std::vector<Thread *> &threads) 
 {
+    boost::progress_display *progress=0;
+    if (m_config->progress)
+        progress=new boost::progress_display(m_parser.get_max_lines());
     m_lineno=1;
 
     std::vector<Thread *>::iterator it;
@@ -40,11 +44,16 @@ Controller::run(std::vector<Thread *> &threads)
                 compare_records(threads);
         }
 
-        m_lineno++;
+        ++m_lineno;
+        if (progress)
+            ++(*progress);
     }
 
     for (it=threads.begin(); it!=threads.end(); it++)
         (*it)->wakeup();
+
+    if (progress)
+        delete progress;
 }
 
 void 

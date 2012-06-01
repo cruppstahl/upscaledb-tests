@@ -451,6 +451,8 @@ main(int argc, char **argv)
         delete threads[i];
     threads.clear();
 
+    if (c.progress)
+        printf("\n");
     if (ok)
         printf("[OK] %s\n", c.filename);
     else
