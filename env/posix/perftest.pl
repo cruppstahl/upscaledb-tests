@@ -18,12 +18,12 @@ sub run_single_test {
 }
 
 sub run_tests {
-  #my $exttest="../../testfiles/2/ext_062.tst";
-  #my $blbtest="../../testfiles/4/blb-003.tst";
-  #my $deftest="../../testfiles/4/300.tst";
-  my $exttest="../../testfiles/1/01.tst";
-  my $blbtest="../../testfiles/1/01.tst";
-  my $deftest="../../testfiles/1/01.tst";
+  my $exttest="../../testfiles/2/ext_062.tst";
+  my $blbtest="../../testfiles/4/blb-003.tst";
+  my $deftest="../../testfiles/4/215.tst";
+  #my $exttest="../../testfiles/1/01.tst";
+  #my $blbtest="../../testfiles/1/01.tst";
+  #my $deftest="../../testfiles/1/01.tst";
 
   unlink 'perftest.txt';
 
@@ -98,33 +98,34 @@ sub compare {
 
   # foreach test...
   foreach my $test (sort keys %old) {
-    print "$test\n";
+    my $t = '';
     while ((my $k, my $oldv) = each($old{$test})) {
       # calculate and print the diff
       my $newv = $new{$test}->{$k};
       if ($newv > $oldv) {
         if ($oldv != 0) {
           my $p = ($newv - $oldv) / $oldv;
-          $s .= "\t$k\t" . color("green") . sprintf("+%.2f %", $p)
+          $t .= "\t$k\t" . color("green") . sprintf("+%.2f %", $p)
                   . color("reset") . "\n" if ($p > $threshold);
         }
         else {
-          $s .= "\t$k\t" . color("green") . "???"
+          $t .= "\t$k\t" . color("red") . "??? -> $newv"
                   . color("reset") . "\n";
         }
       }
       elsif ($oldv > $newv) {
         if ($newv != 0) {
           my $p = ($oldv - $newv) / $newv;
-          $s .= "\t$k\t" . color("red") . sprintf("-%.2f %", $p)
+          $t .= "\t$k\t" . color("red") . sprintf("-%.2f %", $p)
                   . color("reset") . "\n" if ($p > $threshold);
         }
         else {
-          $s .= "\t$k\t" . $k . "\t" . color("red") . "???"
+          $t .= "\t$k\t" . $k . "\t" . color("red") . "$oldv -> ???"
                   . color("reset") . "\n";
         }
       }
     }
+    $s .= "$test\n$t" if $t ne '';
   }
 
   return $s;

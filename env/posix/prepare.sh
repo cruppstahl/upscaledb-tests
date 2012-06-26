@@ -3,7 +3,7 @@
 CUR=`pwd`
 HAM=/home/chris/prj/hamsterdb_master/
 HAM=/home/chris/prj/hamsterdb/
-#HAM=/home/chris/tmp/hamsterdb-2.0.2
+HAM=/home/chris/tmp/hamsterdb
 
 # update the header files
 # cp $HAM/include/ham/*.h ../common/ham/
@@ -11,7 +11,7 @@ HAM=/home/chris/prj/hamsterdb/
 
 # make the hamsterdb library
 cd $HAM/src
-make -j 2
+make -j 8
 cd $CUR
 
 # copy the library
@@ -19,7 +19,7 @@ cp $HAM/src/.libs/libhamsterdb.a .
 
 # make the test
 cd ../../src/
-make
+make -j 8
 cd $CUR
 
 # copy the test binary

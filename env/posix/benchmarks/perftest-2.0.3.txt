@@ -1,0 +1,308 @@
+./test  --no-berkeleydb ../../testfiles/2/ext_062.tst
+[OK] ../../testfiles/2/ext_062.tst
+hamsterdb
+	filesize		131072
+	mem-num-allocs		1129536
+	mem-peak-bytes		15080
+	mem-total-bytes		29936645
+	perf-cursor			1.572000
+	perf-erase 			0.020000
+	perf-find  			0.048000
+	perf-insert			0.043000
+	perf-misc  			0.142000
+	perf-total		1.825000
+
+./test  --no-berkeleydb ../../testfiles/4/blb-003.tst
+[OK] ../../testfiles/4/blb-003.tst
+hamsterdb
+	filesize		823181312
+	mem-num-allocs		42
+	mem-peak-bytes		12
+	mem-total-bytes		168
+	perf-cursor			0.967000
+	perf-erase 			0.000000
+	perf-find  			0.000000
+	perf-insert			1.132000
+	perf-misc  			0.180000
+	perf-total		2.279000
+
+./test  --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		114688
+	mem-num-allocs		266
+	mem-peak-bytes		8
+	mem-total-bytes		1064
+	perf-cursor			0.000000
+	perf-erase 			0.404000
+	perf-find  			0.000000
+	perf-insert			1.232000
+	perf-misc  			0.147000
+	perf-total		1.783000
+
+./test --disable-mmap --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		114688
+	mem-num-allocs		273
+	mem-peak-bytes		114696
+	mem-total-bytes		115752
+	perf-cursor			0.000000
+	perf-erase 			0.472000
+	perf-find  			0.000000
+	perf-insert			1.209000
+	perf-misc  			0.167000
+	perf-total		1.848000
+
+./test --disable-mmap --cacheunlimited --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		114688
+	mem-num-allocs		273
+	mem-peak-bytes		114696
+	mem-total-bytes		115752
+	perf-cursor			0.000000
+	perf-erase 			0.492000
+	perf-find  			0.000000
+	perf-insert			1.266000
+	perf-misc  			0.164000
+	perf-total		1.922000
+
+./test --duplicate --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		604536832
+	mem-num-allocs		894407
+	mem-peak-bytes		270056
+	mem-total-bytes		71018775160
+	perf-cursor			0.000000
+	perf-erase 			1.170000
+	perf-find  			0.000000
+	perf-insert			84.258996
+	perf-misc  			0.173000
+	perf-total		85.602001
+
+./test --use-cursors --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		114688
+	mem-num-allocs		674
+	mem-peak-bytes		36
+	mem-total-bytes		6676
+	perf-cursor			2.090000
+	perf-erase 			0.000000
+	perf-find  			0.000000
+	perf-insert			0.000000
+	perf-misc  			0.169000
+	perf-total		2.259000
+
+./test --use-transactions=5 --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		114688
+	mem-num-allocs		4016176
+	mem-peak-bytes		3758
+	mem-total-bytes		152159005
+	perf-cursor			0.000000
+	perf-erase 			1.047000
+	perf-find  			0.000000
+	perf-insert			1.869000
+	perf-misc  			0.164000
+	perf-total		3.080000
+
+./test --use-transactions=20 --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		114688
+	mem-num-allocs		4016148
+	mem-peak-bytes		13826
+	mem-total-bytes		152157941
+	perf-cursor			0.000000
+	perf-erase 			1.045000
+	perf-find  			0.000000
+	perf-insert			1.796000
+	perf-misc  			0.178000
+	perf-total		3.019000
+
+./test --use-transactions=100 --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		114688
+	mem-num-allocs		4016025
+	mem-peak-bytes		51515
+	mem-total-bytes		152153369
+	perf-cursor			0.000000
+	perf-erase 			1.036000
+	perf-find  			0.000000
+	perf-insert			1.844000
+	perf-misc  			0.150000
+	perf-total		3.030000
+
+./test --writethrough --use-transactions=5 --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		114688
+	mem-num-allocs		4016176
+	mem-peak-bytes		3758
+	mem-total-bytes		152159005
+	perf-cursor			0.000000
+	perf-erase 			1.831000
+	perf-find  			0.000000
+	perf-insert			3.030000
+	perf-misc  			0.243000
+	perf-total		5.104000
+
+./test --writethrough --use-transactions=20 --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		114688
+	mem-num-allocs		4016148
+	mem-peak-bytes		13826
+	mem-total-bytes		152157941
+	perf-cursor			0.000000
+	perf-erase 			1.343000
+	perf-find  			0.000000
+	perf-insert			2.154000
+	perf-misc  			0.286000
+	perf-total		3.783000
+
+./test --writethrough --use-transactions=100 --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		114688
+	mem-num-allocs		4016025
+	mem-peak-bytes		51515
+	mem-total-bytes		152153369
+	perf-cursor			0.000000
+	perf-erase 			1.229000
+	perf-find  			0.000000
+	perf-insert			1.971000
+	perf-misc  			0.258000
+	perf-total		3.458000
+
+./test --use-recovery --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		114688
+	mem-num-allocs		266
+	mem-peak-bytes		8
+	mem-total-bytes		1064
+	perf-cursor			0.000000
+	perf-erase 			0.504000
+	perf-find  			0.000000
+	perf-insert			1.319000
+	perf-misc  			0.141000
+	perf-total		1.964000
+
+./test --inmemorydb --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		0
+	mem-num-allocs		396
+	mem-peak-bytes		99451
+	mem-total-bytes		100507
+	perf-cursor			0.000000
+	perf-erase 			0.481000
+	perf-find  			0.000000
+	perf-insert			1.183000
+	perf-misc  			0.000000
+	perf-total		1.664000
+
+./test --use-cursors --duplicate --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		604536832
+	mem-num-allocs		3925590
+	mem-peak-bytes		308632
+	mem-total-bytes		225358901292
+	perf-cursor			268.640993
+	perf-erase 			0.000000
+	perf-find  			0.000000
+	perf-insert			0.000000
+	perf-misc  			0.174000
+	perf-total		268.815008
+
+./test --use-cursors --duplicate --use-transactions=5 --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		604536832
+	mem-num-allocs		11942078
+	mem-peak-bytes		275205
+	mem-total-bytes		328092949820
+	perf-cursor			200.840004
+	perf-erase 			0.000000
+	perf-find  			0.000000
+	perf-insert			0.000000
+	perf-misc  			0.185000
+	perf-total		201.024995
+
+./test --use-cursors --duplicate --use-transactions=5 --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		604536832
+	mem-num-allocs		11942078
+	mem-peak-bytes		275205
+	mem-total-bytes		328092949820
+	perf-cursor			199.489995
+	perf-erase 			0.000000
+	perf-find  			0.000000
+	perf-insert			0.000000
+	perf-misc  			0.156000
+	perf-total		199.646003
+
+./test --num-threads=5 --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		458752
+	mem-num-allocs		1330
+	mem-peak-bytes		40
+	mem-total-bytes		5320
+	perf-cursor			0.000000
+	perf-erase 			1.407000
+	perf-find  			0.000000
+	perf-insert			5.644000
+	perf-misc  			0.342000
+	perf-total		7.393000
+
+./test --num-threads=20 --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		1720320
+	mem-num-allocs		5320
+	mem-peak-bytes		160
+	mem-total-bytes		21280
+	perf-cursor			0.000000
+	perf-erase 			3.182000
+	perf-find  			0.000000
+	perf-insert			11.442000
+	perf-misc  			0.988000
+	perf-total		15.612000
+
+./test --num-threads=5 --use-transactions=5 --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		458752
+	mem-num-allocs		20080880
+	mem-peak-bytes		17490
+	mem-total-bytes		760795025
+	perf-cursor			0.000000
+	perf-erase 			10.366000
+	perf-find  			0.000000
+	perf-insert			14.968001
+	perf-misc  			0.375000
+	perf-total		25.709001
+
+./test --num-threads=20 --use-transactions=5 --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	filesize		1736704
+	mem-num-allocs		80323520
+	mem-peak-bytes		69960
+	mem-total-bytes		3043180100
+	perf-cursor			0.000000
+	perf-erase 			32.507001
+	perf-find  			0.000000
+	perf-insert			47.816999
+	perf-misc  			0.734000
+	perf-total		81.057997
+
