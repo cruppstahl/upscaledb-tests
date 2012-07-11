@@ -73,28 +73,28 @@ Parser::process_line(unsigned lineno, Engine *engine)
         return 1;
     VERBOSE(("%d: line %u: reading token '%s' .......................\n", 
                 engine->get_id(), lineno, tokens[0].c_str()));
-    if (tokens[0]=="--") {
-        return 1;
-    }
-    else if (tokens[0]=="CREATE_ENV") {
-        return (engine->create_env());
-    }
-    else if (tokens[0]=="CREATE") {
-        return (engine->create_db(strstr(line+pos, "NUMERIC_KEY") 
-                    ? true : false));
-    }
-    else if (tokens[0]=="OPEN_ENV") {
-        return (engine->open_env());
-    }
-    else if (tokens[0]=="OPEN") {
-        return (engine->open_db(strstr(line+pos, "NUMERIC_KEY") 
-                    ? true : false));
-    }
-    else if (tokens[0]=="BREAK") {
+    if (tokens[0]=="BREAK") {
         printf("break at %s:%u\n", __FILE__, __LINE__);
         return 1;
     }
-    else if (tokens[0]=="INSERT") {
+    if (tokens[0]=="--") {
+        return 1;
+    }
+    if (tokens[0]=="CREATE_ENV") {
+        return (engine->create_env());
+    }
+    if (tokens[0]=="CREATE") {
+        return (engine->create_db(strstr(line+pos, "NUMERIC_KEY") 
+                    ? true : false));
+    }
+    if (tokens[0]=="OPEN_ENV") {
+        return (engine->open_env());
+    }
+    if (tokens[0]=="OPEN") {
+        return (engine->open_db(strstr(line+pos, "NUMERIC_KEY") 
+                    ? true : false));
+    }
+    if (tokens[0]=="INSERT") {
         const char *flags;
         const char *keytok;
         const char *data;
@@ -117,7 +117,7 @@ Parser::process_line(unsigned lineno, Engine *engine)
         (void)flags;
         return (engine->insert(lineno, keytok, data));
     }
-    else if (tokens[0]=="ERASE") {
+    if (tokens[0]=="ERASE") {
         if (tokens.size()<3) {
             TRACE(("line %d (ERASE): parser error\n", lineno+1));
             exit(-1);
@@ -127,7 +127,7 @@ Parser::process_line(unsigned lineno, Engine *engine)
         (void)flags;
         return (engine->erase(keytok));
     }
-    else if (tokens[0]=="FIND") {
+    if (tokens[0]=="FIND") {
         if (tokens.size()!=3) {
             TRACE(("line %d (FIND): parser error\n", lineno+1));
             exit(-1);
@@ -137,19 +137,19 @@ Parser::process_line(unsigned lineno, Engine *engine)
         (void)flags;
         return (engine->find(keytok));
     }
-    else if (tokens[0]=="FULLCHECK") {
+    if (tokens[0]=="FULLCHECK") {
         return true; // this is executed in Controller.cpp
     }
-    else if (tokens[0]=="CLOSE_TXN") {
+    if (tokens[0]=="CLOSE_TXN") {
         return (engine->close_txn());
     }
-    else if (tokens[0]=="CLOSE") {
+    if (tokens[0]=="CLOSE") {
         return (engine->close_db());
     }
-    else if (tokens[0]=="CLOSE_ENV") {
+    if (tokens[0]=="CLOSE_ENV") {
         return (engine->close_env());
     }
-    else if (tokens[0]=="FLUSH") {
+    if (tokens[0]=="FLUSH") {
         return (engine->flush());
     }
 
