@@ -15,4 +15,17 @@
    fun:_ZN6parser7processEv
    fun:main
 }
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   fun:malloc
+   fun:_ZN5boost6detail25get_once_per_thread_epochEv
+   fun:_ZN5boost9call_onceIPFvvEEEvRNS_9once_flagET_.constprop.108
+   fun:_ZN5boost6detail23get_current_thread_dataEv
+   fun:_ZN5boost6detail20interruption_checkerC1EP15pthread_mutex_tP14pthread_cond_t
+   fun:_ZN5boost22condition_variable_any10timed_waitINS_11unique_lockINS_5mutexEEEEEbRT_RKNS_10posix_time5ptimeE
+   fun:_ZN5boost22condition_variable_any10timed_waitINS_11unique_lockINS_5mutexEEEEEbRT_RKNS_5xtimeE
+   fun:_ZN10Controller3runERSt6vectorIP6ThreadSaIS2_EE
+   fun:main
+}
 
