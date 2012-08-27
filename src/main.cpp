@@ -43,6 +43,7 @@
 #define ARG_WRITETHROUGH               42
 #define ARG_NO_BDB                     43
 #define ARG_NUM_THREADS                44
+#define ARG_DISABLE_ASYNC              45
 
 Metrics *Metrics::instance;
 
@@ -242,6 +243,12 @@ static option_t opts[]={
         "num-threads",
         "sets the number of threads (default: 1)",
         GETOPTS_NEED_ARGUMENT },
+    {
+        ARG_DISABLE_ASYNC,
+        0,
+        "disable-async",
+        "disable asynchronous flushing of committed transactions",
+        0 },
     { 0, 0, 0, 0, 0 }
 };
 
@@ -335,8 +342,6 @@ parse_config(int argc, char **argv, config *c)
                 c->data_access_mode|=HAM_DAM_SEQUENTIAL_INSERT;
             if (strstr(param, "HAM_DAM_RANDOM_WRITE"))
                 c->data_access_mode|=HAM_DAM_RANDOM_WRITE;
-            if (strstr(param, "HAM_DAM_ENFORCE_PRE110_FORMAT"))
-                c->data_access_mode|=HAM_DAM_ENFORCE_PRE110_FORMAT;
             if (param && !c->data_access_mode) {
                 printf("invalid or missing parameter for 'data access mode'\n");
                 exit(-1);
@@ -406,6 +411,9 @@ parse_config(int argc, char **argv, config *c)
                 exit(-1);
             }
         }
+        else if (opt==ARG_DISABLE_ASYNC) {
+            c->disable_async=true;
+        }
         else if (opt==GETOPTS_PARAMETER) {
             c->filename=param;
         }
@@ -462,7 +470,7 @@ main(int argc, char **argv)
         Metrics::get_instance()->print();
 
     curl_global_cleanup();
-    proto_shutdown();
+    //proto_shutdown();
     delete Metrics::get_instance();
 
 	return (ok ? 0 : 1);

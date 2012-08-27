@@ -30,7 +30,7 @@ typedef struct memdesc_t
     char data[1];
 } memdesc_t;
 
-class TrackingAllocator : public Allocator
+class TrackingAllocator : public ham::Allocator
 {
   public:
     TrackingAllocator()
