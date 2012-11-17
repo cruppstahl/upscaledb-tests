@@ -54,13 +54,19 @@ class Thread
 
     database *get_db() { return m_engine.get_db(); }
 
-    bool check_integrity() { return m_engine.check_integrity(); }
+    bool check_integrity() {
+        if (!m_engine.check_integrity())
+            exit(-1);
+        return true;
+    }
 
     void *create_cursor() { return m_engine.create_cursor(); }
 
     void close_cursor(void *c) { return m_engine.close_cursor(c); }
 
     const ham_record_t &get_record() { return m_engine.get_record(); }
+
+    void flush() { m_engine.flush(); }
 
   private:
     void run() {

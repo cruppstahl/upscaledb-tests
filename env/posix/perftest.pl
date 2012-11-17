@@ -49,6 +49,11 @@ sub run_tests {
   run_single_test($deftest, "--num-threads=20");
   run_single_test($deftest, "--num-threads=5 --use-transactions=5");
   run_single_test($deftest, "--num-threads=20 --use-transactions=5");
+  run_single_test($deftest, "--use-transactions=5 --enable-async");
+  run_single_test($deftest, "--use-transactions=20 --enable-async");
+  run_single_test($deftest, "--use-transactions=100 --enable-async");
+  run_single_test($deftest, "--num-threads=5 --use-transactions=5 --enable-async");
+  run_single_test($deftest, "--num-threads=20 --use-transactions=5 --enable-async");
   return '';
 }
 

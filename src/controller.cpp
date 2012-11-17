@@ -143,15 +143,18 @@ Controller::compare_fullcheck(std::vector<Thread *> &threads)
             }
 
             if (st0!=st) {
-                printf("Failure in FULLCHECK: status %d != %d\n", st0, st);
+                printf("line %d: Failure in FULLCHECK: status %d != %d\n",
+                        (int)m_lineno, st0, st);
                 exit(-1);
             }
             if (rec.size!=rec0.size || memcmp(rec.data, rec0.data, rec.size)) {
-                printf("Failure in FULLCHECK: record mismatch\n");
+                printf("line %d: Failure in FULLCHECK: record mismatch\n",
+                        (int)m_lineno);
                 exit(-1);
             }
             if (key.size!=key0.size || memcmp(key.data, key0.data, key.size)) {
-                printf("Failure in FULLCHECK: key mismatch\n");
+                printf("line %d: Failure in FULLCHECK: key mismatch\n",
+                        (int)m_lineno);
                 exit(-1);
             }
         }

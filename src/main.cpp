@@ -43,7 +43,6 @@
 #define ARG_WRITETHROUGH               42
 #define ARG_NO_BDB                     43
 #define ARG_NUM_THREADS                44
-#define ARG_DISABLE_ASYNC              45
 
 Metrics *Metrics::instance;
 
@@ -243,12 +242,6 @@ static option_t opts[]={
         "num-threads",
         "sets the number of threads (default: 1)",
         GETOPTS_NEED_ARGUMENT },
-    {
-        ARG_DISABLE_ASYNC,
-        0,
-        "disable-async",
-        "disable asynchronous flushing of committed transactions",
-        0 },
     { 0, 0, 0, 0, 0 }
 };
 
@@ -410,9 +403,6 @@ parse_config(int argc, char **argv, config *c)
                 printf("invalid parameter for 'num-threads'\n");
                 exit(-1);
             }
-        }
-        else if (opt==ARG_DISABLE_ASYNC) {
-            c->disable_async=true;
         }
         else if (opt==GETOPTS_PARAMETER) {
             c->filename=param;
