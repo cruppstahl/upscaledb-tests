@@ -1,3 +1,14 @@
+/**
+ * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or 
+ * (at your option) any later version.
+ *
+ * See files COPYING.* for License information.
+ */
+
 #ifndef DATABASE_HPP__
 #define DATABASE_HPP__
 
@@ -9,28 +20,28 @@ struct config;
 
 class database
 {
-protected:
+  protected:
     class timer
     {
-    public:
+      public:
         enum idx {
-            misc=0,
-            insert,
-            erase,
-            find,
-            cursor
+          misc = 0,
+          insert,
+          erase,
+          find,
+          cursor
         };
 
         timer(database *db, database::timer::idx store)
-        :   m_db(db), m_store(store) {
-            m_start=os::now();
+          :   m_db(db), m_store(store) {
+          m_start = os::now();
         }
 
         ~timer() {
-            m_db->m_profile[m_store]+=os::now()-m_start;
+          m_db->m_profile[m_store] += os::now() - m_start;
         }
 
-    private:
+      private:
         database *m_db;
         database::timer::idx m_store;
         ham_u64_t m_start;
@@ -39,7 +50,7 @@ protected:
 public:
     database(int id, config *c)
       : m_id(id), m_config(c) {
-        memset(m_profile, 0, sizeof(m_profile));
+      memset(m_profile, 0, sizeof(m_profile));
     }
 
     virtual ~database(void) {
@@ -60,20 +71,20 @@ public:
     virtual ham_status_t txn_commit()=0;
 
     int get_id() { return m_id; }
-    virtual const char *get_name()=0;
+    virtual const char *get_name() = 0;
 
-    virtual ham_status_t check_integrity()=0;
+    virtual ham_status_t check_integrity() = 0;
 
-	virtual void *create_cursor()=0;
+	virtual void *create_cursor() = 0;
     virtual ham_status_t get_previous(void *cursor, ham_key_t *key, 
-                    ham_record_t *record, int flags)=0;
+                    ham_record_t *record, int flags) = 0;
     virtual ham_status_t get_next(void *cursor, ham_key_t *key, 
-                    ham_record_t *record, int flags)=0;
-    virtual void close_cursor(void *cursor)=0;
+                    ham_record_t *record, int flags) = 0;
+    virtual void close_cursor(void *cursor) = 0;
 
     virtual void collect_metrics();
 
-protected:
+  protected:
     int m_id;
     config *m_config;
     ham_u64_t m_profile[10];

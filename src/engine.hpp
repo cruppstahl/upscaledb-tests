@@ -1,3 +1,14 @@
+/**
+ * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or 
+ * (at your option) any later version.
+ *
+ * See files COPYING.* for License information.
+ */
+
 
 #ifndef ENGINE_HPP__
 #define ENGINE_HPP__
@@ -13,7 +24,7 @@ struct config;
 
 class Engine
 {
-public:
+  public:
     Engine(int id, config *c, Parser *p, const std::string &name);
     ~Engine();
 
@@ -34,34 +45,34 @@ public:
     void close_cursor(void *cursor);
 
     int get_id() {
-        return get_db()->get_id();
+      return get_db()->get_id();
     }
 
     database *get_db() { 
-        boost::mutex::scoped_lock lock(m_mutex);
-        return m_db; 
+      boost::mutex::scoped_lock lock(m_mutex);
+      return m_db; 
     }
 
     ham_status_t get_status() {
-        boost::mutex::scoped_lock lock(m_mutex);
-        return m_status; 
+      boost::mutex::scoped_lock lock(m_mutex);
+      return m_status; 
     }
 
     const ham_record_t &get_record() {
-        boost::mutex::scoped_lock lock(m_mutex);
-        return m_record; 
+      boost::mutex::scoped_lock lock(m_mutex);
+      return m_record; 
     }
 
-protected:
+  protected:
     bool owns_env() {
-        return (dynamic_cast<Berkeleydb *>(m_db) || m_db->get_id()==1);
+      return (dynamic_cast<Berkeleydb *>(m_db) || m_db->get_id() == 1);
     }
 
     bool txn_begin();
     bool txn_commit();
 
     //bool compare_records(ham_record_t *rec1, ham_record_t *rec2);
-    bool inc_opcount(void);
+    bool inc_opcount();
 
     database *m_db;
     config *m_config;

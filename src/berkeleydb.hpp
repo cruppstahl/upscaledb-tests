@@ -1,3 +1,14 @@
+/**
+ * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or 
+ * (at your option) any later version.
+ *
+ * See files COPYING.* for License information.
+ */
+
 #ifndef BERKELEYDB_HPP__
 #define BERKELEYDB_HPP__
 
@@ -9,7 +20,7 @@
 
 class Berkeleydb : public database
 {
-public:
+  public:
     Berkeleydb(int id, config *c)
       : database(id, c), m_db(0), m_cursor(0) {
     }
@@ -42,7 +53,7 @@ public:
 
     virtual void collect_metrics();
 
-protected:
+  protected:
     ham_status_t db2ham(int ret);
 
     DB *m_db;

@@ -26,37 +26,36 @@ typedef boost::mutex::scoped_lock ScopedLock;
 
 class Metrics
 {
-    typedef std::map<std::string, std::map<std::string, unsigned long> > MetricMap;
+  typedef std::map<std::string, std::map<std::string, unsigned long> > MetricMap;
   public:
     void add_metric(const char *idx, const char *name, unsigned long value) {
-        ScopedLock lock(m_mutex);
-        m_metrics[idx][name]=value;
+      ScopedLock lock(m_mutex);
+      m_metrics[idx][name] = value;
     }
 
     void print() {
-        ScopedLock lock(m_mutex);
-        for (MetricMap::iterator it=m_metrics.begin(); 
-                it!=m_metrics.end(); ++it) {
-            std::map<std::string, unsigned long> &m=it->second;
-            std::map<std::string, unsigned long>::iterator it2;
-            if (m.empty())
-                continue;
-            printf("%s\n", it->first.c_str());
-            for (it2=m.begin(); it2!=m.end(); ++it2) {
-                if (!strstr(it2->first.c_str(), "perf-"))
-                    printf("\t%s\t\t%lu\n", it2->first.c_str(), 
-                            it2->second);
-                else
-                    printf("\t%s\t\t%f\n", it2->first.c_str(), 
-                            (double)it2->second/1000000000.);
-                }
+      ScopedLock lock(m_mutex);
+      for (MetricMap::iterator it = m_metrics.begin(); 
+            it != m_metrics.end(); ++it) {
+        std::map<std::string, unsigned long> &m = it->second;
+        std::map<std::string, unsigned long>::iterator it2;
+        if (m.empty())
+          continue;
+        printf("%s\n", it->first.c_str());
+        for (it2 = m.begin(); it2 != m.end(); ++it2) {
+          if (!strstr(it2->first.c_str(), "perf-"))
+            printf("\t%s\t\t%lu\n", it2->first.c_str(), it2->second);
+          else
+            printf("\t%s\t\t%f\n", it2->first.c_str(), 
+                      (double)it2->second / 1000000000.);
         }
+      }
     }
 
     static Metrics *get_instance() {
-        if (!instance)
-            instance=new Metrics();
-        return instance;
+      if (!instance)
+        instance = new Metrics();
+      return instance;
     }
 
     static Metrics *instance;
@@ -73,7 +72,6 @@ class Metrics
 
     MetricMap m_metrics;
 };
-
 
 #endif // METRICS_HPP__
 

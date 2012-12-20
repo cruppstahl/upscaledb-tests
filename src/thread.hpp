@@ -1,3 +1,14 @@
+/**
+ * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or 
+ * (at your option) any later version.
+ *
+ * See files COPYING.* for License information.
+ */
+
 
 #ifndef THREAD_HPP__
 #define THREAD_HPP__
@@ -16,38 +27,38 @@ class Thread
   public:
     Thread(int id, Controller &ctrl, config &c, Parser &p, const char *backend)
       : m_fail(false), m_eof(false), m_running(false), m_controller(ctrl),
-        m_lineno(0), m_engine(id, &c, &p, backend), m_parser(&p) {
-        m_thread=boost::thread(boost::bind(&Thread::run, this));
+      m_lineno(0), m_engine(id, &c, &p, backend), m_parser(&p) {
+      m_thread = boost::thread(boost::bind(&Thread::run, this));
     }
 
     int get_id() {
-        return m_engine.get_id();
+      return m_engine.get_id();
     }
 
     void join() {
-        m_thread.join();
-        assert(m_eof);
-        assert(!m_running);
+      m_thread.join();
+      assert(m_eof);
+      assert(!m_running);
     }
 
     unsigned get_lineno() {
-        boost::mutex::scoped_lock lock(m_mutex);
-        return get_lineno_nolock();
+      boost::mutex::scoped_lock lock(m_mutex);
+      return get_lineno_nolock();
     }
 
     unsigned get_lineno_nolock() {
-        return m_lineno;
+      return m_lineno;
     }
 
     bool success() {
-        boost::mutex::scoped_lock lock(m_mutex);
-        return !m_fail;
+      boost::mutex::scoped_lock lock(m_mutex);
+      return !m_fail;
     }
 
     void wakeup() {
-        boost::mutex::scoped_lock lock(m_mutex);
-        m_running=true;
-        m_cond.notify_one();
+      boost::mutex::scoped_lock lock(m_mutex);
+      m_running = true;
+      m_cond.notify_one();
     }
 
     ham_status_t get_status() { return m_engine.get_status(); }
@@ -55,9 +66,9 @@ class Thread
     database *get_db() { return m_engine.get_db(); }
 
     bool check_integrity() {
-        if (!m_engine.check_integrity())
-            exit(-1);
-        return true;
+      if (!m_engine.check_integrity())
+        exit(-1);
+      return true;
     }
 
     void *create_cursor() { return m_engine.create_cursor(); }
@@ -70,24 +81,24 @@ class Thread
 
   private:
     void run() {
-        while (get_lineno()<m_parser->get_max_lines()) {
-            boost::mutex::scoped_lock lock(m_mutex);
-            while (!m_running)
-                m_cond.wait(lock);
-            // printf("%d: line %d\n", m_engine.get_id(), m_lineno);
+      while (get_lineno() < m_parser->get_max_lines()) {
+        boost::mutex::scoped_lock lock(m_mutex);
+        while (!m_running)
+          m_cond.wait(lock);
+        // printf("%d: line %d\n", m_engine.get_id(), m_lineno);
 
-            bool ok=m_parser->process_line(m_lineno, &m_engine);
-            m_lineno++;
-            m_running=false;
-            m_controller.wakeup();
+        bool ok = m_parser->process_line(m_lineno, &m_engine);
+        m_lineno++;
+        m_running = false;
+        m_controller.wakeup();
 
-            if (!ok) {
-                m_fail=true;
-                return;
-            }
+        if (!ok) {
+          m_fail = true;
+          return;
         }
+      }
 
-        m_eof=true;
+      m_eof = true;
     }
 
     boost::mutex m_mutex;

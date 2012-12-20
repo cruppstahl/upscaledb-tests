@@ -1,3 +1,14 @@
+/**
+ * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or 
+ * (at your option) any later version.
+ *
+ * See files COPYING.* for License information.
+ */
+
 #ifndef HAMSTERDB_HPP__
 #define HAMSTERDB_HPP__
 
@@ -9,11 +20,11 @@
 
 class Hamsterdb : public database
 {
-public:
+  public:
     Hamsterdb(int id, config *c)
       : database(id, c), m_db(0), m_txn(0), m_cursor(0), m_mt(0) {
-        m_mt=new TrackingAllocator();
-        m_useralloc=malloc(1024*1024*100);
+        m_mt = new TrackingAllocator();
+        m_useralloc = malloc(1024 * 1024 * 100);
     }
 
     ~Hamsterdb();

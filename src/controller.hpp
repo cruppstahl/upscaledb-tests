@@ -1,3 +1,14 @@
+/**
+ * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or 
+ * (at your option) any later version.
+ *
+ * See files COPYING.* for License information.
+ */
+
 
 #ifndef CONTROLLER_HPP__
 #define CONTROLLER_HPP__
@@ -18,13 +29,13 @@ class Controller
     }
 
     void wakeup() {
-        m_controller_cond.notify_one();
+      m_controller_cond.notify_one();
     }
 
     void run(std::vector<Thread *> &threads);
 
     bool reached_eof() {
-        return m_lineno >= m_parser.get_max_lines();
+      return m_lineno >= m_parser.get_max_lines();
     }
 
     bool reached_line(std::vector<Thread *> &threads, unsigned line);
