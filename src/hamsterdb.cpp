@@ -72,7 +72,6 @@ Hamsterdb::create_env()
 
   flags |= m_config->inmemory ? HAM_IN_MEMORY : 0; 
   flags |= m_config->no_mmap ? HAM_DISABLE_MMAP : 0; 
-  flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
   flags |= m_config->recovery ? HAM_ENABLE_RECOVERY : 0;
   flags |= m_config->cacheunlimited ? HAM_CACHE_UNLIMITED : 0;
   flags |= m_config->enable_transactions ? HAM_ENABLE_TRANSACTIONS : 0;
@@ -99,7 +98,12 @@ Hamsterdb::create_db()
   params[1].name = 0;
   params[1].value = 0;
 
-  st = ham_env_create_db(ms_env, &m_db, 1 + m_id, 0, &params[0]);
+  ham_u32_t flags = 0;
+
+  flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
+  flags |= HAM_ENABLE_EXTENDED_KEYS;
+
+  st = ham_env_create_db(ms_env, &m_db, 1 + m_id, flags, &params[0]);
   if (st) {
     TRACE(("failed to create database %d: %d\n", 1+m_id, st));
     return (st);
