@@ -46,6 +46,7 @@ compare_keys(ham_db_t *db,
 
 Hamsterdb::~Hamsterdb()
 {
+  delete m_mt;
   free(m_useralloc);
 }
 
