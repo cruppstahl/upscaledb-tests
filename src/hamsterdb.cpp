@@ -16,6 +16,7 @@
 #include "endian.hpp"
 #include "os.hpp"
 #include "misc.hpp"
+#include "metrics.hpp"
 
 #include <boost/thread.hpp>
 #include <ham/hamsterdb_int.h>
@@ -46,7 +47,6 @@ compare_keys(ham_db_t *db,
 
 Hamsterdb::~Hamsterdb()
 {
-  delete m_mt;
   free(m_useralloc);
 }
 
@@ -59,8 +59,6 @@ Hamsterdb::create_env()
   boost::mutex::scoped_lock lock(ms_mutex);
   if (ms_env)
     return (0);
-
-  ham_env_set_allocator(ms_env, m_mt);
 
   params[0].name = HAM_PARAM_CACHESIZE;
   params[0].value = m_config->cachesize;
@@ -126,8 +124,6 @@ Hamsterdb::open_env()
   ham_parameter_t params[6];
 
   timer t(this, timer::misc);
-
-  ham_env_set_allocator(ms_env, m_mt);
 
   params[0].name = HAM_PARAM_CACHESIZE;
   params[0].value = m_config->cachesize;
@@ -406,11 +402,41 @@ Hamsterdb::collect_metrics()
   database::collect_metrics();
   Metrics::get_instance()->add_metric(get_name(), "filesize", 
       os::get_filesize("test-ham.db"));
-  Metrics::get_instance()->add_metric(get_name(), "mem-num-allocs", 
-      m_mt->get_num_allocs());
-  Metrics::get_instance()->add_metric(get_name(), "mem-peak-bytes",
-      m_mt->get_peak_bytes());
-  Metrics::get_instance()->add_metric(get_name(), "mem-total-bytes",
-      m_mt->get_total_bytes());
+
+  ham_env_metrics_t metrics;
+  ham_env_get_metrics(ms_env, &metrics);
+
+  Metrics::get_instance()->add_metric(get_name(), "mem-total-allocations", 
+            metrics.mem_total_allocations);
+  Metrics::get_instance()->add_metric(get_name(), "mem-peak-usage", 
+            metrics.mem_peak_usage);
+  Metrics::get_instance()->add_metric(get_name(), "page-count-fetched", 
+            metrics.page_count_fetched);
+  Metrics::get_instance()->add_metric(get_name(), "page-count-flushed", 
+            metrics.page_count_flushed);
+  Metrics::get_instance()->add_metric(get_name(), "page-count-type-index", 
+            metrics.page_count_type_index);
+  Metrics::get_instance()->add_metric(get_name(), "page-count-type-blob", 
+            metrics.page_count_type_blob);
+  Metrics::get_instance()->add_metric(get_name(), "page-count-type-freelist", 
+            metrics.page_count_type_freelist);
+  Metrics::get_instance()->add_metric(get_name(), "freelist-hits",
+            metrics.freelist_hits);
+  Metrics::get_instance()->add_metric(get_name(), "freelist-misses",
+            metrics.freelist_misses);
+  Metrics::get_instance()->add_metric(get_name(), "cache-hits",
+            metrics.cache_hits);
+  Metrics::get_instance()->add_metric(get_name(), "cache-misses",
+            metrics.cache_misses);
+  Metrics::get_instance()->add_metric(get_name(), "blob-total-allocated",
+            metrics.blob_total_allocated);
+  Metrics::get_instance()->add_metric(get_name(), "blob-total-read",
+            metrics.blob_total_read);
+  Metrics::get_instance()->add_metric(get_name(), "blob-direct-read",
+            metrics.blob_direct_read);
+  Metrics::get_instance()->add_metric(get_name(), "blob-direct-written",
+            metrics.blob_direct_written);
+  Metrics::get_instance()->add_metric(get_name(), "blob-direct-allocated",
+            metrics.blob_direct_allocated);
 }
 

@@ -60,15 +60,17 @@ class Metrics
 
     static Metrics *instance;
 
+    ham_env_metrics_t *get_ham_metrics() {
+      return (&m_ham_metrics);
+    }
+
   private:
     Metrics() {
     }
 
-    unsigned long m_mem_allocs;
-    unsigned long m_mem_peak;
-    unsigned long m_mem_current;
-    unsigned long m_mem_total;
     boost::mutex m_mutex;
+
+    ham_env_metrics_t m_ham_metrics;
 
     MetricMap m_metrics;
 };

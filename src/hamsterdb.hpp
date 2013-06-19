@@ -16,14 +16,12 @@
 #include <ham/hamsterdb_int.h>
 
 #include "database.hpp"
-#include "memtracker.hpp"
 
 class Hamsterdb : public database
 {
   public:
     Hamsterdb(int id, config *c)
-      : database(id, c), m_db(0), m_txn(0), m_cursor(0), m_mt(0) {
-        m_mt = new TrackingAllocator();
+      : database(id, c), m_db(0), m_txn(0), m_cursor(0) {
         m_useralloc = malloc(1024 * 1024 * 100);
     }
 
@@ -61,7 +59,6 @@ protected:
     ham_db_t *m_db;
     ham_txn_t *m_txn;
     ham_cursor_t *m_cursor;
-    TrackingAllocator *m_mt;
     void *m_useralloc;
 };
 

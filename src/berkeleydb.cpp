@@ -86,7 +86,7 @@ Berkeleydb::create_db()
    */
 
   ret = m_db->open(m_db, 0, m_config->inmemory ? 0 : DB_PATH "test-berk.db", 
-      /* const char *dbname */ 0, DB_BTREE, DB_CREATE, 0);
+      /* const char *dbname */ 0, DB_BTREE, DB_CREATE, 0644);
   if (ret)
     return (db2ham(ret));
 
