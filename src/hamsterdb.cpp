@@ -54,7 +54,7 @@ ham_status_t
 Hamsterdb::create_env()
 {
   ham_u32_t flags = 0;
-  ham_parameter_t params[6];
+  ham_parameter_t params[6] = {{0, 0}};
 
   boost::mutex::scoped_lock lock(ms_mutex);
   if (ms_env)
@@ -66,8 +66,10 @@ Hamsterdb::create_env()
   params[1].value = m_config->pagesize;
   params[2].name = HAM_PARAM_MAX_DATABASES;
   params[2].value = 32;
-  params[3].name = 0;
-  params[3].value = 0;
+  if (m_config->encryption) {
+    params[3].name = HAM_PARAM_ENCRYPTION_KEY;
+    params[3].value = (ham_u64_t)"1234567890123456";
+  }
 
   flags |= m_config->inmemory ? HAM_IN_MEMORY : 0; 
   flags |= m_config->no_mmap ? HAM_DISABLE_MMAP : 0; 
@@ -88,14 +90,12 @@ ham_status_t
 Hamsterdb::create_db()
 {
   ham_status_t st;
-  ham_parameter_t params[6];
+  ham_parameter_t params[6] = {{0, 0}};
 
   timer t(this, timer::misc);
 
   params[0].name = HAM_PARAM_KEYSIZE;
   params[0].value = m_config->keysize;
-  params[1].name = 0;
-  params[1].value = 0;
 
   ham_u32_t flags = 0;
 
@@ -121,14 +121,16 @@ ham_status_t
 Hamsterdb::open_env()
 {
   ham_u32_t flags = 0;
-  ham_parameter_t params[6];
+  ham_parameter_t params[6] = {{0, 0}};
 
   timer t(this, timer::misc);
 
   params[0].name = HAM_PARAM_CACHESIZE;
   params[0].value = m_config->cachesize;
-  params[1].name = 0;
-  params[1].value = 0;
+  if (m_config->encryption) {
+    params[1].name = HAM_PARAM_ENCRYPTION_KEY;
+    params[1].value = (ham_u64_t)"1234567890123456";
+  }
 
   flags |= m_config->no_mmap ? HAM_DISABLE_MMAP : 0; 
   flags |= m_config->cacheunlimited ? HAM_CACHE_UNLIMITED : 0;

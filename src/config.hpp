@@ -53,6 +53,7 @@ typedef struct config
     quiet = false;
     no_bdb = false;
     num_threads = 1;
+    encryption = false;
   }
 
   void set_numeric(bool b) {
@@ -90,6 +91,7 @@ typedef struct config
   bool quiet;
   bool no_bdb;
   unsigned num_threads;
+  bool encryption;
   boost::mutex m_mutex;
 
   private:

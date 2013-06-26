@@ -48,6 +48,7 @@
 #define ARG_WRITETHROUGH            42
 #define ARG_NO_BDB                  43
 #define ARG_NUM_THREADS             44
+#define ARG_ENABLE_ENCRYPTION       45
 
 Metrics *Metrics::instance;
 
@@ -209,6 +210,12 @@ static option_t opts[]={
     "num-threads",
     "sets the number of threads (default: 1)",
     GETOPTS_NEED_ARGUMENT },
+  {
+    ARG_ENABLE_ENCRYPTION,
+    0,
+    "enable-encryption",
+    "enables AES encryption",
+    0 },
   { 0, 0, 0, 0, 0 }
 };
 
@@ -334,6 +341,9 @@ parse_config(int argc, char **argv, config *c)
         printf("invalid parameter for 'num-threads'\n");
         exit(-1);
       }
+    }
+    else if (opt == ARG_ENABLE_ENCRYPTION) {
+      c->encryption = true;
     }
     else if (opt == GETOPTS_PARAMETER) {
       c->filename = param;
