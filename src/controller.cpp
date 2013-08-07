@@ -32,7 +32,7 @@ Controller::run(std::vector<Thread *> &threads)
     while (true) {
       boost::mutex::scoped_lock lock(m_mutex);
       if (!reached_line(threads, m_lineno)) {
-        boost::xtime t;
+		boost::xtime t = {0,0};
         t.nsec += 10000;
         xtime_get(&t, 1);
         m_controller_cond.timed_wait(lock, t);

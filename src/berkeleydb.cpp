@@ -20,7 +20,7 @@
 
 
 static int
-compare_db(DB *db, const DBT *dbt1, const DBT *dbt2)
+compare_db(DB *db, const DBT *dbt1, const DBT *dbt2, size_t *)
 {
   int l, r;
   memcpy(&l, dbt1->data, sizeof(l));

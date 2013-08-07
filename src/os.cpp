@@ -12,7 +12,11 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
+#ifdef WIN32
+#  include <windows.h>
+#else
+#  include <unistd.h>
+#endif
 
 #include "porting.hpp"
 #include "os.hpp"
@@ -22,7 +26,7 @@ bool
 os::unlink(const char *path)
 {
 #ifdef WIN32
-  return (0 != DeleteFile(path));
+  return (0 != DeleteFileA(path));
 #else
   return (0 == ::unlink(path));
 #endif

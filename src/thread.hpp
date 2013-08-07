@@ -16,7 +16,9 @@
 #include <assert.h>
 
 #include "controller.hpp"
-#include "config.h"
+#ifndef WIN32
+#  include "config.h"
+#endif
 #include "parser.hpp"
 #include "engine.hpp"
 
