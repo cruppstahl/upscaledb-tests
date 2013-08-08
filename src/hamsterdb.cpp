@@ -440,5 +440,9 @@ Hamsterdb::collect_metrics()
             metrics.blob_direct_written);
   Metrics::get_instance()->add_metric(get_name(), "blob-direct-allocated",
             metrics.blob_direct_allocated);
+  Metrics::get_instance()->add_metric(get_name(), "extkey-cache-hits",
+            metrics.extkey_cache_hits);
+  Metrics::get_instance()->add_metric(get_name(), "extkey-cache-misses",
+            metrics.extkey_cache_misses);
 }
 
