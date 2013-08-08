@@ -20,7 +20,11 @@
 
 
 static int
+#if DB_VERSION_MAJOR == 5
+compare_db(DB *db, const DBT *dbt1, const DBT *dbt2)
+#else
 compare_db(DB *db, const DBT *dbt1, const DBT *dbt2, size_t *)
+#endif
 {
   int l, r;
   memcpy(&l, dbt1->data, sizeof(l));
