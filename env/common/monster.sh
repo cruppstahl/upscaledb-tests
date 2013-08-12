@@ -15,6 +15,10 @@ t=../common/run-tests.sh
 $t 3 --enable-encryption --reopen $1 $2 $3 $4 $5
 $t 3 --enable-encryption --use-transactions=10 --reopen $1 $2 $3 $4 $5
 
+# client/server
+$t 3 --enable-remote --reopen $1 $2 $3 $4 $5
+$t 3 --enable-remote --use-transactions=10 --reopen $1 $2 $3 $4 $5
+
 $t 3 --reopen $1 $2 $3 $4 $5
 $t 3 --fullcheck-find $1 $2 $3 $4 $5
 $t 3 --overwrite --reopen $1 $2 $3 $4 $5

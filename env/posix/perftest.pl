@@ -83,6 +83,8 @@ sub run {
   run_single_test($duptest, "--use-cursors --duplicate --use-transactions=5");
   run_single_test($deftest, "--num-threads=5");
   run_single_test($deftest, "--num-threads=5 --use-transactions=5");
+  run_single_test($deftest, "--enable-remote");
+  run_single_test($duptest, "--enable-remote --use-cursors --duplicate --use-transactions=5");
   return '';
 }
 

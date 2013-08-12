@@ -13,5 +13,6 @@ test_SOURCES    = parser.cpp engine.cpp main.cpp getopts.c hamsterdb.cpp \
 				  controller.cpp berkeleydb.cpp os.cpp database.cpp
 test_LDFLAGS    = 
 test_LDADD      = $(top_builddir)/env/posix/libhamsterdb.a \
-				  -ldb-5.2 -L/usr/local/BerkeleyDB.5.2/lib \
-				  -lboost_thread -lpthread -lcurl -lprotobuf -ltcmalloc_minimal
+                  $(top_builddir)/env/posix/libhamserver.a \
+				  -ldb-5.2 -L/usr/local/BerkeleyDB.5.2/lib -lcrypto \
+				  -lboost_thread -lpthread -luv -lprotobuf -ltcmalloc_minimal

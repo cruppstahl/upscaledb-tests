@@ -14,6 +14,7 @@
 
 #include <boost/thread.hpp>
 #include <ham/hamsterdb_int.h>
+#include <ham/hamsterdb_srv.h>
 
 #include "database.hpp"
 
@@ -55,6 +56,8 @@ class Hamsterdb : public database
 
 protected:
     static ham_env_t *ms_env;
+    static ham_env_t *ms_remote_env;
+    static ham_srv_t *ms_srv;
     static boost::mutex ms_mutex;
     ham_db_t *m_db;
     ham_txn_t *m_txn;

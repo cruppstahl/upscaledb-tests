@@ -54,6 +54,7 @@ typedef struct config
     no_bdb = false;
     num_threads = 1;
     encryption = false;
+    remote = false;
   }
 
   void set_numeric(bool b) {
@@ -92,6 +93,7 @@ typedef struct config
   bool no_bdb;
   unsigned num_threads;
   bool encryption;
+  bool remote;
   boost::mutex m_mutex;
 
   private:

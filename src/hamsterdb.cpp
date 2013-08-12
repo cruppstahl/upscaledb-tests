@@ -22,6 +22,8 @@
 #include <ham/hamsterdb_int.h>
 
 ham_env_t *Hamsterdb::ms_env;
+ham_env_t *Hamsterdb::ms_remote_env;
+ham_srv_t *Hamsterdb::ms_srv;
 boost::mutex Hamsterdb::ms_mutex;
 
 static int 
@@ -82,8 +84,30 @@ Hamsterdb::create_env()
 
   timer t(this, timer::misc);
 
-  return ham_env_create(&ms_env, DB_PATH "test-ham.db", flags, 0664,
-      &params[0]);
+  ham_status_t st = ham_env_create(&ms_env, DB_PATH "test-ham.db", flags, 0664,
+       &params[0]);
+  if (st)
+    return (st);
+
+  // remote client/server? start the server, attach the environment and then
+  // open the remote environment
+  if (m_config->remote) {
+    ms_remote_env = ms_env;
+    ms_env = 0;
+
+    ham_srv_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    cfg.port = 10123;
+    ham_srv_init(&cfg, &ms_srv);
+    ham_srv_add_env(ms_srv, ms_remote_env, "/env1.db");
+
+    ham_u32_t flags = 0;
+    flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
+    flags |= HAM_ENABLE_EXTENDED_KEYS;
+    st = ham_env_open(&ms_env, "ham://localhost:10123/env1.db", flags, 0);
+  }
+
+  return (st);
 }
 
 ham_status_t 
@@ -102,16 +126,39 @@ Hamsterdb::create_db()
   flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
   flags |= HAM_ENABLE_EXTENDED_KEYS;
 
-  st = ham_env_create_db(ms_env, &m_db, 1 + m_id, flags, &params[0]);
-  if (st) {
-    TRACE(("failed to create database %d: %d\n", 1+m_id, st));
-    return (st);
-  }
-
-  if (m_config->is_numeric()) {
-    st = ham_db_set_compare_func(m_db, compare_keys);
-    if (st)
+  // remote + numeric? then create the database on server side FIRST,
+  // because setting a custom compare function is now allowed on
+  // remote databases
+  if (m_config->is_numeric() && m_config->remote) {
+    st = ham_env_create_db(ms_remote_env, &m_db, 1 + m_id, flags, &params[0]);
+    if (st) {
+      TRACE(("failed to create database %d: %d\n", 1 + m_id, st));
       return (st);
+    }
+    if (m_config->is_numeric()) {
+      st = ham_db_set_compare_func(m_db, compare_keys);
+      if (st)
+        return (st);
+    }
+    // do not close, but open locally
+    st = ham_env_open_db(ms_env, &m_db, 1 + m_id, 0, 0);
+    if (st) {
+      TRACE(("failed to create database %d: %d\n", 1 + m_id, st));
+      return (st);
+    }
+  }
+  else {
+    st = ham_env_create_db(ms_env, &m_db, 1 + m_id, flags, &params[0]);
+    if (st) {
+      TRACE(("failed to create database %d: %d\n", 1 + m_id, st));
+      return (st);
+    }
+
+    if (m_config->is_numeric()) {
+      st = ham_db_set_compare_func(m_db, compare_keys);
+      if (st)
+        return (st);
+    }
   }
 
   return (ham_cursor_create(&m_cursor, m_db, m_txn, 0));
@@ -137,7 +184,30 @@ Hamsterdb::open_env()
   flags |= m_config->enable_transactions ? HAM_ENABLE_TRANSACTIONS : 0;
   flags |= m_config->use_writethrough ? HAM_ENABLE_FSYNC : 0;
 
-  return ham_env_open(&ms_env, DB_PATH "test-ham.db", flags, &params[0]);
+  ham_status_t st = ham_env_open(&ms_env, DB_PATH "test-ham.db",
+                  flags, &params[0]);
+  if (st)
+    return (st);
+
+  // remote client/server? start the server, attach the environment and then
+  // open the remote environment
+  if (m_config->remote) {
+    ms_remote_env = ms_env;
+    ms_env = 0;
+
+    ham_srv_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    cfg.port = 10123;
+    ham_srv_init(&cfg, &ms_srv);
+    ham_srv_add_env(ms_srv, ms_remote_env, "/env1.db");
+
+    ham_u32_t flags = 0;
+    flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
+    flags |= HAM_ENABLE_EXTENDED_KEYS;
+    st = ham_env_open(&ms_env, "ham://localhost:10123/env1.db", flags, 0);
+  }
+
+  return (st);
 }
 
 ham_status_t 
@@ -147,17 +217,36 @@ Hamsterdb::open_db()
 
   timer t(this, timer::misc);
 
-  st = ham_env_open_db(ms_env, &m_db, 1 + m_id, 0, 0);
-  if (st)
-    return (st);
+  // remote + numeric? then create the database on server side FIRST,
+  // because setting a custom compare function is now allowed on
+  // remote databases
+  if (m_config->is_numeric() && m_config->remote) {
+    st = ham_env_open_db(ms_remote_env, &m_db, 1 + m_id, 0, 0);
+    if (st) {
+      TRACE(("failed to open database %d: %d\n", 1 + m_id, st));
+      return (st);
+    }
+    if (m_config->is_numeric()) {
+      st = ham_db_set_compare_func(m_db, compare_keys);
+      if (st)
+        return (st);
+    }
+  }
 
-  if (m_config->is_numeric()) {
+  // now open locally
+  st = ham_env_open_db(ms_env, &m_db, 1 + m_id, 0, 0);
+  if (st) {
+    TRACE(("failed to open database %d: %d\n", 1 + m_id, st));
+    return (st);
+  }
+ 
+  if (!m_config->remote && m_config->is_numeric()) {
     st = ham_db_set_compare_func(m_db, compare_keys);
     if (st)
       return (st);
   }
 
-  return ham_cursor_create(&m_cursor, m_db, m_txn, 0);
+  return (ham_cursor_create(&m_cursor, m_db, m_txn, 0));
 }
 
 ham_status_t 
@@ -202,6 +291,12 @@ Hamsterdb::close_env()
   if (ms_env)
     ham_env_close(ms_env, 0);
   ms_env = 0;
+  if (ms_remote_env)
+    ham_env_close(ms_remote_env, 0);
+  ms_remote_env = 0;
+  if (ms_srv)
+    ham_srv_close(ms_srv);
+  ms_srv = 0;
   return 0;
 }
 

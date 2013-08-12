@@ -49,6 +49,7 @@
 #define ARG_NO_BDB                  43
 #define ARG_NUM_THREADS             44
 #define ARG_ENABLE_ENCRYPTION       45
+#define ARG_ENABLE_REMOTE           46
 
 Metrics *Metrics::instance;
 
@@ -216,6 +217,12 @@ static option_t opts[]={
     "enable-encryption",
     "enables AES encryption",
     0 },
+  {
+    ARG_ENABLE_REMOTE,
+    0,
+    "enable-remote",
+    "runs test in remote client/server scenario",
+    0 },
   { 0, 0, 0, 0, 0 }
 };
 
@@ -345,6 +352,9 @@ parse_config(int argc, char **argv, config *c)
     else if (opt == ARG_ENABLE_ENCRYPTION) {
       c->encryption = true;
     }
+    else if (opt == ARG_ENABLE_REMOTE) {
+      c->remote = true;
+    }
     else if (opt == GETOPTS_PARAMETER) {
       c->filename = param;
     }
@@ -353,11 +363,6 @@ parse_config(int argc, char **argv, config *c)
       exit(-1);
     }
   }
-}
-
-extern "C" {
-extern void curl_global_cleanup();
-extern void proto_shutdown();
 }
 
 int
@@ -400,8 +405,6 @@ main(int argc, char **argv)
   if (ok && !c.quiet)
     Metrics::get_instance()->print();
 
-  curl_global_cleanup();
-  //proto_shutdown();
   delete Metrics::get_instance();
 
   return (ok ? 0 : 1);

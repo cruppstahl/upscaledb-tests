@@ -39,7 +39,7 @@ class Thread
 
     void join() {
       m_thread.join();
-      assert(m_eof);
+      assert(m_eof || m_lineno == 0);
       assert(!m_running);
     }
 
