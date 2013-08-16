@@ -497,8 +497,6 @@ void
 Hamsterdb::collect_metrics()
 {
   database::collect_metrics();
-  Metrics::get_instance()->add_metric(get_name(), "filesize", 
-      os::get_filesize("test-ham.db"));
 
   ham_env_metrics_t metrics;
   ham_env_get_metrics(ms_env, &metrics);

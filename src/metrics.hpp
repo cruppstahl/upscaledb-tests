@@ -34,7 +34,12 @@ class Metrics
     }
 
     void print() {
+      // also fetch the file sizes
+      add_metric("berkeleydb", "filesize", os::get_filesize("test-berk.db"));
+      add_metric("hamsterdb", "filesize", os::get_filesize("test-ham.db"));
+
       ScopedLock lock(m_mutex);
+
       for (MetricMap::iterator it = m_metrics.begin(); 
             it != m_metrics.end(); ++it) {
         std::map<std::string, unsigned long> &m = it->second;
