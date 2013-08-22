@@ -1,9 +1,7 @@
 
-CXXFLAGS = $(CFLAGS)
-
 noinst_PROGRAMS	= test
 
-INCLUDES  = -I$(top_builddir)/env/common
+AM_CPPFLAGS = -I$(top_builddir)/env/common
 
 # debug or release mode? - the test program is always compiled in 
 # debug mode, because it contains a lot of asserts and debug output

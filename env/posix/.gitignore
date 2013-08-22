@@ -5,3 +5,6 @@ test-ham.db.jrn1
 test-ham.db.log0
 test-ham.db.log1
 callgrind*
+*.a
+test
+test.exe
