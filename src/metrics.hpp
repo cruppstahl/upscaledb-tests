@@ -33,9 +33,10 @@ class Metrics
       m_metrics[idx][name] = value;
     }
 
-    void print() {
+    void print(config *cfg) {
       // also fetch the file sizes
-      add_metric("berkeleydb", "filesize", os::get_filesize("test-berk.db"));
+      if (cfg->no_bdb == false)
+        add_metric("berkeleydb", "filesize", os::get_filesize("test-berk.db"));
       add_metric("hamsterdb", "filesize", os::get_filesize("test-ham.db"));
 
       ScopedLock lock(m_mutex);

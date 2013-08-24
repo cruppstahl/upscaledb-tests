@@ -403,7 +403,7 @@ main(int argc, char **argv)
     printf("[FAIL] %s\n", c.filename);
 
   if (ok && !c.quiet)
-    Metrics::get_instance()->print();
+    Metrics::get_instance()->print(&c);
 
   delete Metrics::get_instance();
 

@@ -1,0 +1,609 @@
+./test  --no-berkeleydb ../../testfiles/2/ext_062.tst
+[OK] ../../testfiles/2/ext_062.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		895
+	blob-total-read		2756879
+	cache-hits		2872944
+	cache-misses		0
+	extkey-cache-hits		1143354
+	extkey-cache-misses		2
+	filesize		131072
+	freelist-hits		891
+	freelist-misses		5
+	mem-peak-usage		108657280
+	mem-total-allocations		1128898
+	page-count-fetched		0
+	page-count-flushed		10
+	page-count-type-blob		4
+	page-count-type-freelist		0
+	page-count-type-index		3
+	perf-cursor			1.311000
+	perf-erase 			0.024000
+	perf-find  			0.047000
+	perf-insert			0.056000
+	perf-misc  			0.037000
+	perf-total		1.475000
+
+./test  --no-berkeleydb ../../testfiles/4/blb-003.tst
+[OK] ../../testfiles/4/blb-003.tst
+hamsterdb
+	blob-direct-allocated		40
+	blob-direct-read		224820
+	blob-direct-written		49960
+	blob-total-allocated		40
+	blob-total-read		180
+	cache-hits		611
+	cache-misses		274860
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		823099392
+	freelist-hits		0
+	freelist-misses		39
+	mem-peak-usage		126313712
+	mem-total-allocations		279
+	page-count-fetched		80
+	page-count-flushed		233
+	page-count-type-blob		0
+	page-count-type-freelist		196
+	page-count-type-index		1
+	perf-cursor			0.914000
+	perf-erase 			0.000000
+	perf-find  			0.000000
+	perf-insert			0.832000
+	perf-misc  			0.006000
+	perf-total		1.752000
+
+./test  --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		128
+	blob-total-read		0
+	cache-hits		2000255
+	cache-misses		0
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		32768
+	freelist-hits		123
+	freelist-misses		4
+	mem-peak-usage		217893360
+	mem-total-allocations		7
+	page-count-fetched		0
+	page-count-flushed		9
+	page-count-type-blob		5
+	page-count-type-freelist		0
+	page-count-type-index		1
+	perf-cursor			0.000000
+	perf-erase 			0.626000
+	perf-find  			0.000000
+	perf-insert			1.344000
+	perf-misc  			0.017000
+	perf-total		1.987000
+
+./test  --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		774119
+	blob-total-read		38624044
+	cache-hits		4118785
+	cache-misses		39564093
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		489291776
+	freelist-hits		746443
+	freelist-misses		29744
+	mem-peak-usage		174260272
+	mem-total-allocations		40148085
+	page-count-fetched		39564093
+	page-count-flushed		677079
+	page-count-type-blob		27676
+	page-count-type-freelist		117
+	page-count-type-index		2070
+	perf-cursor			116.777001
+	perf-erase 			0.405000
+	perf-find  			0.000000
+	perf-insert			157.688005
+	perf-misc  			0.018000
+	perf-total		274.887999
+
+./test --disable-mmap --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		774119
+	blob-total-read		38624044
+	cache-hits		4118785
+	cache-misses		39564093
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		489291776
+	freelist-hits		746443
+	freelist-misses		29744
+	mem-peak-usage		174260272
+	mem-total-allocations		40148085
+	page-count-fetched		39564093
+	page-count-flushed		677079
+	page-count-type-blob		27676
+	page-count-type-freelist		117
+	page-count-type-index		2070
+	perf-cursor			122.612998
+	perf-erase 			0.362000
+	perf-find  			0.000000
+	perf-insert			142.564000
+	perf-misc  			0.015000
+	perf-total		265.554002
+
+./test --disable-mmap --cacheunlimited --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		774119
+	blob-total-read		38624044
+	cache-hits		4118785
+	cache-misses		39564093
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		489291776
+	freelist-hits		746443
+	freelist-misses		29744
+	mem-peak-usage		174260272
+	mem-total-allocations		40148085
+	page-count-fetched		39564093
+	page-count-flushed		677079
+	page-count-type-blob		27676
+	page-count-type-freelist		117
+	page-count-type-index		2070
+	perf-cursor			126.603002
+	perf-erase 			0.429000
+	perf-find  			0.000000
+	perf-insert			158.564008
+	perf-misc  			0.009000
+	perf-total		285.605003
+
+./test --duplicate --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	blob-direct-allocated		1268
+	blob-direct-read		3365411
+	blob-direct-written		3070265
+	blob-total-allocated		995264
+	blob-total-read		129
+	cache-hits		8391592
+	cache-misses		7338118
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		593887232
+	freelist-hits		963030
+	freelist-misses		32233
+	mem-peak-usage		221263280
+	mem-total-allocations		1812035
+	page-count-fetched		902442
+	page-count-flushed		898006
+	page-count-type-blob		30966
+	page-count-type-freelist		142
+	page-count-type-index		1
+	perf-cursor			0.000000
+	perf-erase 			1.089000
+	perf-find  			0.000000
+	perf-insert			64.978002
+	perf-misc  			0.047000
+	perf-total		66.113999
+
+./test --use-cursors --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		774119
+	blob-total-read		38624044
+	cache-hits		4103322
+	cache-misses		39579591
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		489291776
+	freelist-hits		746443
+	freelist-misses		29744
+	mem-peak-usage		174260272
+	mem-total-allocations		40166012
+	page-count-fetched		39579591
+	page-count-flushed		689532
+	page-count-type-blob		27676
+	page-count-type-freelist		117
+	page-count-type-index		2070
+	perf-cursor			286.229004
+	perf-erase 			0.000000
+	perf-find  			0.000000
+	perf-insert			0.000000
+	perf-misc  			0.012000
+	perf-total		286.240997
+
+./test --use-transactions=5 --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		774119
+	blob-total-read		38624044
+	cache-hits		6282296
+	cache-misses		39564010
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		489291776
+	freelist-hits		746443
+	freelist-misses		29744
+	mem-peak-usage		174260560
+	mem-total-allocations		81905572
+	page-count-fetched		39564010
+	page-count-flushed		2335711
+	page-count-type-blob		27676
+	page-count-type-freelist		117
+	page-count-type-index		2070
+	perf-cursor			129.804001
+	perf-erase 			0.572000
+	perf-find  			0.000000
+	perf-insert			15.870000
+	perf-misc  			0.014000
+	perf-total		146.260001
+
+./test --use-transactions=20 --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		774119
+	blob-total-read		38624044
+	cache-hits		6282462
+	cache-misses		39563809
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		489291776
+	freelist-hits		746443
+	freelist-misses		29744
+	mem-peak-usage		174260560
+	mem-total-allocations		81905365
+	page-count-fetched		39563809
+	page-count-flushed		2335711
+	page-count-type-blob		27676
+	page-count-type-freelist		117
+	page-count-type-index		2070
+	perf-cursor			128.794001
+	perf-erase 			0.501000
+	perf-find  			0.000000
+	perf-insert			12.821000
+	perf-misc  			0.016000
+	perf-total		142.132003
+
+./test --use-transactions=100 --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		774119
+	blob-total-read		38624044
+	cache-hits		6281641
+	cache-misses		39564497
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		489291776
+	freelist-hits		746443
+	freelist-misses		29744
+	mem-peak-usage		174260560
+	mem-total-allocations		81906013
+	page-count-fetched		39564497
+	page-count-flushed		2335711
+	page-count-type-blob		27676
+	page-count-type-freelist		117
+	page-count-type-index		2070
+	perf-cursor			131.143999
+	perf-erase 			0.494000
+	perf-find  			0.000000
+	perf-insert			12.518000
+	perf-misc  			0.008000
+	perf-total		144.163996
+
+./test --writethrough --use-transactions=5 --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		774119
+	blob-total-read		38624044
+	cache-hits		6282296
+	cache-misses		39564010
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		489291776
+	freelist-hits		746443
+	freelist-misses		29744
+	mem-peak-usage		174260560
+	mem-total-allocations		81905572
+	page-count-fetched		39564010
+	page-count-flushed		2335711
+	page-count-type-blob		27676
+	page-count-type-freelist		117
+	page-count-type-index		2070
+	perf-cursor			132.778000
+	perf-erase 			1.263000
+	perf-find  			0.000000
+	perf-insert			15.515000
+	perf-misc  			0.012000
+	perf-total		149.567996
+
+./test --writethrough --use-transactions=20 --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		774119
+	blob-total-read		38624044
+	cache-hits		6282462
+	cache-misses		39563809
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		489291776
+	freelist-hits		746443
+	freelist-misses		29744
+	mem-peak-usage		174260560
+	mem-total-allocations		81905365
+	page-count-fetched		39563809
+	page-count-flushed		2335711
+	page-count-type-blob		27676
+	page-count-type-freelist		117
+	page-count-type-index		2070
+	perf-cursor			133.267997
+	perf-erase 			0.905000
+	perf-find  			0.000000
+	perf-insert			12.965000
+	perf-misc  			0.054000
+	perf-total		147.192005
+
+./test --writethrough --use-transactions=100 --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		774119
+	blob-total-read		38624044
+	cache-hits		6281641
+	cache-misses		39564497
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		489291776
+	freelist-hits		746443
+	freelist-misses		29744
+	mem-peak-usage		174260560
+	mem-total-allocations		81906013
+	page-count-fetched		39564497
+	page-count-flushed		2335711
+	page-count-type-blob		27676
+	page-count-type-freelist		117
+	page-count-type-index		2070
+	perf-cursor			130.454004
+	perf-erase 			0.880000
+	perf-find  			0.000000
+	perf-insert			11.327000
+	perf-misc  			0.027000
+	perf-total		142.687994
+
+./test --use-recovery --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		774119
+	blob-total-read		38624044
+	cache-hits		4118785
+	cache-misses		39564093
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		489291776
+	freelist-hits		746443
+	freelist-misses		29744
+	mem-peak-usage		174260560
+	mem-total-allocations		40148085
+	page-count-fetched		39564093
+	page-count-flushed		2335711
+	page-count-type-blob		27676
+	page-count-type-freelist		117
+	page-count-type-index		2070
+	perf-cursor			120.406999
+	perf-erase 			0.492000
+	perf-find  			0.000000
+	perf-insert			373.566996
+	perf-misc  			0.011000
+	perf-total		494.476984
+
+./test --inmemorydb --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		774119
+	blob-total-read		38624044
+	cache-hits		3002194
+	cache-misses		0
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		0
+	freelist-hits		0
+	freelist-misses		0
+	mem-peak-usage		174214896
+	mem-total-allocations		778258
+	page-count-fetched		0
+	page-count-flushed		2070
+	page-count-type-blob		0
+	page-count-type-freelist		0
+	page-count-type-index		2070
+	perf-cursor			10.925000
+	perf-erase 			0.269000
+	perf-find  			0.000000
+	perf-insert			2.495000
+	perf-misc  			0.103000
+	perf-total		13.792000
+
+./test --use-cursors --duplicate --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	blob-direct-allocated		1268
+	blob-direct-read		20280307
+	blob-direct-written		11069233
+	blob-total-allocated		995264
+	blob-total-read		1000000
+	cache-hits		13511576
+	cache-misses		33215554
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		593887232
+	freelist-hits		963030
+	freelist-misses		32233
+	mem-peak-usage		219170320
+	mem-total-allocations		5775747
+	page-count-fetched		1866014
+	page-count-flushed		1819155
+	page-count-type-blob		30966
+	page-count-type-freelist		142
+	page-count-type-index		1
+	perf-cursor			211.203998
+	perf-erase 			0.000000
+	perf-find  			0.000000
+	perf-insert			0.000000
+	perf-misc  			0.004000
+	perf-total		211.207995
+
+./test --use-cursors --duplicate --use-transactions=5 --no-berkeleydb ../../testfiles/4/215.tst
+[OK] ../../testfiles/4/215.tst
+hamsterdb
+	blob-direct-allocated		1032
+	blob-direct-read		2358046
+	blob-direct-written		2838
+	blob-total-allocated		995264
+	blob-total-read		1000000
+	cache-hits		47642259
+	cache-misses		4229791
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		593887232
+	freelist-hits		963030
+	freelist-misses		32233
+	mem-peak-usage		221873392
+	mem-total-allocations		12823039
+	page-count-fetched		1868907
+	page-count-flushed		18922316
+	page-count-type-blob		31202
+	page-count-type-freelist		142
+	page-count-type-index		1
+	perf-cursor			129.659003
+	perf-erase 			0.000000
+	perf-find  			0.000000
+	perf-insert			0.000000
+	perf-misc  			0.031000
+	perf-total		129.690001
+
+./test --num-threads=5 --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		3870595
+	blob-total-read		193120220
+	cache-hits		154073465
+	cache-misses		67891973
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		2485092352
+	freelist-hits		3729862
+	freelist-misses		151077
+	mem-peak-usage		0
+	mem-total-allocations		74390466
+	page-count-fetched		67891973
+	page-count-flushed		3803633
+	page-count-type-blob		140733
+	page-count-type-freelist		594
+	page-count-type-index		10350
+	perf-cursor			24.703001
+	perf-erase 			3.214000
+	perf-find  			0.000000
+	perf-insert			439.838999
+	perf-misc  			0.064000
+	perf-total		467.819987
+
+./test --num-threads=5 --use-transactions=5 --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		3870595
+	blob-total-read		193120220
+	cache-hits		152668386
+	cache-misses		81609438
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		2472542208
+	freelist-hits		3730625
+	freelist-misses		150314
+	mem-peak-usage		0
+	mem-total-allocations		298414229
+	page-count-fetched		81609438
+	page-count-flushed		11678557
+	page-count-type-blob		139970
+	page-count-type-freelist		591
+	page-count-type-index		10350
+	perf-cursor			129.267999
+	perf-erase 			3.648000
+	perf-find  			0.000000
+	perf-insert			437.696004
+	perf-misc  			0.013000
+	perf-total		570.625032
+
+./test --enable-remote --no-berkeleydb ../../testfiles/4/301.tst
+[OK] ../../testfiles/4/301.tst
+hamsterdb
+	blob-direct-allocated		0
+	blob-direct-read		0
+	blob-direct-written		0
+	blob-total-allocated		0
+	blob-total-read		0
+	cache-hits		0
+	cache-misses		0
+	extkey-cache-hits		0
+	extkey-cache-misses		0
+	filesize		489291776
+	freelist-hits		0
+	freelist-misses		0
+	mem-peak-usage		174267024
+	mem-total-allocations		160080250
+	page-count-fetched		0
+	page-count-flushed		0
+	page-count-type-blob		0
+	page-count-type-freelist		0
+	page-count-type-index		0
+	perf-cursor			2718.131028
+	perf-erase 			12.807000
+	perf-find  			0.000000
+	perf-insert			73.595003
+	perf-misc  			0.040000
+	perf-total		2804.573012
+
