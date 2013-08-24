@@ -314,7 +314,7 @@ Hamsterdb::insert(ham_key_t *key, ham_record_t *record)
   ham_u32_t flags = 0;
 
   if (m_config->use_cursors) {
-    flags |= m_config->hints&HAM_HINT_APPEND;
+    flags |= m_config->hints & HAM_HINT_APPEND;
 
     if (m_config->overwrite)
       flags |= HAM_OVERWRITE;
@@ -323,7 +323,7 @@ Hamsterdb::insert(ham_key_t *key, ham_record_t *record)
       flags |= m_config->dupe_flags;
     }
 
-    timer t(this, timer::cursor);
+    timer t(this, timer::insert);
     return (ham_cursor_insert(m_cursor, key, record, flags));
   }
   else {
@@ -344,7 +344,7 @@ Hamsterdb::erase(ham_key_t *key)
   ham_u32_t flags = 0;
 
   if (m_config->use_cursors) {
-    timer t(this, timer::cursor);
+    timer t(this, timer::erase);
     st = ham_cursor_find(m_cursor, key, 0, flags);
     if (st)
       return (st);
@@ -370,7 +370,7 @@ Hamsterdb::find(ham_key_t *key, ham_record_t *record)
   }
 
   if (m_config->use_cursors) {
-    timer t(this, timer::cursor);
+    timer t(this, timer::find);
     return ham_cursor_find(m_cursor, key, record, flags);
   }
   else {

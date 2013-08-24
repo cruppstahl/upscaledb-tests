@@ -209,7 +209,7 @@ Berkeleydb::insert(ham_key_t *key, ham_record_t *record)
 
   if (m_config->duplicate 
       && m_config->dupe_flags == HAM_DUPLICATE_INSERT_FIRST) {
-    timer t(this, timer::cursor);
+    timer t(this, timer::insert);
     ret = m_cursor->c_put(m_cursor, &k, &r, DB_KEYFIRST);
   }
   else if (0) { /* m_config->use_cursors || m_config->duplicate) {*/
@@ -236,7 +236,7 @@ Berkeleydb::erase(ham_key_t *key)
   k.size = key->size;
 
   if (m_config->use_cursors) {
-    timer t(this, timer::cursor);
+    timer t(this, timer::erase);
     ret = m_cursor->c_get(m_cursor, &k, &r, DB_SET);
     if (ret)
       return (db2ham(ret));
@@ -262,7 +262,7 @@ Berkeleydb::find(ham_key_t *key, ham_record_t *record)
   k.size = key->size;
 
   if (m_config->use_cursors) {
-    timer t(this, timer::cursor);
+    timer t(this, timer::find);
     ret = m_cursor->c_get(m_cursor, &k, &r, DB_SET);
     if (ret)
       return (db2ham(ret));
