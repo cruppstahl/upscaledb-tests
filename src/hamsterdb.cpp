@@ -102,8 +102,7 @@ Hamsterdb::create_env()
     ham_srv_add_env(ms_srv, ms_remote_env, "/env1.db");
 
     ham_u32_t flags = 0;
-    flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
-    flags |= HAM_ENABLE_EXTENDED_KEYS;
+    flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATE_KEYS : 0;
     st = ham_env_open(&ms_env, "ham://localhost:10123/env1.db", flags, 0);
   }
 
@@ -123,8 +122,9 @@ Hamsterdb::create_db()
 
   ham_u32_t flags = 0;
 
-  flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
-  flags |= HAM_ENABLE_EXTENDED_KEYS;
+  flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATE_KEYS : 0;
+  if (!m_config->is_numeric())
+    flags |= HAM_ENABLE_EXTENDED_KEYS;
 
   // remote + numeric? then create the database on server side FIRST,
   // because setting a custom compare function is now allowed on
@@ -202,8 +202,7 @@ Hamsterdb::open_env()
     ham_srv_add_env(ms_srv, ms_remote_env, "/env1.db");
 
     ham_u32_t flags = 0;
-    flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
-    flags |= HAM_ENABLE_EXTENDED_KEYS;
+    flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATE_KEYS : 0;
     st = ham_env_open(&ms_env, "ham://localhost:10123/env1.db", flags, 0);
   }
 
