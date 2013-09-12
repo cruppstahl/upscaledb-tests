@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -30,10 +30,8 @@
 #  include <sys/utsname.h>
 #endif
 
-
 #if WIN32
 #  define strcasecmp stricmp
 #endif
-
 
 #endif /* PORTING_HPP__ */

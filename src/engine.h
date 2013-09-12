@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -16,16 +16,16 @@
 #include <boost/thread.hpp>
 #include <string>
 
-#include "database.hpp"
-#include "berkeleydb.hpp"
+#include "database.h"
+#include "berkeleydb.h"
 
 class Parser;
-struct config;
+class Configuration;
 
 class Engine
 {
   public:
-    Engine(int id, config *c, Parser *p, const std::string &name);
+    Engine(int id, Configuration *c, Parser *p, const std::string &name);
     ~Engine();
 
     bool create_env();
@@ -48,7 +48,7 @@ class Engine
       return get_db()->get_id();
     }
 
-    database *get_db() { 
+    Database *get_db() { 
       boost::mutex::scoped_lock lock(m_mutex);
       return m_db; 
     }
@@ -74,8 +74,8 @@ class Engine
     //bool compare_records(ham_record_t *rec1, ham_record_t *rec2);
     bool inc_opcount();
 
-    database *m_db;
-    config *m_config;
+    Database *m_db;
+    Configuration *m_config;
     Parser *m_parser;
     unsigned m_opcount;
     boost::mutex m_mutex;

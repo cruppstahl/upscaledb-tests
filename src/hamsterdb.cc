@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -10,13 +10,13 @@
  */
 
 
-#include "porting.hpp"
-#include "config.hpp"
-#include "hamsterdb.hpp"
-#include "endian.hpp"
-#include "os.hpp"
-#include "misc.hpp"
-#include "metrics.hpp"
+#include "porting.h"
+#include "configuration.h"
+#include "hamsterdb.h"
+#include "endianswap.h"
+#include "os.h"
+#include "misc.h"
+#include "metrics.h"
 
 #include <boost/thread.hpp>
 #include <ham/hamsterdb_int.h>
@@ -80,9 +80,9 @@ Hamsterdb::create_env()
   flags |= m_config->enable_transactions ? HAM_ENABLE_TRANSACTIONS : 0;
   flags |= m_config->use_writethrough ? HAM_ENABLE_FSYNC : 0;
 
-  os::unlink(DB_PATH "test-ham.db");
+  Os::unlink(DB_PATH "test-ham.db");
 
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
 
   ham_status_t st = ham_env_create(&ms_env, DB_PATH "test-ham.db", flags, 0664,
        &params[0]);
@@ -115,7 +115,7 @@ Hamsterdb::create_db()
   ham_status_t st;
   ham_parameter_t params[6] = {{0, 0}};
 
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
 
   params[0].name = HAM_PARAM_KEYSIZE;
   params[0].value = m_config->keysize;
@@ -170,7 +170,7 @@ Hamsterdb::open_env()
   ham_u32_t flags = 0;
   ham_parameter_t params[6] = {{0, 0}};
 
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
 
   params[0].name = HAM_PARAM_CACHESIZE;
   params[0].value = m_config->cachesize;
@@ -214,7 +214,7 @@ Hamsterdb::open_db()
 {
   ham_status_t st;
 
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
 
   // remote + numeric? then create the database on server side FIRST,
   // because setting a custom compare function is now allowed on
@@ -251,7 +251,7 @@ Hamsterdb::open_db()
 ham_status_t 
 Hamsterdb::close_txn()
 {
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
   ham_status_t st = 0;
 
   if (m_cursor) {
@@ -274,7 +274,7 @@ Hamsterdb::close_txn()
 ham_status_t 
 Hamsterdb::close_db()
 {
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
 
   if (m_db)
     ham_db_close(m_db, HAM_AUTO_CLEANUP);
@@ -285,7 +285,7 @@ Hamsterdb::close_db()
 ham_status_t 
 Hamsterdb::close_env()
 {
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
 
   if (ms_env)
     ham_env_close(ms_env, 0);
@@ -302,7 +302,7 @@ Hamsterdb::close_env()
 ham_status_t 
 Hamsterdb::flush()
 {
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
 
   return (ham_env_flush(ms_env, 0));
 }
@@ -322,7 +322,7 @@ Hamsterdb::insert(ham_key_t *key, ham_record_t *record)
       flags |= m_config->dupe_flags;
     }
 
-    timer t(this, timer::insert);
+    timer t(this, timer::kInsert);
     return (ham_cursor_insert(m_cursor, key, record, flags));
   }
   else {
@@ -331,7 +331,7 @@ Hamsterdb::insert(ham_key_t *key, ham_record_t *record)
     if (m_config->duplicate)
       flags |= HAM_DUPLICATE;
 
-    timer t(this, timer::insert);
+    timer t(this, timer::kInsert);
     return (ham_db_insert(m_db, m_txn, key, record, flags));
   }
 }
@@ -343,14 +343,14 @@ Hamsterdb::erase(ham_key_t *key)
   ham_u32_t flags = 0;
 
   if (m_config->use_cursors) {
-    timer t(this, timer::erase);
+    timer t(this, timer::kErase);
     st = ham_cursor_find(m_cursor, key, 0, flags);
     if (st)
       return (st);
     return (ham_cursor_erase(m_cursor, flags));
   }
   else {
-    timer t(this, timer::erase);
+    timer t(this, timer::kErase);
     return (ham_db_erase(m_db, m_txn, key, flags));
   }
 }
@@ -369,11 +369,11 @@ Hamsterdb::find(ham_key_t *key, ham_record_t *record)
   }
 
   if (m_config->use_cursors) {
-    timer t(this, timer::find);
+    timer t(this, timer::kFind);
     return ham_cursor_find(m_cursor, key, record, flags);
   }
   else {
-    timer t(this, timer::find);
+    timer t(this, timer::kFind);
     return ham_db_find(m_db, m_txn, key, record, flags);
   }
 }
@@ -392,9 +392,12 @@ Hamsterdb::txn_begin()
     m_cursor = 0;
   }
 
+  {
+  timer t(this, timer::kTxn);
   st = ham_txn_begin(&m_txn, ms_env, 0, 0, 0);
   if (st)
     return (st);
+  }
 
   st = ham_cursor_create(&m_cursor, m_db, m_txn, 0);
   if (st) {
@@ -419,6 +422,7 @@ Hamsterdb::txn_commit()
     m_cursor = 0;
   }
 
+  timer t(this, timer::kTxn);
   st = ham_txn_commit(m_txn, 0);
   if (st)
     return (st);
@@ -429,7 +433,7 @@ Hamsterdb::txn_commit()
 ham_status_t 
 Hamsterdb::check_integrity()
 {
-  return ham_db_check_integrity(m_db, m_txn);
+  return (ham_db_check_integrity(m_db, m_txn));
 }
 
 void *
@@ -450,7 +454,7 @@ ham_status_t
 Hamsterdb::get_previous(void *cursor, ham_key_t *key, 
           ham_record_t *record, int flags)
 {
-  timer t(this, timer::cursor);
+  timer t(this, timer::kCursor);
 
   if (m_config->direct_access && m_config->inmemory)
     flags |= HAM_DIRECT_ACCESS;
@@ -468,7 +472,7 @@ ham_status_t
 Hamsterdb::get_next(void *cursor, ham_key_t *key, ham_record_t *record, 
         int flags)
 {
-  timer t(this, timer::cursor);
+  timer t(this, timer::kCursor);
 
   if (m_config->direct_access && m_config->inmemory)
     flags |= HAM_DIRECT_ACCESS;
@@ -495,7 +499,7 @@ Hamsterdb::close_cursor(void *cursor)
 void 
 Hamsterdb::collect_metrics()
 {
-  database::collect_metrics();
+  Database::collect_metrics();
 
   ham_env_metrics_t metrics;
   ham_env_get_metrics(ms_env, &metrics);

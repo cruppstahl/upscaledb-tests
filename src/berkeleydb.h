@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -15,14 +15,14 @@
 #include <db.h>
 #include <ham/hamsterdb.h> // for ham_status_t, ham_key_t etc
 
-#include "database.hpp"
+#include "database.h"
 
 
-class Berkeleydb : public database
+class Berkeleydb : public Database
 {
   public:
-    Berkeleydb(int id, config *c)
-      : database(id, c), m_db(0), m_cursor(0) {
+    Berkeleydb(int id, Configuration *c)
+      : Database(id, c), m_db(0), m_cursor(0) {
     }
 
     ~Berkeleydb(void);

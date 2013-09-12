@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -22,10 +22,9 @@
 #define DB_PATH ""
 
 
-typedef struct config
+struct Configuration
 {
-  config()
-  {
+  Configuration() {
     profile = true;
     verbose = 0;
     overwrite = false;
@@ -98,6 +97,6 @@ typedef struct config
 
   private:
   bool numeric;
-} config;
+};
 
 #endif /* CONFIG_HPP__ */

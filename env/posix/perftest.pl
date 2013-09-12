@@ -175,7 +175,8 @@ sub compare {
       my $sign = '+';
       if ($newv > $oldv) {
         my $diff = $newv - $oldv;
-        $p = $diff / ($oldv / 100.0);
+        $p = $diff / ($oldv / 100.0)
+          if ($oldv != 0);
         $newv = '???' unless $newv;
         $sign = '-';
       }

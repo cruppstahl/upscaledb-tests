@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -15,19 +15,20 @@
 
 #include <assert.h>
 
-#include "controller.hpp"
+#include "controller.h"
 #ifndef WIN32
 #  include "config.h"
 #endif
-#include "parser.hpp"
-#include "engine.hpp"
+#include "parser.h"
+#include "engine.h"
 
 #include <boost/thread.hpp>
 
 class Thread
 {
   public:
-    Thread(int id, Controller &ctrl, config &c, Parser &p, const char *backend)
+    Thread(int id, Controller &ctrl, Configuration &c, Parser &p,
+            const char *backend)
       : m_fail(false), m_eof(false), m_running(false), m_controller(ctrl),
       m_lineno(0), m_engine(id, &c, &p, backend), m_parser(&p) {
       m_thread = boost::thread(boost::bind(&Thread::run, this));
@@ -65,7 +66,7 @@ class Thread
 
     ham_status_t get_status() { return m_engine.get_status(); }
 
-    database *get_db() { return m_engine.get_db(); }
+    Database *get_db() { return m_engine.get_db(); }
 
     bool check_integrity() {
       if (!m_engine.check_integrity())

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -10,13 +10,13 @@
  */
 
 
-#include "porting.hpp"
-#include "config.hpp"
-#include "os.hpp"
-#include "berkeleydb.hpp"
-#include "endian.hpp"
-#include "misc.hpp"
-#include "metrics.hpp"
+#include "porting.h"
+#include "configuration.h"
+#include "os.h"
+#include "berkeleydb.h"
+#include "endianswap.h"
+#include "misc.h"
+#include "metrics.h"
 
 
 static int
@@ -49,7 +49,7 @@ Berkeleydb::~Berkeleydb()
 ham_status_t 
 Berkeleydb::create_env()
 {
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
 
   int ret;
 
@@ -57,7 +57,7 @@ Berkeleydb::create_env()
   if (ret)
     return (db2ham(ret));
 
-  os::unlink(DB_PATH "test-berk.db");
+  Os::unlink(DB_PATH "test-berk.db");
 
   return (0);
 }
@@ -65,7 +65,7 @@ Berkeleydb::create_env()
 ham_status_t 
 Berkeleydb::create_db()
 {
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
 
   int ret;
 
@@ -105,7 +105,7 @@ ham_status_t
 Berkeleydb::open_env()
 {
   int ret;
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
 
   ret = db_create(&m_db, 0, 0);
   if (ret)
@@ -129,7 +129,7 @@ Berkeleydb::open_env()
 ham_status_t 
 Berkeleydb::open_db()
 {
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
 
   int ret = m_db->open(m_db, 0, DB_PATH "test-berk.db", 0, DB_BTREE, 0, 0);
   if (ret)
@@ -146,7 +146,7 @@ ham_status_t
 Berkeleydb::close_env()
 {
   int ret;
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
 
   if (m_db) {
     ret = m_db->close(m_db, 0);
@@ -168,7 +168,7 @@ ham_status_t
 Berkeleydb::close_db()
 {
   int ret;
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
 
   if (m_cursor) {
     ret = m_cursor->c_close(m_cursor);
@@ -183,7 +183,7 @@ Berkeleydb::close_db()
 ham_status_t 
 Berkeleydb::flush()
 {
-  timer t(this, timer::misc);
+  timer t(this, timer::kMisc);
   int ret = m_db->sync(m_db, 0);
   if (ret)
     return (db2ham(ret));
@@ -209,15 +209,15 @@ Berkeleydb::insert(ham_key_t *key, ham_record_t *record)
 
   if (m_config->duplicate 
       && m_config->dupe_flags == HAM_DUPLICATE_INSERT_FIRST) {
-    timer t(this, timer::insert);
+    timer t(this, timer::kInsert);
     ret = m_cursor->c_put(m_cursor, &k, &r, DB_KEYFIRST);
   }
   else if (0) { /* m_config->use_cursors || m_config->duplicate) {*/
-    timer t(this, timer::cursor);
+    timer t(this, timer::kInsert);
     ret = m_cursor->c_put(m_cursor, &k, &r, flags);
   }
   else {
-    timer t(this, timer::insert);
+    timer t(this, timer::kInsert);
     ret = m_db->put(m_db, 0, &k, &r, flags);
   }
 
@@ -236,14 +236,14 @@ Berkeleydb::erase(ham_key_t *key)
   k.size = key->size;
 
   if (m_config->use_cursors) {
-    timer t(this, timer::erase);
+    timer t(this, timer::kErase);
     ret = m_cursor->c_get(m_cursor, &k, &r, DB_SET);
     if (ret)
       return (db2ham(ret));
     ret = m_cursor->c_del(m_cursor, 0);
   }
   else {
-    timer t(this, timer::erase);
+    timer t(this, timer::kErase);
     ret = m_db->del(m_db, 0, &k, 0);
   }
 
@@ -262,13 +262,13 @@ Berkeleydb::find(ham_key_t *key, ham_record_t *record)
   k.size = key->size;
 
   if (m_config->use_cursors) {
-    timer t(this, timer::find);
+    timer t(this, timer::kFind);
     ret = m_cursor->c_get(m_cursor, &k, &r, DB_SET);
     if (ret)
       return (db2ham(ret));
   }
   else {
-    timer t(this, timer::find);
+    timer t(this, timer::kFind);
     ret = m_db->get(m_db, 0, &k, &r, 0);
   }
 
@@ -334,7 +334,7 @@ Berkeleydb::get_previous(void *cursor, ham_key_t *key,
   memset(&r, 0, sizeof(r));
   DBC *c = (DBC *)cursor;
 
-  timer t(this, timer::cursor);
+  timer t(this, timer::kCursor);
 
   if (flags == HAM_SKIP_DUPLICATES)
     flags = DB_PREV_NODUP;
@@ -360,7 +360,7 @@ Berkeleydb::get_next(void *cursor, ham_key_t *key, ham_record_t *record,
   memset(&r, 0, sizeof(r));
   DBC *c = (DBC *)cursor;
 
-  timer t(this, timer::cursor);
+  timer t(this, timer::kCursor);
 
   if (flags == HAM_SKIP_DUPLICATES)
     flags = DB_NEXT_NODUP;
@@ -392,5 +392,5 @@ Berkeleydb::close_cursor(void *cursor)
 void 
 Berkeleydb::collect_metrics(void)
 {
-  database::collect_metrics();
+  Database::collect_metrics();
 }

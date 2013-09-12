@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -10,14 +10,14 @@
  */
 
 
-#include "porting.hpp"
-#include "parser.hpp"
-#include "engine.hpp"
-#include "misc.hpp"
-#include "config.hpp"
+#include "porting.h"
+#include "parser.h"
+#include "engine.h"
+#include "misc.h"
+#include "configuration.h"
 
 
-Parser::Parser(config *c, const char *filename)
+Parser::Parser(Configuration *c, const char *filename)
   : m_config(c)
 {
   FILE *f = stdin;

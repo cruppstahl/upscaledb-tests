@@ -27,7 +27,7 @@ AC_SYS_LARGEFILE
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 LT_INIT
-AC_CONFIG_SRCDIR(src/hamsterdb.cpp)
+AC_CONFIG_SRCDIR(src/hamsterdb.cc)
 AC_CONFIG_HEADERS(config.h)
 AC_CHECK_FUNCS(mmap munmap getpagesize fdatasync fsync writev pread pwrite)
 AC_CHECK_HEADERS(fcntl.h unistd.h malloc.h uv.h)

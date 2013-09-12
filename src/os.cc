@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -18,12 +18,12 @@
 #  include <unistd.h>
 #endif
 
-#include "porting.hpp"
-#include "os.hpp"
+#include "porting.h"
+#include "os.h"
 
 
 bool 
-os::unlink(const char *path)
+Os::unlink(const char *path)
 {
 #ifdef WIN32
   return (0 != DeleteFileA(path));
@@ -33,7 +33,7 @@ os::unlink(const char *path)
 }
 
 unsigned long 
-os::get_filesize(const char *path)
+Os::get_filesize(const char *path)
 {
   struct stat buf;
   if (stat(path, &buf) < 0)

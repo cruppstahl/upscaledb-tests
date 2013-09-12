@@ -13,12 +13,12 @@
 #ifndef PARSER_HPP__
 #define PARSER_HPP__
 
-#include "config.hpp"
+#include "configuration.h"
 
 #include <string>
 #include <vector>
 
-struct config;
+class Configuration;
 class Engine;
 
 using namespace std;
@@ -26,7 +26,7 @@ using namespace std;
 class Parser
 {
   public:
-    Parser(config *c, const char *filename);
+    Parser(Configuration *c, const char *filename);
 
     bool process_line(unsigned lineno, Engine *engine);
 
@@ -44,7 +44,7 @@ class Parser
     vector<string> tokenize(const string &str);
 
   private:
-    config *m_config;
+    Configuration *m_config;
     std::vector<std::string> m_lines;
 };
 

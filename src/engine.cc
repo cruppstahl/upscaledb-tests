@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -12,17 +12,17 @@
 #include <iostream>
 #include <string>
 
-#include "porting.hpp"
-#include "config.hpp"
-#include "endian.hpp"
-#include "engine.hpp"
-#include "parser.hpp"
-#include "hamsterdb.hpp"
-#include "berkeleydb.hpp"
-#include "misc.hpp"
+#include "porting.h"
+#include "configuration.h"
+#include "endianswap.h"
+#include "engine.h"
+#include "parser.h"
+#include "hamsterdb.h"
+#include "berkeleydb.h"
+#include "misc.h"
 
 
-Engine::Engine(int id, config *c, Parser *p, const std::string &name)
+Engine::Engine(int id, Configuration *c, Parser *p, const std::string &name)
   : m_config(c), m_parser(p), m_opcount(0), m_status(0),
     m_data_size(0), m_data_ptr(0)
 {

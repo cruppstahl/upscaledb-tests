@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -16,13 +16,13 @@
 #include <ham/hamsterdb_int.h>
 #include <ham/hamsterdb_srv.h>
 
-#include "database.hpp"
+#include "database.h"
 
-class Hamsterdb : public database
+class Hamsterdb : public Database
 {
   public:
-    Hamsterdb(int id, config *c)
-      : database(id, c), m_db(0), m_txn(0), m_cursor(0) {
+    Hamsterdb(int id, Configuration *c)
+      : Database(id, c), m_db(0), m_txn(0), m_cursor(0) {
         m_useralloc = malloc(1024 * 1024 * 100);
     }
 

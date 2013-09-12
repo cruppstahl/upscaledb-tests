@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -10,16 +10,16 @@
  */
 
 
-#include "porting.hpp"
-#include "config.hpp"
-#include "engine.hpp"
-#include "parser.hpp"
+#include "porting.h"
+#include "configuration.h"
+#include "engine.h"
+#include "parser.h"
 #include "getopts.h"
-#include "hamsterdb.hpp"
-#include "berkeleydb.hpp"
-#include "metrics.hpp"
-#include "controller.hpp"
-#include "thread.hpp"
+#include "hamsterdb.h"
+#include "berkeleydb.h"
+#include "metrics.h"
+#include "controller.h"
+#include "thread.h"
 #include <iostream>
 
 
@@ -227,7 +227,7 @@ static option_t opts[]={
 };
 
 static void
-parse_config(int argc, char **argv, config *c)
+parse_config(int argc, char **argv, Configuration *c)
 {
   unsigned opt;
   char *param;
@@ -368,7 +368,7 @@ parse_config(int argc, char **argv, config *c)
 int
 main(int argc, char **argv)
 {
-  config c;
+  Configuration c;
   parse_config(argc, argv, &c);
   Metrics::get_instance();
 

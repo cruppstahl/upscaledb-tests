@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -16,15 +16,15 @@
 #include <boost/thread/condition.hpp>
 #include <iostream>
 
-#include "parser.hpp"
-#include "config.hpp"
+#include "parser.h"
+#include "configuration.h"
 
 class Thread;
 
 class Controller
 {
   public:
-    Controller(config *config, Parser &parser) 
+    Controller(Configuration *config, Parser &parser) 
       : m_lineno(0), m_config(config), m_parser(parser) {
     }
 
@@ -52,7 +52,7 @@ class Controller
     boost::condition m_controller_cond;
     boost::mutex m_mutex;
     unsigned m_lineno;
-    config *m_config;
+    Configuration *m_config;
     Parser &m_parser;
 };
 

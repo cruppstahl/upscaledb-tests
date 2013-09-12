@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -10,8 +10,8 @@
  */
 
 
-#include "controller.hpp"
-#include "thread.hpp"
+#include "controller.h"
+#include "thread.h"
 #include <boost/thread/xtime.hpp>
 #include <boost/progress.hpp>
 

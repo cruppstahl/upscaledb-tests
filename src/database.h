@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Christoph Rupp (chris@crupp.de).
+ * Copyright (C) 2005-2013 Christoph Rupp (chris@crupp.de).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -14,61 +14,62 @@
 
 #include <ham/hamsterdb.h>
 #include <string.h>
-#include "os.hpp"
+#include "os.h"
 
-struct config;
+class Configuration;
 
-class database
+class Database
 {
   protected:
     class timer
     {
       public:
         enum idx {
-          misc = 0,
-          insert,
-          erase,
-          find,
-          cursor
+          kMisc = 0,
+          kInsert,
+          kErase,
+          kFind,
+          kTxn,
+          kCursor
         };
 
-        timer(database *db, database::timer::idx store)
+        timer(Database *db, Database::timer::idx store)
           :   m_db(db), m_store(store) {
-          m_start = os::now();
+          m_start = Os::now();
         }
 
         ~timer() {
-          m_db->m_profile[m_store] += os::now() - m_start;
+          m_db->m_profile[m_store] += Os::now() - m_start;
         }
 
       private:
-        database *m_db;
-        database::timer::idx m_store;
+        Database *m_db;
+        Database::timer::idx m_store;
         ham_u64_t m_start;
     };
 
 public:
-    database(int id, config *c)
+    Database(int id, Configuration *c)
       : m_id(id), m_config(c) {
       memset(m_profile, 0, sizeof(m_profile));
     }
 
-    virtual ~database(void) {
+    virtual ~Database() {
     }
 
-    virtual ham_status_t create_env()=0;
-    virtual ham_status_t create_db()=0;
-    virtual ham_status_t open_env()=0;
-    virtual ham_status_t open_db()=0;
-    virtual ham_status_t close_txn()=0;
-    virtual ham_status_t close_db()=0;
-    virtual ham_status_t close_env()=0;
-    virtual ham_status_t flush()=0;
-    virtual ham_status_t insert(ham_key_t *key, ham_record_t *record)=0;
-    virtual ham_status_t erase(ham_key_t *key)=0;
-    virtual ham_status_t find(ham_key_t *key, ham_record_t *record)=0;
-    virtual ham_status_t txn_begin()=0;
-    virtual ham_status_t txn_commit()=0;
+    virtual ham_status_t create_env() = 0;
+    virtual ham_status_t create_db() = 0;
+    virtual ham_status_t open_env() = 0;
+    virtual ham_status_t open_db() = 0;
+    virtual ham_status_t close_txn() = 0;
+    virtual ham_status_t close_db() = 0;
+    virtual ham_status_t close_env() = 0;
+    virtual ham_status_t flush() = 0;
+    virtual ham_status_t insert(ham_key_t *key, ham_record_t *record) = 0;
+    virtual ham_status_t erase(ham_key_t *key) = 0;
+    virtual ham_status_t find(ham_key_t *key, ham_record_t *record) = 0;
+    virtual ham_status_t txn_begin() = 0;
+    virtual ham_status_t txn_commit() = 0;
 
     int get_id() { return m_id; }
     virtual const char *get_name() = 0;
@@ -86,7 +87,7 @@ public:
 
   protected:
     int m_id;
-    config *m_config;
+    Configuration *m_config;
     ham_u64_t m_profile[10];
     friend class timer;
 };
