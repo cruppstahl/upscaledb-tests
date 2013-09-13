@@ -33,7 +33,11 @@ sub lower_is_better
 	"perf-find"	,
 	"perf-insert",
 	"perf-misc",
-	"perf-total"
+	"perf-txn",
+	"perf-total",
+    "btree-smo-split",
+    "btree-smo-merge",
+    "btree-smo-shift"
   );
   return grep(/$metric/, @tags);
 }
@@ -57,9 +61,6 @@ sub run {
   my $blbtest="../../testfiles/4/blb-003.tst";
   my $duptest="../../testfiles/4/215.tst";
   my $deftest="../../testfiles/4/301.tst";
-  #my $exttest="../../testfiles/1/01.tst";
-  #my $blbtest="../../testfiles/1/01.tst";
-  #my $deftest="../../testfiles/1/01.tst";
 
   unlink 'perftest.txt';
 
@@ -68,22 +69,19 @@ sub run {
   run_single_test($duptest);
   run_single_test($deftest);
   run_single_test($deftest, "--disable-mmap");
-  run_single_test($deftest, "--disable-mmap --cacheunlimited");
+  run_single_test($deftest, "--cacheunlimited");
   run_single_test($duptest, "--duplicate");
   run_single_test($deftest, "--use-cursors");
   run_single_test($deftest, "--use-transactions=5");
   run_single_test($deftest, "--use-transactions=20");
   run_single_test($deftest, "--use-transactions=100");
   run_single_test($deftest, "--writethrough --use-transactions=5");
-  run_single_test($deftest, "--writethrough --use-transactions=20");
-  run_single_test($deftest, "--writethrough --use-transactions=100");
   run_single_test($deftest, "--use-recovery");
   run_single_test($deftest, "--inmemorydb");
   run_single_test($duptest, "--use-cursors --duplicate");
   run_single_test($duptest, "--use-cursors --duplicate --use-transactions=5");
   run_single_test($deftest, "--num-threads=5");
   run_single_test($deftest, "--num-threads=5 --use-transactions=5");
-  run_single_test($deftest, "--enable-remote");
   run_single_test($duptest, "--enable-remote --use-cursors --duplicate --use-transactions=5");
   return '';
 }

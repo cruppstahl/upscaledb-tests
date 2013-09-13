@@ -61,14 +61,10 @@ class Metrics
     static Metrics *get_instance() {
       if (!instance)
         instance = new Metrics();
-      return instance;
+      return (instance);
     }
 
     static Metrics *instance;
-
-    ham_env_metrics_t *get_ham_metrics() {
-      return (&m_ham_metrics);
-    }
 
   private:
     Metrics() {

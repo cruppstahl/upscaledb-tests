@@ -540,5 +540,11 @@ Hamsterdb::collect_metrics()
             metrics.extkey_cache_hits);
   Metrics::get_instance()->add_metric(get_name(), "extkey-cache-misses",
             metrics.extkey_cache_misses);
+  Metrics::get_instance()->add_metric(get_name(), "btree-smo-split",
+            metrics.btree_smo_split);
+  Metrics::get_instance()->add_metric(get_name(), "btree-smo-merge",
+            metrics.btree_smo_merge);
+  Metrics::get_instance()->add_metric(get_name(), "btree-smo-shift",
+            metrics.btree_smo_shift);
 }
 
