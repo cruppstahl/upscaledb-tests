@@ -37,6 +37,7 @@ AC_FUNC_MMAP
 m4_include([m4/boost.m4])
 BOOST_REQUIRE([1.36])
 BOOST_SYSTEM()
+BOOST_CHRONO()
 
 AM_CONDITIONAL([DARWIN],  [AS_CASE([$host_os], [darwin*],  [true], [false])])
 AM_CONDITIONAL([FREEBSD], [AS_CASE([$host_os], [freebsd*], [true], [false])])
@@ -74,5 +75,5 @@ CXXFLAGS=${CFLAGS}
 # -------------------------------------------------------------------------
 # -------------------------------------------------------------------------
 # -------------------------------------------------------------------------
-AC_CONFIG_FILES(Makefile src/Makefile)
+AC_CONFIG_FILES(Makefile src/Makefile new/Makefile)
 AC_OUTPUT

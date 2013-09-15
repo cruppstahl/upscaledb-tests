@@ -1,0 +1,52 @@
+- siehe env/posix/xxx - ein test schlägt immer fehl wg. falscher parameter
+- design von test-generatoren von
+    - dateibasiert (parser)
+    - ascending nummern/text/blob
+    - descending nummern/text/blob
+    - random nummern/text/blob
+    - zipfian nummern/text/blob
+    ... mit jeweiligem prozentualen anteil von insert/erase/find
+    ... sowie transaktionen (mehrere, verschachtelt)
+
+o ausführen bis...
+  x ... max N operationen ausgeführt sind
+  x ... max N sek. abgelaufen sind
+  o ... max N bytes eingefügt wurden
+
+o jeder thread erzeugt seine eigene data-source, die deterministisch arbeiten
+  x DataSource()
+  x     . get_next()
+  x NumericRandomSource(max)
+  x NumericAscendingSource(max)
+  x NumericDescendingSource(max)
+  x NumericZipfianSource(max)
+  x BinaryRandomSource(max)
+  x BinaryAscendingSource(max)
+  x BinaryDescendingSource(max)
+  x BinaryZipfianSource(max)
+
+  o RuntimeGenerator - erzeugt anweisungen zur laufzeit
+        - create
+        - open
+        - insert
+        - erase
+        - find
+        - fullcheck
+        - txn-begin
+        - txn-commit
+        - txn-abort
+        - close
+      o abhängig von kommandozeilenparametern
+      o --tee: schreibt in datei
+    FileGenerator(const char *path) - der bestehende parser,
+        lädt die ganze datei in den speicher bevor's losgeht
+
+  o StringRandomSource(max) - basierend auf dict/words, wahlweise konkateniert
+  o StringAscendingSource(max) - basierend auf dict/words, konkateniert
+  o StringDescendingSource(max) - basierend auf dict/words, konkateniert
+  o StringZipfianSource(max) - basierend auf dict/words
+
+  o wenn single-threaded dann wirklich nur 1 thread erzeugen
+  o berkeleydb weiterführen wie gehabt
+  o fullchecks automatisch einfügen (alle N operationen, default ist 100)
+
