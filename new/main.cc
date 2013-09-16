@@ -30,9 +30,10 @@
 #define ARG_REOPEN                  5
 #define ARG_INMEMORY                10
 #define ARG_OVERWRITE               11
-#define ARG_DISABLE_MMAP            13
-#define ARG_PAGESIZE                14
-#define ARG_KEYSIZE                 15
+#define ARG_DISABLE_MMAP            12
+#define ARG_PAGESIZE                13
+#define ARG_KEYSIZE                 14
+#define ARG_KEYSIZE_FIXED           15
 #define ARG_RECSIZE                 16
 #define ARG_CACHE                   17
 #define ARG_USE_CURSORS             23
@@ -171,6 +172,12 @@ static option_t opts[] = {
     0,
     "keysize",
     "Sets the key size (use 0 for default)",
+    0 },
+  {
+    ARG_KEYSIZE_FIXED,
+    0,
+    "keysize-fixed",
+    "Forces a fixed key size; default behavior depends on --keytype",
     0 },
   {
     ARG_RECSIZE,
@@ -351,6 +358,9 @@ parse_config(int argc, char **argv, Configuration *c)
     else if (opt == ARG_KEYSIZE) {
       c->key_size = strtoul(param, 0, 0);
     }
+    else if (opt == ARG_KEYSIZE_FIXED) {
+      c->key_is_fixed_size = true;
+    }
     else if (opt == ARG_RECSIZE) {
       c->rec_size = strtoul(param, 0, 0);
     }
@@ -483,11 +493,15 @@ main(int argc, char **argv)
 {
   Configuration c;
   parse_config(argc, argv, &c);
-  bool ok = true;
 
   // ALWAYS set the seed!
   if (c.seed == 0)
     c.seed = ::time(0);
+
+  // ALWAYS dump the configuration
+  c.print();
+
+  bool ok = true;
 
   //NumericDescendingDatasource<unsigned short> ds;
   //NumericRandomDatasource<unsigned short> ds;
