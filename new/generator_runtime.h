@@ -24,23 +24,43 @@
 //
 class RuntimeGenerator : public Generator
 {
+    enum {
+      kStateRunning = 0,
+      kStateReopening,
+      kStateStopped
+    };
+
   public:
     // constructor
     RuntimeGenerator(Configuration *conf);
 
     // destructor
     virtual ~RuntimeGenerator() {
+      assert(!m_txn_is_active);
       delete m_datasource;
     }
 
+    // executes the next command from the Datasource
     virtual bool execute(Database *db);
+
+    // opens the Environment; used for 'reopen'
+    virtual void open(Database *db);
+
+    // closes the Environment; used for 'reopen'
+    virtual void close(Database *db);
 
   private:
     int get_next_command();
     bool limit_reached();
 
+    // the current state (running, reopening etc)
+    int m_state;
+
     // counting the number of operations
     uint64_t m_opcount;
+
+    // counting inserted bytes
+    uint64_t m_inserted_bytes;
 
     // the datasource
     Datasource *m_datasource;
@@ -53,6 +73,9 @@ class RuntimeGenerator : public Generator
 
     // start time
     Timer<boost::chrono::system_clock> m_start;
+
+    // is a Transaction currently active?
+    bool m_txn_is_active;
 };
 
 #endif /* RUNTIME_GENERATOR_H__ */

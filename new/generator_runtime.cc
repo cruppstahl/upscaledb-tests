@@ -17,7 +17,8 @@
 #include "generator_runtime.h"
 
 RuntimeGenerator::RuntimeGenerator(Configuration *conf)
-  : Generator(conf), m_opcount(0), m_datasource(0), m_u01(m_rng)
+  : Generator(conf), m_state(0), m_opcount(0), m_datasource(0), m_u01(m_rng),
+    m_txn_is_active(false)
 {
   if (conf->seed)
     m_rng.seed(conf->seed);
@@ -119,28 +120,43 @@ RuntimeGenerator::RuntimeGenerator(Configuration *conf)
 bool
 RuntimeGenerator::execute(Database *db)
 {
-  if (limit_reached())
+  if (m_state == kStateStopped)
     return (false);
 
   int cmd = get_next_command();
   switch (cmd) {
     case Generator::kCommandCreate:
+      std::cout << "CREATE" << std::endl;
       break;
     case Generator::kCommandOpen:
+      std::cout << "OPEN" << std::endl;
       break;
     case Generator::kCommandClose:
+      std::cout << "CLOSE" << std::endl;
       break;
     case Generator::kCommandInsert:
+      std::cout << "INSERT" << std::endl;
       break;
     case Generator::kCommandErase:
+      std::cout << "ERASE" << std::endl;
       break;
     case Generator::kCommandFind:
+      std::cout << "FIND" << std::endl;
       break;
     case Generator::kCommandBeginTransaction:
+      std::cout << "TXN_BEGIN" << std::endl;
+      assert(m_txn_is_active == false);
+      m_txn_is_active = true;
       break;
     case Generator::kCommandAbortTransaction:
+      std::cout << "TXN_ABORT" << std::endl;
+      assert(m_txn_is_active == true);
+      m_txn_is_active = false;
       break;
     case Generator::kCommandCommitTransaction:
+      std::cout << "TXN_COMMIT" << std::endl;
+      assert(m_txn_is_active == true);
+      m_txn_is_active = false;
       break;
     default:
       assert(!"shouldn't be here");
@@ -150,12 +166,30 @@ RuntimeGenerator::execute(Database *db)
   return (true);
 }
 
+void
+RuntimeGenerator::open(Database *db)
+{
+  std::cout << "OPEN" << std::endl;
+}
+
+void
+RuntimeGenerator::close(Database *db)
+{
+  std::cout << "CLOSE" << std::endl;
+}
+
 int
 RuntimeGenerator::get_next_command()
 {
   // limit reached - last command? then 'close'
-  if (limit_reached())
-    return (Generator::kCommandClose);
+  if (limit_reached()) {
+    if (m_state == kStateRunning) {
+      if (m_txn_is_active)
+        return (Generator::kCommandCommitTransaction);
+      m_state = kStateStopped;
+      return (Generator::kCommandClose);
+    }
+  }
 
   // first command? then either 'create' or 'reopen', depending on flags
   if (m_opcount == 0) {
@@ -165,7 +199,15 @@ RuntimeGenerator::get_next_command()
       return (Generator::kCommandCreate);
   }
 
-  // TODO transactions!
+  // begin/abort/commit transactions!
+  if (m_conf->transactions_nth) {
+    if (m_opcount % m_conf->transactions_nth == 0) {
+      if (m_txn_is_active)
+        return (Generator::kCommandCommitTransaction);
+      else
+        return (Generator::kCommandBeginTransaction);
+    }
+  }
 
   // perform "real" work
   if (m_conf->erase_pct || m_conf->find_pct) {
@@ -191,6 +233,11 @@ RuntimeGenerator::limit_reached()
       return (true);
   }
 
-  // TODO check inserted bytes
+  // check inserted bytes
+  if (m_conf->limit_bytes) {
+    if (m_inserted_bytes >= m_conf->limit_bytes)
+      return (true);
+  }
+
   return (false);
 }

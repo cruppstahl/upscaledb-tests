@@ -95,12 +95,12 @@ template<typename T>
 class NumericZipfianDatasource : public Datasource
 {
   public:
-    NumericZipfianDatasource(T n, long seed = 0, double alpha = 0.8)
-      : m_n(n), m_alpha(alpha), m_u01(m_rng) {
+    NumericZipfianDatasource(uint64_t n, long seed = 0, double alpha = 0.8)
+      : m_alpha(alpha), m_n(n), m_u01(m_rng) {
       if (seed)
         m_rng.seed(seed);
       // Compute normalization constant
-      for (int i = 1; i <= n; i++)
+      for (uint64_t i = 1; i <= n; i++)
         m_c = m_c + (1.0 / pow((double) i, m_alpha));
       m_c = 1.0 / m_c;
     }
@@ -119,7 +119,7 @@ class NumericZipfianDatasource : public Datasource
 
       // Map z to the value
       double sum_prob = 0;
-      for (int i = 1; i <= m_n; i++) {
+      for (uint64_t i = 1; i <= m_n; i++) {
         sum_prob = sum_prob + m_c / pow((double) i, m_alpha);
         if (sum_prob >= z) {
           rv = i;
@@ -128,7 +128,7 @@ class NumericZipfianDatasource : public Datasource
       }
 
       // Assert that rv is between 1 and N
-      assert ((rv >=1) && (rv <= m_n));
+      assert ((rv >= 1) && (rv <= (T)m_n));
 
       return ((T)rv);
     }
@@ -137,7 +137,7 @@ class NumericZipfianDatasource : public Datasource
     T m_value;
     double m_c;
     double m_alpha;
-    T m_n;
+    uint64_t m_n;
     boost::mt19937 m_rng;
     boost::uniform_01<boost::mt19937> m_u01;
 };

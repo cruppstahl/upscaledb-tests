@@ -27,7 +27,7 @@ class BinaryRandomDatasource : public Datasource
       : m_size(size), m_fixed_size(fixed_size) {
       if (seed)
         m_rng.seed(seed);
-      for (int i = 0; i < sizeof(m_data); i++)
+      for (size_t i = 0; i < sizeof(m_data); i++)
         m_data[i] = (unsigned char)i;
     }
 
@@ -99,7 +99,7 @@ class BinaryAscendingDatasource : public Datasource
 
   private:
     unsigned char m_value;
-    int m_size;
+    size_t m_size;
     std::vector<unsigned char> m_data;
     bool m_fixed_size;
 };
@@ -154,7 +154,7 @@ class BinaryDescendingDatasource : public Datasource
 
   private:
     unsigned char m_value;
-    int m_size;
+    size_t m_size;
     std::vector<unsigned char> m_data;
     bool m_fixed_size;
 };
@@ -168,7 +168,7 @@ class BinaryZipfianDatasource : public Datasource
   // dann eine NumericZipfianDatasource erzeugen und in diesem binary
   // array entsprechend die daten rauskopieren
   public:
-    BinaryZipfianDatasource(unsigned n, int size, bool fixed_size,
+    BinaryZipfianDatasource(uint64_t n, size_t size, bool fixed_size,
             long seed = 0, double alpha = 0.8)
       : m_size(size), m_fixed_size(fixed_size), m_zipf(n, seed, alpha) {
       if (seed)
@@ -180,14 +180,14 @@ class BinaryZipfianDatasource : public Datasource
 
     // returns the next piece of data
     virtual void get_next(std::vector<unsigned char> &vec) {
-      int size = m_size;
+      size_t size = m_size;
       if (!m_fixed_size)
         size = (m_rng() % m_size) + 1;
 
       vec.resize(size);
 
       int pos = m_zipf.get_next_number(); 
-      for (int i = 0; i < size; i++)
+      for (size_t i = 0; i < size; i++)
         vec[i] = m_data[pos + i];
     }
 

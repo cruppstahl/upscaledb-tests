@@ -48,6 +48,12 @@ class Generator
     // will follow, false when the test is done
     virtual bool execute(Database *db) = 0;
 
+    // opens the Environment; used for 'reopen'
+    virtual void open(Database *db) = 0;
+
+    // closes the Environment; used for 'reopen'
+    virtual void close(Database *db) = 0;
+
   protected:
     // the configuration settings
     Configuration *m_conf;
