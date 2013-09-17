@@ -16,9 +16,11 @@
 #include "datasource_binary.h"
 #include "generator_runtime.h"
 
-RuntimeGenerator::RuntimeGenerator(Configuration *conf)
-  : Generator(conf), m_state(0), m_opcount(0), m_datasource(0), m_u01(m_rng),
-    m_txn_is_active(false)
+#define kZipfianLimit       (1024 * 1024 * 5)
+
+RuntimeGenerator::RuntimeGenerator(Configuration *conf, Database *db)
+  : Generator(conf), m_db(db), m_state(0), m_opcount(0), m_inserted_bytes(0),
+    m_datasource(0), m_u01(m_rng), m_txn(0), m_cursor(0)
 {
   if (conf->seed)
     m_rng.seed(conf->seed);
@@ -36,8 +38,9 @@ RuntimeGenerator::RuntimeGenerator(Configuration *conf)
           m_datasource = new NumericDescendingDatasource<uint8_t>();
           break;
         case Configuration::kDistributionZipfian:
-          m_datasource = new NumericZipfianDatasource<uint8_t>(conf->limit_ops,
-                  conf->seed);
+          m_datasource = new NumericZipfianDatasource<uint8_t>(
+                          conf->limit_ops ? conf->limit_ops : kZipfianLimit,
+                          conf->seed);
           break;
       }
       break;
@@ -53,8 +56,9 @@ RuntimeGenerator::RuntimeGenerator(Configuration *conf)
           m_datasource = new NumericDescendingDatasource<uint16_t>();
           break;
         case Configuration::kDistributionZipfian:
-          m_datasource = new NumericZipfianDatasource<uint16_t>(conf->limit_ops,
-                  conf->seed);
+          m_datasource = new NumericZipfianDatasource<uint8_t>(
+                          conf->limit_ops ? conf->limit_ops : kZipfianLimit,
+                          conf->seed);
           break;
       }
       break;
@@ -70,8 +74,9 @@ RuntimeGenerator::RuntimeGenerator(Configuration *conf)
           m_datasource = new NumericDescendingDatasource<uint32_t>();
           break;
         case Configuration::kDistributionZipfian:
-          m_datasource = new NumericZipfianDatasource<uint32_t>(conf->limit_ops,
-                  conf->seed);
+          m_datasource = new NumericZipfianDatasource<uint8_t>(
+                          conf->limit_ops ? conf->limit_ops : kZipfianLimit,
+                          conf->seed);
           break;
       }
       break;
@@ -87,8 +92,9 @@ RuntimeGenerator::RuntimeGenerator(Configuration *conf)
           m_datasource = new NumericDescendingDatasource<uint64_t>();
           break;
         case Configuration::kDistributionZipfian:
-          m_datasource = new NumericZipfianDatasource<uint64_t>(conf->limit_ops,
-                  conf->seed);
+          m_datasource = new NumericZipfianDatasource<uint8_t>(
+                          conf->limit_ops ? conf->limit_ops : kZipfianLimit,
+                          conf->seed);
           break;
       }
       break;
@@ -118,7 +124,7 @@ RuntimeGenerator::RuntimeGenerator(Configuration *conf)
 }
 
 bool
-RuntimeGenerator::execute(Database *db)
+RuntimeGenerator::execute()
 {
   if (m_state == kStateStopped)
     return (false);
@@ -126,37 +132,31 @@ RuntimeGenerator::execute(Database *db)
   int cmd = get_next_command();
   switch (cmd) {
     case Generator::kCommandCreate:
-      std::cout << "CREATE" << std::endl;
+      create();
       break;
     case Generator::kCommandOpen:
-      std::cout << "OPEN" << std::endl;
+      open();
       break;
     case Generator::kCommandClose:
-      std::cout << "CLOSE" << std::endl;
+      close();
       break;
     case Generator::kCommandInsert:
-      std::cout << "INSERT" << std::endl;
+      insert();
       break;
     case Generator::kCommandErase:
-      std::cout << "ERASE" << std::endl;
+      erase();
       break;
     case Generator::kCommandFind:
-      std::cout << "FIND" << std::endl;
+      find();
       break;
     case Generator::kCommandBeginTransaction:
-      std::cout << "TXN_BEGIN" << std::endl;
-      assert(m_txn_is_active == false);
-      m_txn_is_active = true;
+      txn_begin();
       break;
     case Generator::kCommandAbortTransaction:
-      std::cout << "TXN_ABORT" << std::endl;
-      assert(m_txn_is_active == true);
-      m_txn_is_active = false;
+      txn_abort();
       break;
     case Generator::kCommandCommitTransaction:
-      std::cout << "TXN_COMMIT" << std::endl;
-      assert(m_txn_is_active == true);
-      m_txn_is_active = false;
+      txn_commit();
       break;
     default:
       assert(!"shouldn't be here");
@@ -167,15 +167,123 @@ RuntimeGenerator::execute(Database *db)
 }
 
 void
-RuntimeGenerator::open(Database *db)
+RuntimeGenerator::create()
 {
-  std::cout << "OPEN" << std::endl;
+  std::cout << "CREATE" << std::endl;
+  m_last_status = m_db->create_db();
 }
 
 void
-RuntimeGenerator::close(Database *db)
+RuntimeGenerator::open()
 {
+  std::cout << "OPEN" << std::endl;
+  m_last_status = m_db->open_db();
+}
+ 
+void
+RuntimeGenerator::close()
+ {
   std::cout << "CLOSE" << std::endl;
+  m_last_status = m_db->close_db();
+}
+
+void
+RuntimeGenerator::insert()
+{
+  std::cout << "INSERT" << std::endl;
+
+  ham_key_t key = generate_key();
+  ham_record_t rec = generate_record();
+
+  if (m_cursor)
+    m_last_status = m_db->cursor_insert(m_cursor, &key, &rec);
+  else
+    m_last_status = m_db->insert(m_txn, &key, &rec);
+
+  if (m_last_status == 0)
+    m_inserted_bytes += key.size + rec.size;
+}
+
+void
+RuntimeGenerator::erase()
+{
+  std::cout << "ERASE" << std::endl;
+
+  ham_key_t key = generate_key();
+
+  if (m_cursor)
+    m_last_status = m_db->cursor_erase(m_cursor, &key);
+  else
+    m_last_status = m_db->erase(m_txn, &key);
+}
+
+void
+RuntimeGenerator::find()
+{
+  std::cout << "FIND" << std::endl;
+
+  ham_key_t key = generate_key();
+  ham_record_t rec = {0};
+
+  if (m_cursor)
+    m_last_status = m_db->find(m_cursor, &key, &rec);
+  else
+    m_last_status = m_db->find(m_txn, &key, &rec);
+}
+
+void
+RuntimeGenerator::txn_begin()
+{
+  std::cout << "TXN_BEGIN" << std::endl;
+  assert(m_txn == 0);
+
+  m_txn = m_db->txn_begin();
+}
+
+void
+RuntimeGenerator::txn_abort()
+{
+  std::cout << "TXN_ABORT" << std::endl;
+  assert(m_txn != 0);
+
+  m_last_status = m_db->txn_abort(m_txn);
+  m_txn = 0;
+}
+
+void
+RuntimeGenerator::txn_commit()
+{
+  std::cout << "TXN_COMMIT" << std::endl;
+  assert(m_txn != 0);
+
+  m_last_status = m_db->txn_commit(m_txn);
+  m_txn = 0;
+}
+
+ham_key_t
+RuntimeGenerator::generate_key()
+{
+  ham_key_t key = {0};
+  m_datasource->get_next(m_key_data);
+  key.data = &m_key_data[0];
+  key.size = m_key_data.size();
+  return (key);
+}
+
+ham_record_t
+RuntimeGenerator::generate_record()
+{
+  ham_record_t rec = {0};
+  m_record_data.resize(m_conf->rec_size);
+  // make the record unique (more or less)
+  size_t size = std::min((int)sizeof(m_opcount), m_conf->rec_size);
+  memcpy(&m_record_data[0], &m_opcount, size);
+  for (int i = size; i < m_conf->rec_size; i++)
+    m_record_data[i] = (uint8_t)i;
+
+  rec.data = &m_record_data[0];
+  rec.size = m_record_data.size();
+  return (rec);
 }
 
 int
@@ -184,7 +292,7 @@ RuntimeGenerator::get_next_command()
   // limit reached - last command? then 'close'
   if (limit_reached()) {
     if (m_state == kStateRunning) {
-      if (m_txn_is_active)
+      if (m_txn)
         return (Generator::kCommandCommitTransaction);
       m_state = kStateStopped;
       return (Generator::kCommandClose);
@@ -201,12 +309,11 @@ RuntimeGenerator::get_next_command()
 
   // begin/abort/commit transactions!
   if (m_conf->transactions_nth) {
-    if (m_opcount % m_conf->transactions_nth == 0) {
-      if (m_txn_is_active)
-        return (Generator::kCommandCommitTransaction);
-      else
-        return (Generator::kCommandBeginTransaction);
-    }
+    if (!m_txn)
+      return (Generator::kCommandBeginTransaction);
+    // add +2 because txn_begin/txn_commit are also counted in m_opcount
+    if (m_opcount % (m_conf->transactions_nth + 2) == 0)
+      return (Generator::kCommandCommitTransaction);
   }
 
   // perform "real" work
@@ -214,7 +321,8 @@ RuntimeGenerator::get_next_command()
     double d = m_u01();
     if (d * 100 < m_conf->erase_pct)
       return (Generator::kCommandErase);
-    if (d * 100 >= m_conf->erase_pct && d * 100 < m_conf->find_pct)
+    if (d * 100 >= m_conf->erase_pct
+        && d * 100 < (m_conf->erase_pct + m_conf->find_pct))
       return (Generator::kCommandFind);
   }
   return (Generator::kCommandInsert);
@@ -224,8 +332,10 @@ bool
 RuntimeGenerator::limit_reached()
 {
   // reached IOPS limit?
-  if (m_opcount == m_conf->limit_ops)
-    return (true);
+  if (m_conf->limit_ops) {
+    if (m_opcount == m_conf->limit_ops)
+      return (true);
+  }
 
   // reached time limit?
   if (m_conf->limit_seconds) {

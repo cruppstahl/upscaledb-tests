@@ -12,6 +12,27 @@
 #include "configuration.h"
 #include "database.h"
 
+void 
+Database::create_env()
+{
+  if (do_create_env() != 0)
+    exit(-1);
+}
+
+void 
+Database::open_env()
+{
+  if (do_open_env() != 0)
+    exit(-1);
+}
+
+void 
+Database::close_env()
+{
+  if (do_close_env() != 0)
+    exit(-1);
+}
+
 ham_status_t 
 Database::create_db()
 {

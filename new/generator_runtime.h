@@ -18,6 +18,7 @@
 #include "timer.h"
 #include "generator.h"
 #include "datasource.h"
+#include "database.h"
 
 //
 // generates data based on configuration settings
@@ -32,26 +33,60 @@ class RuntimeGenerator : public Generator
 
   public:
     // constructor
-    RuntimeGenerator(Configuration *conf);
+    RuntimeGenerator(Configuration *conf, Database *db);
 
     // destructor
     virtual ~RuntimeGenerator() {
-      assert(!m_txn_is_active);
+      assert(m_txn == 0);
+      assert(m_cursor == 0);
       delete m_datasource;
     }
 
     // executes the next command from the Datasource
-    virtual bool execute(Database *db);
+    virtual bool execute();
 
     // opens the Environment; used for 'reopen'
-    virtual void open(Database *db);
+    virtual void open();
 
     // closes the Environment; used for 'reopen'
-    virtual void close(Database *db);
+    virtual void close();
 
   private:
+    // creates the Environment
+    void create();
+
+    // inserts a key/value pair
+    void insert();
+
+    // erases a key/value pair
+    void erase();
+
+    // lookup of a key/value pair
+    void find();
+
+    // begins a new transaction
+    void txn_begin();
+
+    // commits a transaction
+    void txn_commit();
+
+    // aborts a transaction
+    void txn_abort();
+
+    // generates a new key, based on the Datasource
+    ham_key_t generate_key();
+
+    // generates a new record
+    ham_record_t generate_record();
+
+    // which command to execute next?
     int get_next_command();
+
+    // returs true if test should stop now
     bool limit_reached();
+ 
+    // the Database which executes the commands
+    Database *m_db;
 
     // the current state (running, reopening etc)
     int m_state;
@@ -65,6 +100,12 @@ class RuntimeGenerator : public Generator
     // the datasource
     Datasource *m_datasource;
 
+    // a vector which temporarily stores the data from the Datasource
+    std::vector<uint8_t> m_key_data;
+
+    // a vector which temporarily stores the data for the records
+    std::vector<uint8_t> m_record_data;
+
     // rng
     boost::mt19937 m_rng;
 
@@ -74,8 +115,11 @@ class RuntimeGenerator : public Generator
     // start time
     Timer<boost::chrono::system_clock> m_start;
 
-    // is a Transaction currently active?
-    bool m_txn_is_active;
+    // the currently active Transaction
+    Database::Transaction *m_txn;
+
+    // the currently used Cursor
+    Database::Cursor *m_cursor;
 };
 
 #endif /* RUNTIME_GENERATOR_H__ */

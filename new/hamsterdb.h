@@ -15,6 +15,7 @@
 #include <ham/hamsterdb.h>
 #include <ham/hamsterdb_srv.h>
 
+#include "mutex.h"
 #include "database.h"
 
 //
@@ -33,17 +34,11 @@ class HamsterDatabase : public Database
       return ("hamsterdb");
     }
 
-    // static initialization - creates new Environment
-    static ham_status_t create(Configuration *conf);
-
-    // static initialization - opens existing Environment
-    static ham_status_t open(Configuration *conf);
-
-    // static shutdown - closes Envionment
-    static ham_status_t close();
-
   protected:
     // the actual implementation(s)
+    virtual ham_status_t do_create_env();
+    virtual ham_status_t do_open_env();
+    virtual ham_status_t do_close_env();
     virtual ham_status_t do_create_db();
     virtual ham_status_t do_open_db();
     virtual ham_status_t do_close_db();
@@ -61,10 +56,10 @@ class HamsterDatabase : public Database
 
 	virtual Cursor *do_cursor_create(Transaction *txn);
     virtual ham_status_t do_cursor_insert(Cursor *cursor, ham_key_t *key,
-                    ham_record_t *record) = 0;
-    virtual ham_status_t do_cursor_erase(Cursor *cursor, ham_key_t *key) = 0;
+                    ham_record_t *record);
+    virtual ham_status_t do_cursor_erase(Cursor *cursor, ham_key_t *key);
     virtual ham_status_t do_cursor_find(Cursor *cursor, ham_key_t *key,
-                    ham_record_t *record) = 0;
+                    ham_record_t *record);
     virtual ham_status_t do_cursor_get_previous(Cursor *cursor, ham_key_t *key, 
                     ham_record_t *record);
     virtual ham_status_t do_cursor_get_next(Cursor *cursor, ham_key_t *key, 
@@ -74,6 +69,7 @@ class HamsterDatabase : public Database
   private:
     static void print_error(const char *function, ham_status_t st);
 
+    static Mutex ms_mutex;
     static ham_env_t *ms_env;
     static ham_env_t *ms_remote_env;
     static ham_srv_t *ms_srv;

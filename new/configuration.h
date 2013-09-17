@@ -106,7 +106,7 @@ struct Configuration
     if (use_transactions) {
       if (transactions_nth)
         printf("--use-transactions=tmp ");
-      else if (transactions_nth == 0xffffffff)
+      else if (transactions_nth == 0xffffffffu)
         printf("--use-transactions=all ");
       else
         printf("--use-transactions=%d ", transactions_nth);
@@ -183,7 +183,7 @@ struct Configuration
   bool use_remote;
   int duplicate;
   bool overwrite;
-  int transactions_nth;
+  uint32_t transactions_nth;
   bool use_fsync;
   bool inmemory;
   bool use_recovery;

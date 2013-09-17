@@ -21,30 +21,36 @@
 ham_env_t *HamsterDatabase::ms_env = 0;
 ham_env_t *HamsterDatabase::ms_remote_env = 0;
 ham_srv_t *HamsterDatabase::ms_srv = 0;
+Mutex      HamsterDatabase::ms_mutex;
 
 ham_status_t
-HamsterDatabase::create(Configuration *config)
+HamsterDatabase::do_create_env()
 {
+  ScopedLock lock(ms_mutex);
+  // check if another thread was faster
+  if (ms_env != 0)
+    return (0);
+
   ham_u32_t flags = 0;
   ham_parameter_t params[6] = {{0, 0}};
 
   params[0].name = HAM_PARAM_CACHESIZE;
-  params[0].value = config->cachesize;
+  params[0].value = m_config->cachesize;
   params[1].name = HAM_PARAM_PAGESIZE;
-  params[1].value = 0; // TODO config->pagesize;
+  params[1].value = m_config->pagesize;
   params[2].name = HAM_PARAM_MAX_DATABASES;
   params[2].value = 32; // for up to 32 threads
-  if (config->use_encryption) {
+  if (m_config->use_encryption) {
     params[3].name = HAM_PARAM_ENCRYPTION_KEY;
     params[3].value = (ham_u64_t)"1234567890123456";
   }
 
-  flags |= config->inmemory ? HAM_IN_MEMORY : 0; 
-  flags |= config->no_mmap ? HAM_DISABLE_MMAP : 0; 
-  flags |= config->use_recovery ? HAM_ENABLE_RECOVERY : 0;
-  flags |= config->cacheunlimited ? HAM_CACHE_UNLIMITED : 0;
-  flags |= config->use_transactions ? HAM_ENABLE_TRANSACTIONS : 0;
-  flags |= config->use_fsync ? HAM_ENABLE_FSYNC : 0;
+  flags |= m_config->inmemory ? HAM_IN_MEMORY : 0; 
+  flags |= m_config->no_mmap ? HAM_DISABLE_MMAP : 0; 
+  flags |= m_config->use_recovery ? HAM_ENABLE_RECOVERY : 0;
+  flags |= m_config->cacheunlimited ? HAM_CACHE_UNLIMITED : 0;
+  flags |= m_config->use_transactions ? HAM_ENABLE_TRANSACTIONS : 0;
+  flags |= m_config->use_fsync ? HAM_ENABLE_FSYNC : 0;
 
   boost::filesystem::remove("test-ham.db");
 
@@ -57,7 +63,7 @@ HamsterDatabase::create(Configuration *config)
 
   // remote client/server? start the server, attach the environment and then
   // open the remote environment
-  if (config->use_remote) {
+  if (m_config->use_remote) {
     ms_remote_env = ms_env;
     ms_env = 0;
 
@@ -68,7 +74,7 @@ HamsterDatabase::create(Configuration *config)
     ham_srv_add_env(ms_srv, ms_remote_env, "/env1.db");
 
     ham_u32_t flags = 0;
-    flags |= config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
+    flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
     st = ham_env_open(&ms_env, "ham://localhost:10123/env1.db", flags, 0);
     if (st)
       print_error("ham_env_open", st);
@@ -78,22 +84,27 @@ HamsterDatabase::create(Configuration *config)
 }
 
 ham_status_t
-HamsterDatabase::open(Configuration *config)
+HamsterDatabase::do_open_env()
 {
+  ScopedLock lock(ms_mutex);
+  // check if another thread was faster
+  if (ms_env != 0)
+    return (0);
+
   ham_u32_t flags = 0;
   ham_parameter_t params[6] = {{0, 0}};
 
   params[0].name = HAM_PARAM_CACHESIZE;
-  params[0].value = config->cachesize;
-  if (config->use_encryption) {
+  params[0].value = m_config->cachesize;
+  if (m_config->use_encryption) {
     params[1].name = HAM_PARAM_ENCRYPTION_KEY;
     params[1].value = (ham_u64_t)"1234567890123456";
   }
 
-  flags |= config->no_mmap ? HAM_DISABLE_MMAP : 0; 
-  flags |= config->cacheunlimited ? HAM_CACHE_UNLIMITED : 0;
-  flags |= config->use_transactions ? HAM_ENABLE_TRANSACTIONS : 0;
-  flags |= config->use_fsync ? HAM_ENABLE_FSYNC : 0;
+  flags |= m_config->no_mmap ? HAM_DISABLE_MMAP : 0; 
+  flags |= m_config->cacheunlimited ? HAM_CACHE_UNLIMITED : 0;
+  flags |= m_config->use_transactions ? HAM_ENABLE_TRANSACTIONS : 0;
+  flags |= m_config->use_fsync ? HAM_ENABLE_FSYNC : 0;
 
   ham_status_t st = ham_env_open(&ms_env, "test-ham.db", flags, &params[0]);
   if (st) {
@@ -103,7 +114,7 @@ HamsterDatabase::open(Configuration *config)
 
   // remote client/server? start the server, attach the environment and then
   // open the remote environment
-  if (config->use_remote) {
+  if (m_config->use_remote) {
     ms_remote_env = ms_env;
     ms_env = 0;
 
@@ -114,7 +125,7 @@ HamsterDatabase::open(Configuration *config)
     ham_srv_add_env(ms_srv, ms_remote_env, "/env1.db");
 
     ham_u32_t flags = 0;
-    flags |= config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
+    flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
     st = ham_env_open(&ms_env, "ham://localhost:10123/env1.db", flags, 0);
     if (st)
       print_error("ham_env_open", st);
@@ -124,8 +135,9 @@ HamsterDatabase::open(Configuration *config)
 }
 
 ham_status_t
-HamsterDatabase::close()
+HamsterDatabase::do_close_env()
 {
+  ScopedLock lock(ms_mutex);
   if (ms_env)
     ham_env_close(ms_env, 0);
   ms_env = 0;
@@ -144,14 +156,15 @@ HamsterDatabase::do_create_db()
   ham_status_t st;
   ham_parameter_t params[6] = {{0, 0}};
 
-  params[0].name = 0; // TODO HAM_PARAM_KEYSIZE;
-  params[0].value = 0; // TODO m_config->keysize;
+  params[0].name = HAM_PARAM_KEYSIZE;
+  params[0].value = m_config->key_size;
 
   ham_u32_t flags = 0;
 
   flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
   //if (m_config->key != Configuration::kKeyNumeric)
     //flags |= HAM_ENABLE_EXTENDED_KEYS;
+    //TODO
 
   st = ham_env_create_db(ms_env, &m_db, 1 + m_id, flags, &params[0]);
   if (st) {
@@ -214,8 +227,8 @@ HamsterDatabase::do_find(Transaction *txn, ham_key_t *key, ham_record_t *record)
 {
   ham_u32_t flags = 0;
 
-  // if (m_config->direct_access && m_config->inmemory)
-    // flags |= HAM_DIRECT_ACCESS;
+  if (m_config->direct_access && m_config->inmemory)
+    flags |= HAM_DIRECT_ACCESS;
 
 #if 0
   if (!m_txn) {
@@ -315,8 +328,8 @@ HamsterDatabase::do_cursor_get_previous(Cursor *cursor, ham_key_t *key,
 {
   ham_u32_t flags = 0;
 
-  // if (m_config->direct_access && m_config->inmemory)
-    // flags |= HAM_DIRECT_ACCESS;
+  if (m_config->direct_access && m_config->inmemory)
+    flags |= HAM_DIRECT_ACCESS;
 
 #if 0
   if (!m_txn) {
@@ -335,8 +348,8 @@ HamsterDatabase::do_cursor_get_next(Cursor *cursor, ham_key_t *key,
 {
   ham_u32_t flags = 0;
 
-  // if (m_config->direct_access && m_config->inmemory)
-    // flags |= HAM_DIRECT_ACCESS;
+  if (m_config->direct_access && m_config->inmemory)
+    flags |= HAM_DIRECT_ACCESS;
 
 #if 0
   if (!m_txn) {

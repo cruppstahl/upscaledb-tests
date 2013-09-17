@@ -22,6 +22,7 @@
 #include "datasource_numeric.h"
 #include "datasource_binary.h"
 #include "generator_runtime.h"
+#include "hamsterdb.h"
 
 #define ARG_HELP                    1
 #define ARG_VERBOSE                 2
@@ -58,6 +59,7 @@
 #define ARG_STOP_BYTES              52
 #define ARG_TEE                     53
 #define ARG_SEED                    54
+#define ARG_DISTRIBUTION            55
 
 /*
  * command line parameters
@@ -98,13 +100,20 @@ static option_t opts[] = {
     0,
     "tee",
     "Copies the generated test data into the specified file",
-    0 },
+    GETOPTS_NEED_ARGUMENT },
   {
     ARG_SEED,
     0,
     "seed",
     "Sets the seed for the random number generator",
-    0 },
+    GETOPTS_NEED_ARGUMENT },
+  {
+    ARG_DISTRIBUTION,
+    0,
+    "distribution",
+    "Sets the distribution of the key values ('random', 'ascending',\n"
+            "\t'descending', 'zipfian'",
+    GETOPTS_NEED_ARGUMENT },
   {
     ARG_INMEMORY,
     0,
@@ -248,7 +257,7 @@ static option_t opts[] = {
     0,
     "find-pct",
     "Percentage of lookup calls (default: 0)",
-    0 },
+    GETOPTS_NEED_ARGUMENT },
   {
     ARG_STOP_TIME,
     0,
@@ -300,6 +309,20 @@ parse_config(int argc, char **argv, Configuration *c)
     }
     else if (opt == ARG_INMEMORY) {
       c->inmemory = true;
+    }
+    else if (opt == ARG_DISTRIBUTION) {
+      if (param && !strcmp(param, "random"))
+        c->distribution = Configuration::kDistributionRandom;
+      else if (param && !strcmp(param, "ascending"))
+        c->distribution = Configuration::kDistributionAscending;
+      else if (param && !strcmp(param, "descending"))
+        c->distribution = Configuration::kDistributionDescending;
+      else if (param && !strcmp(param, "zipfian"))
+        c->distribution = Configuration::kDistributionZipfian;
+      else {
+        printf("invalid parameter for --distribution\n");
+        exit(-1);
+      }
     }
     else if (opt == ARG_OVERWRITE) {
       if (c->duplicate) {
@@ -503,6 +526,25 @@ main(int argc, char **argv)
 
   bool ok = true;
 
+  // if berkeleydb is disabled, and hamsterdb runs in only one thread:
+  // just execute the test single-threaded
+  if (c.no_berkeleydb) {
+    Database *db = new HamsterDatabase(0, &c);
+    db->create_env();
+    RuntimeGenerator generator(&c, db);
+    while (generator.execute())
+      ;
+    if (c.reopen) {
+      db->close_env();
+      db->open_env();
+      generator.open();
+      generator.close();
+    }
+    db->close_env();
+    delete db;
+  }
+
+#if 0
   //NumericDescendingDatasource<unsigned short> ds;
   //NumericRandomDatasource<unsigned short> ds;
   //NumericZipfianDatasource<unsigned int> ds(100);
@@ -524,6 +566,7 @@ main(int argc, char **argv)
     generator.open(0);
     generator.close(0);
   }
+#endif
 
   if (!c.no_progress)
     printf("\n");

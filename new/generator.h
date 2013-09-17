@@ -37,7 +37,7 @@ class Generator
 
     // constructor
     Generator(Configuration *conf)
-      : m_conf(conf) {
+      : m_conf(conf), m_last_status(0) {
     }
 
     // destructor
@@ -46,17 +46,20 @@ class Generator
 
     // executes the next generated statement; returns true if more statements
     // will follow, false when the test is done
-    virtual bool execute(Database *db) = 0;
+    virtual bool execute() = 0;
 
     // opens the Environment; used for 'reopen'
-    virtual void open(Database *db) = 0;
+    virtual void open() = 0;
 
     // closes the Environment; used for 'reopen'
-    virtual void close(Database *db) = 0;
+    virtual void close() = 0;
 
   protected:
     // the configuration settings
     Configuration *m_conf;
+
+    // the status of the previous database operation
+    ham_status_t m_last_status;
 };
 
 #endif /* GENERATOR_H__ */

@@ -51,6 +51,15 @@ class Database
     // Returns a descriptive name
     virtual const char *get_name() const = 0;
 
+    // Creates a global Environment
+    void create_env();
+
+    // Opens a global Environment
+    void open_env();
+
+    // Closes the global Environment
+    void close_env();
+
     // Actual database functions, calling do_*() (and tracking the time
     // spent in these functions)
     ham_status_t create_db();
@@ -82,6 +91,9 @@ class Database
 
   protected:
     // the actual implementation(s)
+    virtual ham_status_t do_create_env() = 0;
+    virtual ham_status_t do_open_env() = 0;
+    virtual ham_status_t do_close_env() = 0;
     virtual ham_status_t do_create_db() = 0;
     virtual ham_status_t do_open_db() = 0;
     virtual ham_status_t do_close_db() = 0;
