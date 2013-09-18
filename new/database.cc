@@ -145,8 +145,3 @@ Database::cursor_close(Database::Cursor *cursor)
   return (do_cursor_close(cursor));
 }
 
-void 
-Database::collect_metrics()
-{
-}
-

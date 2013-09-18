@@ -59,7 +59,7 @@ class Generator
     virtual bool was_successful() = 0;
 
     // returns the collected metrics/statistics
-    virtual Metrics *get_metrics() = 0;
+    virtual void get_metrics(Metrics *metrics) = 0;
 
   protected:
     // the configuration settings

@@ -16,6 +16,7 @@
 
 #include <ham/hamsterdb.h>
 
+class Metrics;
 class Configuration;
 
 //
@@ -87,7 +88,8 @@ class Database
                     ham_record_t *record);
     ham_status_t cursor_close(Cursor *cursor);
 
-    void collect_metrics();
+    // Fills |metrics| with additional metrics
+    virtual void get_metrics(Metrics *metrics) = 0;
 
   protected:
     // the actual implementation(s)

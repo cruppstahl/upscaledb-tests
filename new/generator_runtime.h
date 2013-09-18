@@ -61,8 +61,9 @@ class RuntimeGenerator : public Generator
     }
 
     // returns the collected metrics/statistics
-    virtual Metrics *get_metrics() {
-      return (&m_metrics);
+    virtual void get_metrics(Metrics *metrics) {
+      m_db->get_metrics(&m_metrics);
+      *metrics = m_metrics;
     }
 
   private:

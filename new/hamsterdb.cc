@@ -14,6 +14,7 @@
 
 #include <ham/hamsterdb_int.h>
 
+#include "metrics.h"
 #include "configuration.h"
 #include "misc.h"
 #include "hamsterdb.h"
@@ -22,6 +23,13 @@ ham_env_t *HamsterDatabase::ms_env = 0;
 ham_env_t *HamsterDatabase::ms_remote_env = 0;
 ham_srv_t *HamsterDatabase::ms_srv = 0;
 Mutex      HamsterDatabase::ms_mutex;
+
+void
+HamsterDatabase::get_metrics(Metrics *metrics)
+{
+  ScopedLock lock(ms_mutex);
+  ham_env_get_metrics(ms_env, &metrics->hamster_metrics);
+}
 
 ham_status_t
 HamsterDatabase::do_create_env()

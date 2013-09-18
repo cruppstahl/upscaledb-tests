@@ -14,6 +14,7 @@
 #include <cstdio>
 #include <ctime>
 
+#include <boost/filesystem.hpp>
 #include <ham/hamsterdb.h>
 
 #include "getopts.h"
@@ -30,12 +31,13 @@
 #define ARG_QUIET                   3
 #define ARG_NO_PROGRESS             4
 #define ARG_REOPEN                  5
+#define ARG_METRICS                 6
+#define ARG_KEYSIZE_BTREE           7
 #define ARG_INMEMORY                10
 #define ARG_OVERWRITE               11
 #define ARG_DISABLE_MMAP            12
 #define ARG_PAGESIZE                13
 #define ARG_KEYSIZE                 14
-#define ARG_KEYSIZE_BTREE           6
 #define ARG_KEYSIZE_FIXED           15
 #define ARG_RECSIZE                 16
 #define ARG_CACHE                   17
@@ -97,6 +99,12 @@ static option_t opts[] = {
     "reopen",
     "Calls OPEN/FULLCHECK/CLOSE after each close",
     0 },
+  {
+    ARG_METRICS,
+    0,
+    "metrics",
+    "Prints metrics and statistics ('none', 'default', 'all)",
+    GETOPTS_NEED_ARGUMENT },
   {
     ARG_TEE,
     0,
@@ -448,6 +456,16 @@ parse_config(int argc, char **argv, Configuration *c)
     else if (opt == ARG_REOPEN) {
       c->reopen = true;
     }
+    else if (opt == ARG_METRICS) {
+      if (param && !strcmp(param, "none"))
+        c->metrics = Configuration::kMetricsNone;
+      else if (param && !strcmp(param, "all"))
+        c->metrics = Configuration::kMetricsAll;
+      else if (param && strcmp(param, "default")) {
+        printf("[FAIL] invalid parameter for '--metrics'\n");
+        exit(-1);
+      }
+    }
     else if (opt == ARG_TEE) {
       c->tee_file = param;
     }
@@ -528,23 +546,100 @@ parse_config(int argc, char **argv, Configuration *c)
 
   if (c->btree_key_size == 0)
     c->btree_key_size = c->key_size;
+
+  if (c->verbose && c->metrics == Configuration::kMetricsDefault)
+    c->metrics = Configuration::kMetricsAll;
 }
 
 static void
-print_metrics(Metrics *metrics)
+print_metrics(Metrics *metrics, Configuration *conf)
 {
-  double t = metrics->elapsed_wallclock_seconds;
-  printf("\telapsed time (sec)          %f\n", t);
-  printf("\tinsert #ops                 %lu (%f/sec)\n",
-                  metrics->insert_ops, (double)metrics->insert_ops / t);
-  printf("\tinsert throughput           %f/sec\n",
-                  (double)metrics->insert_bytes / t);
-  printf("\tfind #ops                   %lu (%f/sec)\n",
-                  metrics->find_ops, (double)metrics->find_ops / t);
-  printf("\tfind throughput             %f/sec\n",
-                  (double)metrics->find_bytes / t);
-  printf("\terase #ops                  %lu (%f/sec)\n",
-                  metrics->erase_ops, (double)metrics->erase_ops / t);
+  printf("\telapsed time (sec)             %f\n",
+          metrics->elapsed_wallclock_seconds);
+  printf("\ttotal #ops                     %lu\n",
+                  metrics->insert_ops + metrics->erase_ops
+                  + metrics->find_ops + metrics->txn_commit_ops
+                  + metrics->other_ops);
+  printf("\tinsert #ops                    %lu (%f/sec)\n",
+                  metrics->insert_ops,
+                  (double)metrics->insert_ops / metrics->insert_latency_total);
+  printf("\tinsert throughput              %f/sec\n",
+                  (double)metrics->insert_bytes / metrics->insert_latency_total);
+  printf("\tinsert latency (min, avg, max) %f, %f, %f\n",
+                  metrics->insert_latency_min,
+                  metrics->insert_latency_total / metrics->insert_ops,
+                  metrics->insert_latency_max);
+  if (metrics->find_ops) {
+    printf("\tfind #ops                      %lu (%f/sec)\n",
+                  metrics->find_ops,
+                  (double)metrics->find_ops / metrics->find_latency_total);
+    printf("\tfind throughput                %f/sec\n",
+                  (double)metrics->find_bytes / metrics->find_latency_total);
+    printf("\tfind latency (min, avg, max)   %f, %f, %f\n",
+                  metrics->find_latency_min,
+                  metrics->find_latency_total / metrics->find_ops,
+                  metrics->find_latency_max);
+  }
+  if (metrics->erase_ops) {
+    printf("\terase #ops                     %lu (%f/sec)\n",
+                  metrics->erase_ops,
+                  (double)metrics->erase_ops / metrics->erase_latency_total);
+    printf("\terase latency (min, avg, max)  %f, %f, %f\n",
+                  metrics->erase_latency_min,
+                  metrics->erase_latency_total / metrics->erase_ops,
+                  metrics->erase_latency_max);
+  }
+  if (conf->no_berkeleydb)
+    printf("\thamsterdb filesize             %lu\n",
+                  boost::filesystem::file_size("test-ham.db"));
+
+  if (conf->metrics != Configuration::kMetricsAll)
+    return;
+
+  printf("\thamsterdb mem_total_allocations       %lu\n",
+          metrics->hamster_metrics.mem_total_allocations);
+  printf("\thamsterdb mem_current_usage           %lu\n",
+          metrics->hamster_metrics.mem_current_usage);
+  printf("\thamsterdb mem_peak_usage              %lu\n",
+          metrics->hamster_metrics.mem_peak_usage);
+  printf("\thamsterdb page_count_fetched          %lu\n",
+          metrics->hamster_metrics.page_count_fetched);
+  printf("\thamsterdb page_count_flushed          %lu\n",
+          metrics->hamster_metrics.page_count_flushed);
+  printf("\thamsterdb page_count_type_index       %lu\n",
+          metrics->hamster_metrics.page_count_type_index);
+  printf("\thamsterdb page_count_type_blob        %lu\n",
+          metrics->hamster_metrics.page_count_type_blob);
+  printf("\thamsterdb page_count_type_freelist    %lu\n",
+          metrics->hamster_metrics.page_count_type_freelist);
+  printf("\thamsterdb freelist_hits               %lu\n",
+          metrics->hamster_metrics.freelist_hits);
+  printf("\thamsterdb freelist_misses             %lu\n",
+          metrics->hamster_metrics.freelist_misses);
+  printf("\thamsterdb cache_hits                  %lu\n",
+          metrics->hamster_metrics.cache_hits);
+  printf("\thamsterdb cache_misses                %lu\n",
+          metrics->hamster_metrics.cache_misses);
+  printf("\thamsterdb blob_total_allocated        %lu\n",
+          metrics->hamster_metrics.blob_total_allocated);
+  printf("\thamsterdb blob_total_read             %lu\n",
+          metrics->hamster_metrics.blob_total_read);
+  printf("\thamsterdb blob_direct_read            %lu\n",
+          metrics->hamster_metrics.blob_direct_read);
+  printf("\thamsterdb blob_direct_written         %lu\n",
+          metrics->hamster_metrics.blob_direct_written);
+  printf("\thamsterdb blob_direct_allocated       %lu\n",
+          metrics->hamster_metrics.blob_direct_allocated);
+  printf("\thamsterdb extkey_cache_hits           %lu\n",
+          metrics->hamster_metrics.extkey_cache_hits);
+  printf("\thamsterdb extkey_cache_misses         %lu\n",
+          metrics->hamster_metrics.extkey_cache_misses);
+  printf("\thamsterdb btree_smo_split             %lu\n",
+          metrics->hamster_metrics.btree_smo_split);
+  printf("\thamsterdb btree_smo_merge             %lu\n",
+          metrics->hamster_metrics.btree_smo_merge);
+  printf("\thamsterdb btree_smo_shift             %lu\n",
+          metrics->hamster_metrics.btree_smo_shift);
 }
 
 int
@@ -574,6 +669,9 @@ main(int argc, char **argv)
     RuntimeGenerator generator(&c, true, db);
     while (generator.execute())
       ;
+    // have to collect metrics now while the database was not yet closed
+    Metrics metrics;
+    generator.get_metrics(&metrics);
     if (c.reopen) {
       db->close_env();
       db->open_env();
@@ -586,12 +684,12 @@ main(int argc, char **argv)
     ok = generator.was_successful();
 
     if (ok) {
-      printf("\n[OK] %s\n", c.filename.c_str());
-      if (!c.quiet)
-        print_metrics(generator.get_metrics());
+      printf("[OK] %s\n", c.filename.c_str());
+      if (!c.quiet && c.metrics != Configuration::kMetricsNone)
+        print_metrics(&metrics, &c);
     }
     else
-      printf("\n[FAIL] %s\n", c.filename.c_str());
+      printf("[FAIL] %s\n", c.filename.c_str());
   }
 
 #if 0

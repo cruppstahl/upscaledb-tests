@@ -28,6 +28,10 @@ RuntimeGenerator::RuntimeGenerator(Configuration *conf, bool show_progress,
     m_rng.seed(conf->seed);
 
   memset(&m_metrics, 0, sizeof(m_metrics));
+  m_metrics.insert_latency_min = 9999999.99;
+  m_metrics.erase_latency_min = 9999999.99;
+  m_metrics.find_latency_min = 9999999.99;
+  m_metrics.txn_commit_latency_min = 9999999.99;
 
   if (show_progress) {
     if (!conf->no_progress && !conf->quiet && !conf->verbose)
@@ -240,10 +244,19 @@ RuntimeGenerator::insert()
 
   tee("INSERT", &key, &rec);
 
+  Timer<boost::chrono::high_resolution_clock> t;
+
   if (m_cursor)
     m_last_status = m_db->cursor_insert(m_cursor, &key, &rec);
   else
     m_last_status = m_db->insert(m_txn, &key, &rec);
+
+  double elapsed = t.seconds();
+  if (m_metrics.insert_latency_min > elapsed)
+    m_metrics.insert_latency_min = elapsed;
+  if (m_metrics.insert_latency_max < elapsed)
+    m_metrics.insert_latency_max = elapsed;
+  m_metrics.insert_latency_total += elapsed;
 
   if (m_last_status != 0 && m_last_status != HAM_DUPLICATE_KEY)
     m_success = false;
@@ -264,10 +277,19 @@ RuntimeGenerator::erase()
 
   tee("ERASE", &key);
 
+  Timer<boost::chrono::high_resolution_clock> t;
+
   if (m_cursor)
     m_last_status = m_db->cursor_erase(m_cursor, &key);
   else
     m_last_status = m_db->erase(m_txn, &key);
+
+  double elapsed = t.seconds();
+  if (m_metrics.erase_latency_min > elapsed)
+    m_metrics.erase_latency_min = elapsed;
+  if (m_metrics.erase_latency_max < elapsed)
+    m_metrics.erase_latency_max = elapsed;
+  m_metrics.erase_latency_total += elapsed;
 
   if (m_last_status != 0 && m_last_status != HAM_KEY_NOT_FOUND)
     m_success = false;
@@ -283,10 +305,19 @@ RuntimeGenerator::find()
 
   tee("FIND", &key);
 
+  Timer<boost::chrono::high_resolution_clock> t;
+
   if (m_cursor)
     m_last_status = m_db->find(m_cursor, &key, &rec);
   else
     m_last_status = m_db->find(m_txn, &key, &rec);
+
+  double elapsed = t.seconds();
+  if (m_metrics.find_latency_min > elapsed)
+    m_metrics.find_latency_min = elapsed;
+  if (m_metrics.find_latency_max < elapsed)
+    m_metrics.find_latency_max = elapsed;
+  m_metrics.find_latency_total += elapsed;
 
   if (m_last_status != 0 && m_last_status != HAM_KEY_NOT_FOUND)
     m_success = false;
@@ -345,13 +376,22 @@ RuntimeGenerator::txn_commit()
     m_cursor = 0;
   }
 
+  Timer<boost::chrono::high_resolution_clock> t;
+
   m_last_status = m_db->txn_commit(m_txn);
   m_txn = 0;
+
+  double elapsed = t.seconds();
+  if (m_metrics.txn_commit_latency_min > elapsed)
+    m_metrics.txn_commit_latency_min = elapsed;
+  if (m_metrics.txn_commit_latency_max < elapsed)
+    m_metrics.txn_commit_latency_max = elapsed;
+  m_metrics.txn_commit_latency_total += elapsed;
 
   if (m_last_status != 0)
     m_success = false;
 
-  m_metrics.other_ops++;
+  m_metrics.txn_commit_ops++;
 }
 
 ham_key_t

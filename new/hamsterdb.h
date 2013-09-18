@@ -34,6 +34,9 @@ class HamsterDatabase : public Database
       return ("hamsterdb");
     }
 
+    // Fills |metrics| with additional metrics
+    virtual void get_metrics(Metrics *metrics);
+
   protected:
     // the actual implementation(s)
     virtual ham_status_t do_create_env();

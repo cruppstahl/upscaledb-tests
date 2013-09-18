@@ -52,6 +52,12 @@ struct Configuration
     kDuplicateLast
   };
 
+  enum {
+    kMetricsNone,
+    kMetricsDefault,
+    kMetricsAll
+  };
+
   Configuration()
     : profile(true), verbose(0), no_progress(false), reopen(true),
       quiet(false), key_type(kKeyBinary), record_type(kRecordVariable),
@@ -64,7 +70,7 @@ struct Configuration
       use_transactions(false), no_mmap(false), cacheunlimited(false),
       cachesize(0), hints(0), pagesize(0), num_threads(1), use_cursors(false),
       direct_access(false), no_berkeleydb(false), no_hamsterdb(false),
-      fullcheck(kFullcheckDefault) {
+      fullcheck(kFullcheckDefault), metrics(kMetricsDefault) {
   }
 
   void print() const {
@@ -203,6 +209,7 @@ struct Configuration
   bool no_hamsterdb;
   int fullcheck;
   std::string tee_file;
+  int metrics;
 };
 
 #endif /* CONFIGURATION_H__ */

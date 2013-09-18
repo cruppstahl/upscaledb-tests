@@ -24,6 +24,7 @@ template<class Clock>
 class Timer
 {
     typename Clock::time_point start;
+
   public:
     Timer()
       : start(Clock::now()) {
@@ -35,7 +36,7 @@ class Timer
 
     double seconds() const {
       return (elapsed().count() *
-            ((double)Clock::period::num/Clock::period::den));
+            ((double)Clock::period::num / Clock::period::den));
     }
 };
 

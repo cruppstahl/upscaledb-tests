@@ -18,22 +18,23 @@ struct Metrics {
   uint64_t insert_ops; 
   uint64_t erase_ops; 
   uint64_t find_ops; 
+  uint64_t txn_commit_ops; 
   uint64_t other_ops; 
   uint64_t insert_bytes; 
   uint64_t find_bytes; 
   double elapsed_wallclock_seconds;
   double insert_latency_min;
   double insert_latency_max;
-  double insert_latency_avg;
+  double insert_latency_total;
   double erase_latency_min;
   double erase_latency_max;
-  double erase_latency_avg;
+  double erase_latency_total;
   double find_latency_min;
   double find_latency_max;
-  double find_latency_avg;
+  double find_latency_total;
   double txn_commit_latency_min;
   double txn_commit_latency_max;
-  double txn_commit_latency_avg;
+  double txn_commit_latency_total;
   ham_env_metrics_t hamster_metrics;
 };
 
