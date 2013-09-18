@@ -57,7 +57,7 @@ HamsterDatabase::do_create_env()
   ham_status_t st = ham_env_create(&ms_env, "test-ham.db", flags, 0664,
                   &params[0]);
   if (st) {
-    print_error("ham_env_create", st);
+    ERROR(("ham_env_create failed with error %d (%s)\n", st, ham_strerror(st)));
     return (st);
   }
 
@@ -77,7 +77,7 @@ HamsterDatabase::do_create_env()
     flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
     st = ham_env_open(&ms_env, "ham://localhost:10123/env1.db", flags, 0);
     if (st)
-      print_error("ham_env_open", st);
+      ERROR(("ham_env_open failed with error %d (%s)\n", st, ham_strerror(st)));
   }
 
   return (st);
@@ -108,7 +108,7 @@ HamsterDatabase::do_open_env()
 
   ham_status_t st = ham_env_open(&ms_env, "test-ham.db", flags, &params[0]);
   if (st) {
-    print_error("ham_env_open", st);
+    ERROR(("ham_env_open failed with error %d (%s)\n", st, ham_strerror(st)));
     return (st);
   }
 
@@ -128,7 +128,7 @@ HamsterDatabase::do_open_env()
     flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
     st = ham_env_open(&ms_env, "ham://localhost:10123/env1.db", flags, 0);
     if (st)
-      print_error("ham_env_open", st);
+      ERROR(("ham_env_open failed with error %d (%s)\n", st, ham_strerror(st)));
   }
 
   return (st);
@@ -157,20 +157,18 @@ HamsterDatabase::do_create_db()
   ham_parameter_t params[6] = {{0, 0}};
 
   params[0].name = HAM_PARAM_KEYSIZE;
-  params[0].value = m_config->key_size;
+  params[0].value = m_config->btree_key_size;
 
   ham_u32_t flags = 0;
 
   flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
-  //if (m_config->key != Configuration::kKeyNumeric)
-    //flags |= HAM_ENABLE_EXTENDED_KEYS;
-    //TODO
+  if (m_config->btree_key_size < m_config->key_size)
+    flags |= HAM_ENABLE_EXTENDED_KEYS;
 
   st = ham_env_create_db(ms_env, &m_db, 1 + m_id, flags, &params[0]);
-  if (st) {
-    ERROR(("failed to create database %d: %d\n", 1 + m_id, st));
-    return (st);
-  }
+  if (st)
+    ERROR(("ham_env_create_db failed with error %d (%s)\n", st,
+                            ham_strerror(st)));
 
   return (0);
 }
@@ -182,7 +180,8 @@ HamsterDatabase::do_open_db()
 
   st = ham_env_open_db(ms_env, &m_db, 1 + m_id, 0, 0);
   if (st)
-    print_error("ham_env_open_db", st);
+    ERROR(("ham_env_open_db failed with error %d (%s)\n", st,
+                            ham_strerror(st)));
  
   return (st);
 }
@@ -213,13 +212,19 @@ HamsterDatabase::do_insert(Transaction *txn, ham_key_t *key,
   else if (m_config->duplicate)
     flags |= HAM_DUPLICATE;
 
-  return (ham_db_insert(m_db, (ham_txn_t *)txn, key, record, flags));
+  ham_status_t st = ham_db_insert(m_db, (ham_txn_t *)txn, key, record, flags);
+  if (st)
+     VERBOSE(("insert: failed w/ %d (%s)\n", st, ham_strerror(st)));
+  return (st);
 }
 
 ham_status_t
 HamsterDatabase::do_erase(Transaction *txn, ham_key_t *key)
 {
-  return (ham_db_erase(m_db, (ham_txn_t *)txn, key, 0));
+  ham_status_t st = ham_db_erase(m_db, (ham_txn_t *)txn, key, 0);
+  if (st)
+     VERBOSE(("erase: failed w/ %d (%s)\n", st, ham_strerror(st)));
+  return (st);
 }
 
 ham_status_t
@@ -237,7 +242,10 @@ HamsterDatabase::do_find(Transaction *txn, ham_key_t *key, ham_record_t *record)
   }
 #endif
 
-  return (ham_db_find(m_db, (ham_txn_t *)txn, key, record, flags));
+  ham_status_t st = ham_db_find(m_db, (ham_txn_t *)txn, key, record, flags);
+  if (st)
+     VERBOSE(("find: failed w/ %d (%s)\n", st, ham_strerror(st)));
+  return (st);
 }
 
 ham_status_t
@@ -252,7 +260,7 @@ HamsterDatabase::do_txn_begin()
   ham_txn_t *txn;
   ham_status_t st = ham_txn_begin(&txn, ms_env, 0, 0, 0);
   if (st) {
-    print_error("ham_txn_begin", st);
+    ERROR(("ham_txn_begin failed with error %d (%s)\n", st, ham_strerror(st)));
     return (0);
   }
   return ((Database::Transaction *)txn);
@@ -263,7 +271,7 @@ HamsterDatabase::do_txn_commit(Transaction *txn)
 {
   ham_status_t st = ham_txn_commit((ham_txn_t *)txn, 0);
   if (st)
-    print_error("ham_txn_commit", st);
+    ERROR(("ham_txn_commit failed with error %d (%s)\n", st, ham_strerror(st)));
   return (st);
 }
 
@@ -272,7 +280,7 @@ HamsterDatabase::do_txn_abort(Transaction *txn)
 {
   ham_status_t st = ham_txn_abort((ham_txn_t *)txn, 0);
   if (st)
-    print_error("ham_txn_abort", st);
+    ERROR(("ham_txn_abort failed with error %d (%s)\n", st, ham_strerror(st)));
   return (st);
 }
 
@@ -283,7 +291,8 @@ HamsterDatabase::do_cursor_create(Transaction *txn)
 
   ham_status_t st = ham_cursor_create(&cursor, m_db, (ham_txn_t *)txn, 0);
   if (st) {
-    TRACE(("failed to create cursor: %d\n", st));
+    ERROR(("ham_cursor_create failed with error %d (%s)\n", st,
+                            ham_strerror(st)));
     exit(-1);
   }
 
@@ -303,23 +312,35 @@ HamsterDatabase::do_cursor_insert(Cursor *cursor, ham_key_t *key,
   else if (m_config->duplicate == Configuration::kDuplicateLast)
     flags |= HAM_DUPLICATE | HAM_DUPLICATE_INSERT_LAST;
 
-  return (ham_cursor_insert((ham_cursor_t *)cursor, key, record, flags));
+  ham_status_t st = ham_cursor_insert((ham_cursor_t *)cursor, key,
+                  record, flags);
+  if (st)
+     VERBOSE(("cursor_insert: failed w/ %d (%s)\n", st, ham_strerror(st)));
+  return (st);
 }
 
 ham_status_t
 HamsterDatabase::do_cursor_erase(Cursor *cursor, ham_key_t *key)
 {
   ham_status_t st = ham_cursor_find((ham_cursor_t *)cursor, key, 0, 0);
-  if (st)
+  if (st) {
+    VERBOSE(("cursor_find: failed w/ %d (%s)\n", st, ham_strerror(st)));
     return (st);
-  return (ham_cursor_erase((ham_cursor_t *)cursor, 0));
+  }
+  st = ham_cursor_erase((ham_cursor_t *)cursor, 0);
+  if (st)
+    VERBOSE(("cursor_erase: failed w/ %d (%s)\n", st, ham_strerror(st)));
+  return (st);
 }
 
 ham_status_t
 HamsterDatabase::do_cursor_find(Cursor *cursor, ham_key_t *key,
                     ham_record_t *record)
 {
-  return (ham_cursor_find((ham_cursor_t *)cursor, key, record, 0));
+  ham_status_t st = ham_cursor_find((ham_cursor_t *)cursor, key, record, 0);
+  if (st)
+    VERBOSE(("cursor_erase: failed w/ %d (%s)\n", st, ham_strerror(st)));
+  return (st);
 }
 
 ham_status_t
@@ -363,14 +384,8 @@ HamsterDatabase::do_cursor_get_next(Cursor *cursor, ham_key_t *key,
 }
 
 ham_status_t
-HamsterDatabase::do_close_cursor(Cursor *cursor)
+HamsterDatabase::do_cursor_close(Cursor *cursor)
 {
   return (ham_cursor_close((ham_cursor_t *)cursor));
-}
-
-void
-HamsterDatabase::print_error(const char *function, ham_status_t st)
-{
-  ERROR(("%s failed with error %d (%s)\n", function, st, ham_strerror(st)));
 }
 

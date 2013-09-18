@@ -12,8 +12,11 @@
 #ifndef RUNTIME_GENERATOR_H__
 #define RUNTIME_GENERATOR_H__
 
+#include <iostream>
+#include <fstream>
 #include <boost/random.hpp>
 #include <boost/random/uniform_01.hpp>
+#include <boost/progress.hpp>
 
 #include "timer.h"
 #include "generator.h"
@@ -33,13 +36,14 @@ class RuntimeGenerator : public Generator
 
   public:
     // constructor
-    RuntimeGenerator(Configuration *conf, Database *db);
+    RuntimeGenerator(Configuration *conf, bool show_progress, Database *db);
 
     // destructor
     virtual ~RuntimeGenerator() {
       assert(m_txn == 0);
       assert(m_cursor == 0);
       delete m_datasource;
+      delete m_progress;
     }
 
     // executes the next command from the Datasource
@@ -50,6 +54,16 @@ class RuntimeGenerator : public Generator
 
     // closes the Environment; used for 'reopen'
     virtual void close();
+
+    // returns true if the test was successful
+    virtual bool was_successful() {
+      return (m_success);
+    }
+
+    // returns the collected metrics/statistics
+    virtual Metrics *get_metrics() {
+      return (&m_metrics);
+    }
 
   private:
     // creates the Environment
@@ -84,6 +98,11 @@ class RuntimeGenerator : public Generator
 
     // returs true if test should stop now
     bool limit_reached();
+
+    // "tee"s the generated test data to a file (and/or to stdout 
+    // if 'verbose' is enabled)
+    void tee(const char *foo, const ham_key_t *key = 0,
+                    const ham_record_t *record = 0);
  
     // the Database which executes the commands
     Database *m_db;
@@ -93,9 +112,6 @@ class RuntimeGenerator : public Generator
 
     // counting the number of operations
     uint64_t m_opcount;
-
-    // counting inserted bytes
-    uint64_t m_inserted_bytes;
 
     // the datasource
     Datasource *m_datasource;
@@ -115,11 +131,26 @@ class RuntimeGenerator : public Generator
     // start time
     Timer<boost::chrono::system_clock> m_start;
 
+    // elapsed time
+    double m_elapsed_seconds;
+
     // the currently active Transaction
     Database::Transaction *m_txn;
 
     // the currently used Cursor
     Database::Cursor *m_cursor;
+
+    // boost progress bar, can be null if progress is not shown
+    boost::progress_display *m_progress;
+
+    // file to dump the generated test data ("tee")
+    std::ofstream m_tee;
+
+    // test was successful?
+    bool m_success;
+
+    // the collected metrics/statistics
+    Metrics m_metrics;
 };
 
 #endif /* RUNTIME_GENERATOR_H__ */

@@ -85,7 +85,7 @@ class Database
                     ham_record_t *record);
     ham_status_t cursor_get_next(Cursor *cursor, ham_key_t *key, 
                     ham_record_t *record);
-    ham_status_t close_cursor(Cursor *cursor);
+    ham_status_t cursor_close(Cursor *cursor);
 
     void collect_metrics();
 
@@ -119,7 +119,7 @@ class Database
                     ham_record_t *record) = 0;
     virtual ham_status_t do_cursor_get_next(Cursor *cursor, ham_key_t *key, 
                     ham_record_t *record) = 0;
-    virtual ham_status_t do_close_cursor(Cursor *cursor) = 0;
+    virtual ham_status_t do_cursor_close(Cursor *cursor) = 0;
 
     int m_id;
     Configuration *m_config;

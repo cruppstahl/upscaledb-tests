@@ -55,9 +55,21 @@ settings=""
 AC_ARG_ENABLE(debug,
   AS_HELP_STRING(--enable-debug, build for debugging (slow!)),
     [if test x$enableval = xyes; then
-      CFLAGS="-g -O0 -DHAM_DEBUG"
+      CFLAGS="-g -O0 -DHAM_DEBUG -Wall -pedantic"
       settings="$settings (debug)"
      fi])
+
+# -------------------------------------------------------------------------
+# The path of the hamsterdb library
+# -------------------------------------------------------------------------
+if test "x$hamsterdb" = x; then
+  echo "hamsterdb directory not specified; run ./configure hamsterdb=<dir>"
+  exit -1
+else
+  settings="$settings ($hamsterdb)"
+  CPPFLAGS="-I$hamsterdb/include"
+  LDFLAGS="-L$hamsterdb/src/.libs -L$hamsterdb/src/server/.libs"
+fi
 
 CXXFLAGS=${CFLAGS}
 
@@ -66,3 +78,9 @@ CXXFLAGS=${CFLAGS}
 # -------------------------------------------------------------------------
 AC_CONFIG_FILES(Makefile src/Makefile new/Makefile)
 AC_OUTPUT
+
+printf '#================================================================\n'
+printf "# Configuring hamsterdb-tests version $PACKAGE_VERSION\n"
+printf "# Settings:$settings\n"
+printf "\n"
+

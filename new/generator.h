@@ -9,9 +9,10 @@
  * See files COPYING.* for License information.
  */
 
-
 #ifndef GENERATOR_H__
 #define GENERATOR_H__
+
+#include "metrics.h"
 
 class Configuration;
 class Database;
@@ -53,6 +54,12 @@ class Generator
 
     // closes the Environment; used for 'reopen'
     virtual void close() = 0;
+
+    // returns true if the test was successful
+    virtual bool was_successful() = 0;
+
+    // returns the collected metrics/statistics
+    virtual Metrics *get_metrics() = 0;
 
   protected:
     // the configuration settings

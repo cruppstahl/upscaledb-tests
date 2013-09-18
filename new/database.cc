@@ -140,9 +140,9 @@ Database::cursor_get_next(Database::Cursor *cursor, ham_key_t *key,
 }
 
 ham_status_t 
-Database::close_cursor(Database::Cursor *cursor)
+Database::cursor_close(Database::Cursor *cursor)
 {
-  return (close_cursor(cursor));
+  return (do_cursor_close(cursor));
 }
 
 void 

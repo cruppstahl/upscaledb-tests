@@ -14,6 +14,7 @@
 #define DATASOURCE_BINARY_H__
 
 #include <limits>
+#include <string>
 #include <boost/random.hpp>
 #include <boost/random/uniform_01.hpp>
 
@@ -27,12 +28,16 @@ class BinaryRandomDatasource : public Datasource
       : m_size(size), m_fixed_size(fixed_size) {
       if (seed)
         m_rng.seed(seed);
-      for (size_t i = 0; i < sizeof(m_data); i++)
-        m_data[i] = (unsigned char)i;
+      uint8_t ch = 0;
+      for (size_t i = 0; i < sizeof(m_data); i++) {
+        while (!std::isalnum(ch))
+          ch++;
+        m_data[i] = ch++;
+      }
     }
 
     // returns the next piece of data
-    virtual void get_next(std::vector<unsigned char> &vec) {
+    virtual void get_next(std::vector<uint8_t> &vec) {
       int size = m_size;
       if (m_fixed_size == false)
         size = (m_rng() % m_size) + 1;
@@ -54,6 +59,9 @@ class BinaryAscendingDatasource : public Datasource
   public:
     BinaryAscendingDatasource(int size, bool fixed_size)
       : m_size(size), m_fixed_size(fixed_size) {
+      m_alphabet = "0123456789"
+              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+              "abcdefghijklmnopqrstuvwxyz";
       if (fixed_size) {
         m_data.resize(size);
         for (int i = 0; i < size; i++)
@@ -66,25 +74,33 @@ class BinaryAscendingDatasource : public Datasource
     }
 
     // returns the next piece of data; overflows are ignored
-    virtual void get_next(std::vector<unsigned char> &vec) {
-      vec = m_data;
+    virtual void get_next(std::vector<uint8_t> &vec) {
+      vec.resize(m_data.size() + 1);
+      for (size_t i = 0; i < m_data.size(); i++)
+        vec[i] = m_alphabet[m_data[i]];
+      vec[m_data.size()] = 0;
 
       size_t size = m_data.size();
       if (m_fixed_size || m_data.size() == m_size) {
         for (size_t s = size - 1; s >= 0; s--) {
-          m_data[s]++;
           // if we have an overflow: continue with the next digit
-          if (m_data[s] != 0)
+          // otherwise stop
+          if (m_data[s] == m_alphabet.size() - 1)
+            m_data[s] = 0;
+          else {
+            m_data[s]++;
             break;
+          }
         }
-        // no fixed size? cut off trailing zeroes
+        // arrived at 'zzzzz...'? restart from beginning
         if (!m_fixed_size) {
-          for (size_t s = size - 1; s >= 0; s--) {
-            if (!m_data[s])
-              m_data.resize(m_data.size() - 1);
-            else
+          size_t s;
+          for (s = size; s > 0; s--) {
+            if (m_data[s - 1] != m_alphabet.size() - 1)
               break;
           }
+          if (s == 0)
+            m_data.resize(0);
         }
       }
       else {
@@ -93,14 +109,13 @@ class BinaryAscendingDatasource : public Datasource
           m_data[m_data.size() - 1] = 0;
         }
       }
-
-      vec = m_data;
     }
 
   private:
     unsigned char m_value;
     size_t m_size;
     std::vector<unsigned char> m_data;
+    std::string m_alphabet;
     bool m_fixed_size;
 };
 
@@ -109,53 +124,61 @@ class BinaryDescendingDatasource : public Datasource
   public:
     BinaryDescendingDatasource(int size, bool fixed_size)
       : m_size(size), m_fixed_size(fixed_size) {
+      m_alphabet = "0123456789"
+              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+              "abcdefghijklmnopqrstuvwxyz";
       if (fixed_size) {
         m_data.resize(size);
         for (int i = 0; i < size; i++)
-          m_data[i] = 0xff;
+          m_data[i] = m_alphabet.size() - 1;
       }
       else {
         m_data.resize(1);
-        m_data[0] = 0xff;
+        m_data[0] = m_alphabet.size() - 1;
       }
     }
 
     // returns the next piece of data; overflows are ignored
-    virtual void get_next(std::vector<unsigned char> &vec) {
-      vec = m_data;
+    virtual void get_next(std::vector<uint8_t> &vec) {
+      vec.resize(m_data.size() + 1);
+      for (size_t i = 0; i < m_data.size(); i++)
+        vec[i] = m_alphabet[m_data[i]];
+      vec[m_data.size()] = 0;
 
       size_t size = m_data.size();
       if (m_fixed_size || m_data.size() == m_size) {
         for (size_t s = size - 1; s >= 0; s--) {
-          m_data[s]--;
-          // if we have an overflow: continue with the next digit
-          if (m_data[s] != 0xff)
+          if (m_data[s] == 0)
+            m_data[s] = m_alphabet.size() - 1;
+          else {
+            m_data[s]--;
             break;
+          }
         }
-        // no fixed size? cut off trailing zeroes
+        // arrived at '00000...'? restart from scratch
         if (!m_fixed_size) {
-          for (size_t s = size - 1; s >= 0; s--) {
-            if (m_data[s] == 0xff)
-              m_data.resize(m_data.size() - 1);
-            else
+          size_t s;
+          for (s = 0; s < size; s++) {
+            if (m_data[s] != 0)
               break;
           }
+          if (s == size)
+            m_data.resize(0);
         }
       }
       else {
         if (m_data.size() < m_size) {
           m_data.resize(m_data.size() + 1);
-          m_data[m_data.size() - 1] = 0xff;
+          m_data[m_data.size() - 1] = m_alphabet.size() - 1;
         }
       }
-
-      vec = m_data;
     }
 
   private:
     unsigned char m_value;
     size_t m_size;
     std::vector<unsigned char> m_data;
+    std::string m_alphabet;
     bool m_fixed_size;
 };
 
@@ -174,12 +197,15 @@ class BinaryZipfianDatasource : public Datasource
       if (seed)
         m_rng.seed(seed);
       m_data.resize(n * size);
-      for (unsigned i = 0; i < (n * size); i++)
-        m_data[i] = m_rng() % 0xff;
+      for (unsigned i = 0; i < (n * size); i++) {
+        do {
+          m_data[i] = m_rng() % 0xff;
+        } while (!std::isalnum(m_data[i]));
+      }
     }
 
     // returns the next piece of data
-    virtual void get_next(std::vector<unsigned char> &vec) {
+    virtual void get_next(std::vector<uint8_t> &vec) {
       size_t size = m_size;
       if (!m_fixed_size)
         size = (m_rng() % m_size) + 1;

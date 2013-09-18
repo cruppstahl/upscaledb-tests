@@ -64,11 +64,9 @@ class HamsterDatabase : public Database
                     ham_record_t *record);
     virtual ham_status_t do_cursor_get_next(Cursor *cursor, ham_key_t *key, 
                     ham_record_t *record);
-    virtual ham_status_t do_close_cursor(Cursor *cursor);
+    virtual ham_status_t do_cursor_close(Cursor *cursor);
 
   private:
-    static void print_error(const char *function, ham_status_t st);
-
     static Mutex ms_mutex;
     static ham_env_t *ms_env;
     static ham_env_t *ms_remote_env;

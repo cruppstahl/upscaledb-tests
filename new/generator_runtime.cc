@@ -18,12 +18,26 @@
 
 #define kZipfianLimit       (1024 * 1024 * 5)
 
-RuntimeGenerator::RuntimeGenerator(Configuration *conf, Database *db)
-  : Generator(conf), m_db(db), m_state(0), m_opcount(0), m_inserted_bytes(0),
-    m_datasource(0), m_u01(m_rng), m_txn(0), m_cursor(0)
+RuntimeGenerator::RuntimeGenerator(Configuration *conf, bool show_progress,
+                Database *db)
+  : Generator(conf), m_db(db), m_state(0), m_opcount(0),
+    m_datasource(0), m_u01(m_rng), m_elapsed_seconds(0.0), m_txn(0),
+    m_cursor(0), m_progress(0), m_success(true)
 {
   if (conf->seed)
     m_rng.seed(conf->seed);
+
+  memset(&m_metrics, 0, sizeof(m_metrics));
+
+  if (show_progress) {
+    if (!conf->no_progress && !conf->quiet && !conf->verbose)
+      m_progress = new boost::progress_display(std::max(
+                              std::max(conf->limit_bytes, conf->limit_ops),
+                              conf->limit_seconds));
+  }
+
+  if (!m_conf->tee_file.empty())
+    m_tee.open(m_conf->tee_file.c_str(), std::ios::out);
 
   switch (conf->key_type) {
     case Configuration::kKeyUint8:
@@ -102,20 +116,20 @@ RuntimeGenerator::RuntimeGenerator(Configuration *conf, Database *db)
       switch (conf->distribution) {
         case Configuration::kDistributionRandom:
           m_datasource = new BinaryRandomDatasource(conf->key_size,
-                  conf->key_is_fixed_size, conf->seed);
+                          conf->key_is_fixed_size, conf->seed);
           break;
         case Configuration::kDistributionAscending:
           m_datasource = new BinaryAscendingDatasource(conf->key_size,
-                  conf->key_is_fixed_size);
+                          conf->key_is_fixed_size);
           break;
         case Configuration::kDistributionDescending:
           m_datasource = new BinaryDescendingDatasource(conf->key_size,
-                  conf->key_is_fixed_size);
+                          conf->key_is_fixed_size);
           break;
         case Configuration::kDistributionZipfian:
-          m_datasource = new BinaryZipfianDatasource(conf->key_size,
-                  conf->key_is_fixed_size, conf->limit_ops,
-                  conf->seed);
+          m_datasource = new BinaryZipfianDatasource(
+                          conf->limit_ops ? conf->limit_ops : kZipfianLimit,
+                          conf->key_size, conf->key_is_fixed_size, conf->seed);
           break;
       }
       break;
@@ -163,101 +177,181 @@ RuntimeGenerator::execute()
   }
 
   m_opcount++;
+
+  if (m_progress && m_conf->limit_ops)
+    (*m_progress) += 1;
+
   return (true);
 }
 
 void
 RuntimeGenerator::create()
 {
-  std::cout << "CREATE" << std::endl;
+  tee("CREATE");
   m_last_status = m_db->create_db();
+  
+  if (m_conf->use_cursors)
+    m_cursor = m_db->cursor_create(m_txn);
+
+  if (m_last_status != 0)
+    m_success = false;
+
+  m_metrics.other_ops++;
 }
 
 void
 RuntimeGenerator::open()
 {
-  std::cout << "OPEN" << std::endl;
+  tee("OPEN");
   m_last_status = m_db->open_db();
+
+  if (m_conf->use_cursors)
+    m_cursor = m_db->cursor_create(m_txn);
+
+  if (m_last_status != 0)
+    m_success = false;
+
+  m_metrics.other_ops++;
 }
  
 void
 RuntimeGenerator::close()
  {
-  std::cout << "CLOSE" << std::endl;
+  tee("CLOSE");
+  if (m_cursor) {
+    m_db->cursor_close(m_cursor);
+    m_cursor = 0;
+  }
+
   m_last_status = m_db->close_db();
+
+  if (m_last_status != 0)
+    m_success = false;
+
+  m_metrics.other_ops++;
+  m_metrics.elapsed_wallclock_seconds = m_start.seconds();
 }
 
 void
 RuntimeGenerator::insert()
 {
-  std::cout << "INSERT" << std::endl;
-
   ham_key_t key = generate_key();
   ham_record_t rec = generate_record();
+
+  tee("INSERT", &key, &rec);
 
   if (m_cursor)
     m_last_status = m_db->cursor_insert(m_cursor, &key, &rec);
   else
     m_last_status = m_db->insert(m_txn, &key, &rec);
 
-  if (m_last_status == 0)
-    m_inserted_bytes += key.size + rec.size;
+  if (m_last_status != 0 && m_last_status != HAM_DUPLICATE_KEY)
+    m_success = false;
+
+  if (m_last_status == 0) {
+    m_metrics.insert_bytes += key.size + rec.size;
+    if (m_progress && m_conf->limit_bytes)
+      (*m_progress) += key.size + rec.size;
+  }
+
+  m_metrics.insert_ops++;
 }
 
 void
 RuntimeGenerator::erase()
 {
-  std::cout << "ERASE" << std::endl;
-
   ham_key_t key = generate_key();
+
+  tee("ERASE", &key);
 
   if (m_cursor)
     m_last_status = m_db->cursor_erase(m_cursor, &key);
   else
     m_last_status = m_db->erase(m_txn, &key);
+
+  if (m_last_status != 0 && m_last_status != HAM_KEY_NOT_FOUND)
+    m_success = false;
+
+  m_metrics.erase_ops++;
 }
 
 void
 RuntimeGenerator::find()
 {
-  std::cout << "FIND" << std::endl;
-
   ham_key_t key = generate_key();
   ham_record_t rec = {0};
+
+  tee("FIND", &key);
 
   if (m_cursor)
     m_last_status = m_db->find(m_cursor, &key, &rec);
   else
     m_last_status = m_db->find(m_txn, &key, &rec);
+
+  if (m_last_status != 0 && m_last_status != HAM_KEY_NOT_FOUND)
+    m_success = false;
+
+  m_metrics.find_bytes += rec.size;
+  m_metrics.find_ops++;
 }
 
 void
 RuntimeGenerator::txn_begin()
 {
-  std::cout << "TXN_BEGIN" << std::endl;
+  tee("TXN_BEGIN");
   assert(m_txn == 0);
 
+  if (m_cursor) {
+    m_db->cursor_close(m_cursor);
+    m_cursor = 0;
+  }
+
   m_txn = m_db->txn_begin();
+
+  if (m_conf->use_cursors)
+    m_cursor = m_db->cursor_create(m_txn);
+
+  m_metrics.other_ops++;
 }
 
 void
 RuntimeGenerator::txn_abort()
 {
-  std::cout << "TXN_ABORT" << std::endl;
+  tee("TXN_ABORT");
   assert(m_txn != 0);
+
+  if (m_cursor) {
+    m_db->cursor_close(m_cursor);
+    m_cursor = 0;
+  }
 
   m_last_status = m_db->txn_abort(m_txn);
   m_txn = 0;
+
+  if (m_last_status != 0)
+    m_success = false;
+
+  m_metrics.other_ops++;
 }
 
 void
 RuntimeGenerator::txn_commit()
 {
-  std::cout << "TXN_COMMIT" << std::endl;
+  tee("TXN_COMMIT");
   assert(m_txn != 0);
+
+  if (m_cursor) {
+    m_db->cursor_close(m_cursor);
+    m_cursor = 0;
+  }
 
   m_last_status = m_db->txn_commit(m_txn);
   m_txn = 0;
+
+  if (m_last_status != 0)
+    m_success = false;
+
+  m_metrics.other_ops++;
 }
 
 ham_key_t
@@ -265,8 +359,13 @@ RuntimeGenerator::generate_key()
 {
   ham_key_t key = {0};
   m_datasource->get_next(m_key_data);
+
+  // append terminating 0 byte
+  m_key_data.resize(m_key_data.size() + 1);
+  m_key_data[m_key_data.size() - 1] = 0;
+
   key.data = &m_key_data[0];
-  key.size = m_key_data.size();
+  key.size = m_key_data.size() - 1;
   return (key);
 }
 
@@ -339,15 +438,62 @@ RuntimeGenerator::limit_reached()
 
   // reached time limit?
   if (m_conf->limit_seconds) {
-    if (m_start.seconds() > m_conf->limit_seconds)
+    double new_elapsed = m_start.seconds();
+    if (m_progress && new_elapsed - m_elapsed_seconds >= 1.) {
+      (*m_progress) += (unsigned)(new_elapsed - m_elapsed_seconds);
+      m_elapsed_seconds = new_elapsed;
+    }
+    if (new_elapsed > m_conf->limit_seconds) {
+      m_elapsed_seconds = new_elapsed;
       return (true);
+    }
   }
 
   // check inserted bytes
   if (m_conf->limit_bytes) {
-    if (m_inserted_bytes >= m_conf->limit_bytes)
+    if (m_metrics.insert_bytes >= m_conf->limit_bytes)
       return (true);
   }
 
   return (false);
+}
+
+void
+RuntimeGenerator::tee(const char *foo, const ham_key_t *key,
+                    const ham_record_t *record)
+{
+  if (!m_conf->tee_file.empty() || m_conf->verbose) {
+    std::stringstream ss;
+    ss << foo;
+    if (key) {
+      switch (m_conf->key_type) {
+        case Configuration::kKeyBinary:
+          ss << " (" << (const char *)key->data;
+          break;
+        case Configuration::kKeyUint8:
+          ss << " (" << (int)*(const char *)key->data;
+          break;
+        case Configuration::kKeyUint16:
+          ss << " (" << *(uint16_t *)key->data;
+          break;
+        case Configuration::kKeyUint32:
+          ss << " (" << *(uint32_t *)key->data;
+          break;
+        case Configuration::kKeyUint64:
+          ss << " (" << *(uint64_t *)key->data;
+          break;
+        default:
+          assert(!"shouldn't be here");
+      }
+    }
+    if (record)
+      ss << ", " << (uint64_t)record->size;
+    if (key || record)
+      ss << ")";
+
+    if (!m_conf->tee_file.empty())
+      m_tee << ss.str() << std::endl;
+    else
+      std::cout << ss.str() << std::endl;
+  }
 }

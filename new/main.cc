@@ -23,6 +23,7 @@
 #include "datasource_binary.h"
 #include "generator_runtime.h"
 #include "hamsterdb.h"
+#include "metrics.h"
 
 #define ARG_HELP                    1
 #define ARG_VERBOSE                 2
@@ -34,6 +35,7 @@
 #define ARG_DISABLE_MMAP            12
 #define ARG_PAGESIZE                13
 #define ARG_KEYSIZE                 14
+#define ARG_KEYSIZE_BTREE           6
 #define ARG_KEYSIZE_FIXED           15
 #define ARG_RECSIZE                 16
 #define ARG_CACHE                   17
@@ -132,7 +134,7 @@ static option_t opts[] = {
     "duplicate",
     "Enables duplicate keys ('first': inserts them at the beginning;\n"
             "\t'last': inserts at the end (default))",
-    0 },
+    GETOPTS_NEED_ARGUMENT },
   {
     ARG_USE_CURSORS,
     0,
@@ -181,7 +183,14 @@ static option_t opts[] = {
     0,
     "keysize",
     "Sets the key size (use 0 for default)",
-    0 },
+    GETOPTS_NEED_ARGUMENT },
+  {
+    ARG_KEYSIZE_BTREE,
+    0,
+    "btree-keysize",
+    "Sets the key size of the btree; if < --keysize: extended keys are enabled."
+            "\n\tif not specified: will use same size as for --keysize",
+    GETOPTS_NEED_ARGUMENT },
   {
     ARG_KEYSIZE_FIXED,
     0,
@@ -193,13 +202,13 @@ static option_t opts[] = {
     0,
     "recsize",
     "Sets the record size (default is 1024)",
-    0 },
+    GETOPTS_NEED_ARGUMENT },
   {
     ARG_CACHE,
     0,
     "cache",
     "Sets the cachesize (use 0 for default) or 'unlimited'",
-    0 },
+    GETOPTS_NEED_ARGUMENT },
   {
     ARG_HINTING,
     0,
@@ -263,19 +272,19 @@ static option_t opts[] = {
     0,
     "stop-seconds",
     "Stops test after specified duration, in seconds",
-    0 },
+    GETOPTS_NEED_ARGUMENT },
   {
     ARG_STOP_OPS,
     0,
     "stop-ops",
     "Stops test after executing specified number of operations",
-    0 },
+    GETOPTS_NEED_ARGUMENT },
   {
     ARG_STOP_BYTES,
     0,
     "stop-bytes",
     "Stops test after inserting specified number of bytes (default: 100 mb)",
-    0 },
+    GETOPTS_NEED_ARGUMENT },
   {
     ARG_USE_REMOTE,
     0,
@@ -320,26 +329,30 @@ parse_config(int argc, char **argv, Configuration *c)
       else if (param && !strcmp(param, "zipfian"))
         c->distribution = Configuration::kDistributionZipfian;
       else {
-        printf("invalid parameter for --distribution\n");
+        printf("[FAIL] invalid parameter for --distribution\n");
         exit(-1);
       }
     }
     else if (opt == ARG_OVERWRITE) {
       if (c->duplicate) {
-        printf("invalid combination: overwrite && duplicate\n");
+        printf("[FAIL] invalid combination: overwrite && duplicate\n");
         exit(-1);
       }
       c->overwrite = true;
     }
     else if (opt == ARG_DUPLICATE) {
       if (c->overwrite) {
-        printf("invalid combination: overwrite && duplicate\n");
+        printf("[FAIL] invalid combination: overwrite && duplicate\n");
         exit(-1);
       }
       if (param && !strcmp(param, "first"))
         c->duplicate = Configuration::kDuplicateFirst;
-      if (param && !strcmp(param, "last"))
+      else if ((param && !strcmp(param, "last")) || !param)
         c->duplicate = Configuration::kDuplicateLast;
+      else {
+        printf("[FAIL] invalid parameter for 'duplicate'\n");
+        exit(-1);
+      }
     }
     else if (opt == ARG_USE_CURSORS) {
       c->use_cursors = true;
@@ -365,7 +378,7 @@ parse_config(int argc, char **argv, Configuration *c)
       if (param && !strcmp(param, "fixed"))
         c->record_type = Configuration::kRecordFixed;
       else if (param && strcmp(param, "variable")) {
-        printf("invalid parameter for --record\n");
+        printf("[FAIL] invalid parameter for --record\n");
         exit(-1);
       }
     }
@@ -380,6 +393,9 @@ parse_config(int argc, char **argv, Configuration *c)
     }
     else if (opt == ARG_KEYSIZE) {
       c->key_size = strtoul(param, 0, 0);
+    }
+    else if (opt == ARG_KEYSIZE_BTREE) {
+      c->btree_key_size = strtoul(param, 0, 0);
     }
     else if (opt == ARG_KEYSIZE_FIXED) {
       c->key_is_fixed_size = true;
@@ -399,7 +415,7 @@ parse_config(int argc, char **argv, Configuration *c)
       if (strstr(param, "HAM_HINT_PREPEND"))
         c->hints |= HAM_HINT_PREPEND;
       if (param && !c->hints) {
-        printf("invalid or missing parameter for 'hints'\n");
+        printf("[FAIL] invalid or missing parameter for 'hints'\n");
         exit(-1);
       }
     }
@@ -424,7 +440,7 @@ parse_config(int argc, char **argv, Configuration *c)
       else {
         c->transactions_nth = strtoul(param, 0, 0);
         if (!c->transactions_nth) {
-          printf("invalid parameter for 'use-transactions'\n");
+          printf("[FAIL] invalid parameter for 'use-transactions'\n");
           exit(-1);
         }
       }
@@ -444,49 +460,49 @@ parse_config(int argc, char **argv, Configuration *c)
       else if (param && !strcmp(param, "reverse"))
         c->fullcheck = Configuration::kFullcheckReverse;
       else if (param && strcmp(param, "forward")) {
-        printf("invalid parameter for --fullcheck\n");
+        printf("[FAIL] invalid parameter for --fullcheck\n");
         exit(-1);
       }
     }
     else if (opt == ARG_ERASE_PCT) {
       c->erase_pct = strtoul(param, 0, 0);
       if (!c->erase_pct || c->erase_pct > 100) {
-        printf("invalid parameter for 'erase-pct'\n");
+        printf("[FAIL] invalid parameter for 'erase-pct'\n");
         exit(-1);
       }
     }
     else if (opt == ARG_FIND_PCT) {
       c->find_pct = strtoul(param, 0, 0);
       if (!c->find_pct || c->find_pct > 100) {
-        printf("invalid parameter for 'find-pct'\n");
+        printf("[FAIL] invalid parameter for 'find-pct'\n");
         exit(-1);
       }
     }
     else if (opt == ARG_STOP_TIME) {
       c->limit_seconds = strtoul(param, 0, 0);
       if (!c->limit_seconds) {
-        printf("invalid parameter for 'stop-seconds'\n");
+        printf("[FAIL] invalid parameter for 'stop-seconds'\n");
         exit(-1);
       }
     }
     else if (opt == ARG_STOP_BYTES) {
       c->limit_bytes = strtoul(param, 0, 0);
       if (!c->limit_bytes) {
-        printf("invalid parameter for 'stop-bytes'\n");
+        printf("[FAIL] invalid parameter for 'stop-bytes'\n");
         exit(-1);
       }
     }
     else if (opt == ARG_STOP_OPS) {
       c->limit_ops = strtoul(param, 0, 0);
       if (!c->limit_ops) {
-        printf("invalid parameter for 'stop-ops'\n");
+        printf("[FAIL] invalid parameter for 'stop-ops'\n");
         exit(-1);
       }
     }
     else if (opt == ARG_NUM_THREADS) {
       c->num_threads = strtoul(param, 0, 0);
       if (!c->num_threads) {
-        printf("invalid parameter for 'num-threads'\n");
+        printf("[FAIL] invalid parameter for 'num-threads'\n");
         exit(-1);
       }
     }
@@ -500,15 +516,35 @@ parse_config(int argc, char **argv, Configuration *c)
       c->filename = param;
     }
     else {
-      printf("unknown parameter '%s'\n", param);
+      printf("[FAIL] unknown parameter '%s'\n", param);
       exit(-1);
     }
   }
 
   if (c->duplicate == Configuration::kDuplicateFirst && !c->use_cursors) {
-    printf("'--duplicate=first' needs 'use-cursors'\n");
+    printf("[FAIL] '--duplicate=first' needs 'use-cursors'\n");
     exit(-1);
   }
+
+  if (c->btree_key_size == 0)
+    c->btree_key_size = c->key_size;
+}
+
+static void
+print_metrics(Metrics *metrics)
+{
+  double t = metrics->elapsed_wallclock_seconds;
+  printf("\telapsed time (sec)          %f\n", t);
+  printf("\tinsert #ops                 %lu (%f/sec)\n",
+                  metrics->insert_ops, (double)metrics->insert_ops / t);
+  printf("\tinsert throughput           %f/sec\n",
+                  (double)metrics->insert_bytes / t);
+  printf("\tfind #ops                   %lu (%f/sec)\n",
+                  metrics->find_ops, (double)metrics->find_ops / t);
+  printf("\tfind throughput             %f/sec\n",
+                  (double)metrics->find_bytes / t);
+  printf("\terase #ops                  %lu (%f/sec)\n",
+                  metrics->erase_ops, (double)metrics->erase_ops / t);
 }
 
 int
@@ -521,6 +557,10 @@ main(int argc, char **argv)
   if (c.seed == 0)
     c.seed = ::time(0);
 
+  // set a limit
+  if (!c.limit_bytes && !c.limit_seconds && !c.limit_ops)
+    c.limit_bytes = 100 * 1024 * 1024;
+
   // ALWAYS dump the configuration
   c.print();
 
@@ -531,7 +571,7 @@ main(int argc, char **argv)
   if (c.no_berkeleydb) {
     Database *db = new HamsterDatabase(0, &c);
     db->create_env();
-    RuntimeGenerator generator(&c, db);
+    RuntimeGenerator generator(&c, true, db);
     while (generator.execute())
       ;
     if (c.reopen) {
@@ -542,6 +582,16 @@ main(int argc, char **argv)
     }
     db->close_env();
     delete db;
+
+    ok = generator.was_successful();
+
+    if (ok) {
+      printf("\n[OK] %s\n", c.filename.c_str());
+      if (!c.quiet)
+        print_metrics(generator.get_metrics());
+    }
+    else
+      printf("\n[FAIL] %s\n", c.filename.c_str());
   }
 
 #if 0
@@ -567,13 +617,6 @@ main(int argc, char **argv)
     generator.close(0);
   }
 #endif
-
-  if (!c.no_progress)
-    printf("\n");
-  if (ok)
-    printf("[OK] %s\n", c.filename.c_str());
-  else
-    printf("[FAIL] %s\n", c.filename.c_str());
 
   return (ok ? 0 : 1);
 }

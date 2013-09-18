@@ -56,7 +56,7 @@ struct Configuration
     : profile(true), verbose(0), no_progress(false), reopen(true),
       quiet(false), key_type(kKeyBinary), record_type(kRecordVariable),
       distribution(kDistributionRandom), seed(0), limit_ops(0),
-      limit_seconds(0), limit_bytes(1024 * 1024 * 100), key_size(16),
+      limit_seconds(0), limit_bytes(0), key_size(16), btree_key_size(0),
       key_is_fixed_size(false), rec_size(1024), open(false), erase_pct(0),
       find_pct(0), use_encryption(false), use_remote(false),
       duplicate(kDuplicateDisabled), overwrite(false), transactions_nth(0),
@@ -100,9 +100,9 @@ struct Configuration
     if (direct_access)
       printf("--direct-access ");
     if (no_berkeleydb)
-      printf("--no-berkeleydb");
+      printf("--no-berkeleydb ");
     if (no_hamsterdb)
-      printf("--no-hamsterdb");
+      printf("--no-hamsterdb ");
     if (use_transactions) {
       if (transactions_nth)
         printf("--use-transactions=tmp ");
@@ -133,6 +133,8 @@ struct Configuration
       else if (key_type == kKeyUint64)
         printf("--key=uint64 ");
       printf("--keysize=%d ", key_size);
+      if (btree_key_size)
+        printf("--btree-keysize=%d ", btree_key_size);
       if (key_is_fixed_size)
         printf("--keysize-fixed ");
       if (record_type == kRecordFixed)
@@ -174,6 +176,7 @@ struct Configuration
   uint64_t limit_seconds;
   uint64_t limit_bytes;
   int key_size;
+  int btree_key_size;
   bool key_is_fixed_size;
   int rec_size;
   bool open;

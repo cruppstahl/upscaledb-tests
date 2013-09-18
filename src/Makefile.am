@@ -32,7 +32,6 @@ test_SOURCES    = berkeleydb.cc \
 				  thread.h
 
 test_LDFLAGS    = 
-test_LDADD      = $(top_builddir)/env/posix/libhamsterdb.a \
-                  $(top_builddir)/env/posix/libhamserver.a \
-				  -ldb-5.2 -L/usr/local/BerkeleyDB.5.2/lib -lcrypto \
+test_LDADD      = -lhamsterdb -lhamserver \
+				  -ldb -L/usr/local/BerkeleyDB.5.2/lib -lcrypto \
 				  -lboost_thread -lpthread -luv -lprotobuf -ltcmalloc_minimal

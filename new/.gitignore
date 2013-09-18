@@ -2,3 +2,6 @@
 test
 test.exe
 *.o
+*.db
+*.db.*
+.libs
