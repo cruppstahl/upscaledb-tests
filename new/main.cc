@@ -24,6 +24,7 @@
 #include "datasource_binary.h"
 #include "generator_runtime.h"
 #include "hamsterdb.h"
+#include "berkeleydb.h"
 #include "metrics.h"
 
 #define ARG_HELP                    1
@@ -589,9 +590,12 @@ print_metrics(Metrics *metrics, Configuration *conf)
                   metrics->erase_latency_total / metrics->erase_ops,
                   metrics->erase_latency_max);
   }
-  if (conf->no_berkeleydb)
+  if (!conf->no_hamsterdb)
     printf("\thamsterdb filesize             %lu\n",
                   boost::filesystem::file_size("test-ham.db"));
+  if (!conf->no_berkeleydb)
+    printf("\tberkeleydb filesize            %lu\n",
+                  boost::filesystem::file_size("test-berk.db"));
 
   if (conf->metrics != Configuration::kMetricsAll)
     return;
@@ -665,6 +669,34 @@ main(int argc, char **argv)
   // just execute the test single-threaded
   if (c.no_berkeleydb) {
     Database *db = new HamsterDatabase(0, &c);
+    db->create_env();
+    RuntimeGenerator generator(&c, true, db);
+    while (generator.execute())
+      ;
+    // have to collect metrics now while the database was not yet closed
+    Metrics metrics;
+    generator.get_metrics(&metrics);
+    if (c.reopen) {
+      db->close_env();
+      db->open_env();
+      generator.open();
+      generator.close();
+    }
+    db->close_env();
+    delete db;
+
+    ok = generator.was_successful();
+
+    if (ok) {
+      printf("[OK] %s\n", c.filename.c_str());
+      if (!c.quiet && c.metrics != Configuration::kMetricsNone)
+        print_metrics(&metrics, &c);
+    }
+    else
+      printf("[FAIL] %s\n", c.filename.c_str());
+  }
+  else if (c.no_hamsterdb) {
+    Database *db = new BerkeleyDatabase(0, &c);
     db->create_env();
     RuntimeGenerator generator(&c, true, db);
     while (generator.execute())

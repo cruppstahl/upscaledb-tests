@@ -9,29 +9,28 @@
  * See files COPYING.* for License information.
  */
 
-#ifndef HAMSTERDB_H__
-#define HAMSTERDB_H__
+#ifndef BERKELEYDB_H__
+#define BERKELEYDB_H__
 
-#include <ham/hamsterdb.h>
-#include <ham/hamsterdb_srv.h>
+#include <db.h>
+#include <ham/hamsterdb.h> // for ham_status_t, ham_key_t etc
 
 #include "mutex.h"
 #include "database.h"
 
 //
-// abstract base class wrapping a database backend (i.e. hamsterdb,
-// berkeleydb)
+// Database implementation for BerkeleyDb
 //
-class HamsterDatabase : public Database
+class BerkeleyDatabase : public Database
 {
   public:
-    HamsterDatabase(int id, Configuration *config)
+    BerkeleyDatabase(int id, Configuration *config)
       : Database(id, config), m_db(0) {
     }
 
     // Returns a descriptive name
     virtual const char *get_name() const {
-      return ("hamsterdb");
+      return ("berkeleydb");
     }
 
     // Fills |metrics| with additional metrics
@@ -70,12 +69,10 @@ class HamsterDatabase : public Database
     virtual ham_status_t do_cursor_close(Cursor *cursor);
 
   private:
-    static Mutex ms_mutex;
-    static ham_env_t *ms_env;
-    static ham_env_t *ms_remote_env;
-    static ham_srv_t *ms_srv;
+    ham_status_t db2ham(int ret);
 
-    ham_db_t *m_db;
+    DB *m_db;
+    DBC *m_cursor;
 };
 
-#endif /* HAMSTERDB_H__ */
+#endif /* BERKELEYDB_H__ */

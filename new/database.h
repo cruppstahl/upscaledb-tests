@@ -83,9 +83,9 @@ class Database
     ham_status_t cursor_find(Cursor *cursor, ham_key_t *key,
                     ham_record_t *record);
     ham_status_t cursor_get_previous(Cursor *cursor, ham_key_t *key, 
-                    ham_record_t *record);
+                    ham_record_t *record, bool skip_duplicates);
     ham_status_t cursor_get_next(Cursor *cursor, ham_key_t *key, 
-                    ham_record_t *record);
+                    ham_record_t *record, bool skip_duplicates);
     ham_status_t cursor_close(Cursor *cursor);
 
     // Fills |metrics| with additional metrics
@@ -118,9 +118,9 @@ class Database
     virtual ham_status_t do_cursor_find(Cursor *cursor, ham_key_t *key,
                     ham_record_t *record) = 0;
     virtual ham_status_t do_cursor_get_previous(Cursor *cursor, ham_key_t *key, 
-                    ham_record_t *record) = 0;
+                    ham_record_t *record, bool skip_duplicates) = 0;
     virtual ham_status_t do_cursor_get_next(Cursor *cursor, ham_key_t *key, 
-                    ham_record_t *record) = 0;
+                    ham_record_t *record, bool skip_duplicates) = 0;
     virtual ham_status_t do_cursor_close(Cursor *cursor) = 0;
 
     int m_id;

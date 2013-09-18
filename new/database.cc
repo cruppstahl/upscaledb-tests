@@ -127,16 +127,16 @@ Database::cursor_find(Database::Cursor *cursor, ham_key_t *key,
 
 ham_status_t 
 Database::cursor_get_previous(Database::Cursor *cursor, ham_key_t *key, 
-                    ham_record_t *record)
+                    ham_record_t *record, bool skip_duplicates)
 {
-  return (do_cursor_get_previous(cursor, key, record));
+  return (do_cursor_get_previous(cursor, key, record, skip_duplicates));
 }
 
 ham_status_t 
 Database::cursor_get_next(Database::Cursor *cursor, ham_key_t *key, 
-                    ham_record_t *record)
+                    ham_record_t *record, bool skip_duplicates)
 {
-  return (do_cursor_get_next(cursor, key, record));
+  return (do_cursor_get_next(cursor, key, record, skip_duplicates));
 }
 
 ham_status_t 

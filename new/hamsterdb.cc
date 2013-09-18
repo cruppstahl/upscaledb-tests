@@ -353,19 +353,15 @@ HamsterDatabase::do_cursor_find(Cursor *cursor, ham_key_t *key,
 
 ham_status_t
 HamsterDatabase::do_cursor_get_previous(Cursor *cursor, ham_key_t *key, 
-                    ham_record_t *record)
+                    ham_record_t *record, bool skip_duplicates)
 {
   ham_u32_t flags = 0;
 
   if (m_config->direct_access && m_config->inmemory)
     flags |= HAM_DIRECT_ACCESS;
 
-#if 0
-  if (!m_txn) {
-    record->flags = HAM_RECORD_USER_ALLOC;
-    record->data = m_useralloc;
-  }
-#endif
+  if (skip_duplicates)
+    flags |= HAM_SKIP_DUPLICATES;
 
   return (ham_cursor_move((ham_cursor_t *)cursor, key, record,
                           HAM_CURSOR_PREVIOUS | flags));
@@ -373,19 +369,14 @@ HamsterDatabase::do_cursor_get_previous(Cursor *cursor, ham_key_t *key,
 
 ham_status_t
 HamsterDatabase::do_cursor_get_next(Cursor *cursor, ham_key_t *key, 
-                    ham_record_t *record)
+                    ham_record_t *record, bool skip_duplicates)
 {
   ham_u32_t flags = 0;
 
   if (m_config->direct_access && m_config->inmemory)
     flags |= HAM_DIRECT_ACCESS;
-
-#if 0
-  if (!m_txn) {
-    record->flags = HAM_RECORD_USER_ALLOC;
-    record->data = m_useralloc;
-  }
-#endif
+  if (skip_duplicates)
+    flags |= HAM_SKIP_DUPLICATES;
 
   return (ham_cursor_move((ham_cursor_t *)cursor, key, record,
                           HAM_CURSOR_NEXT | flags));

@@ -3,7 +3,9 @@ noinst_PROGRAMS	= test
 
 AM_CPPFLAGS     = -I/usr/local/BerkeleyDB.5.2/include
 
-test_SOURCES    = configuration.h \
+test_SOURCES    = berkeleydb.h \
+				  berkeleydb.cc \
+				  configuration.h \
 				  database.h \
 				  database.cc \
 				  datasource.h \
@@ -19,7 +21,7 @@ test_SOURCES    = configuration.h \
 				  main.cc
 
 test_LDADD      = -lhamsterdb -lhamserver \
-				  -ldb -L/usr/local/BerkeleyDB.5.2/lib -lcrypto \
+				  -ldb-5.2 -L/usr/local/BerkeleyDB.5.2/lib -lcrypto \
 				  $(BOOST_CHRONO_LIBS) $(BOOST_SYSTEM_LIBS) \
 				  $(BOOST_THREAD_LIBS) $(BOOST_FILESYSTEM_LIBS) \
 				  -lpthread -luv -lprotobuf -ltcmalloc_minimal

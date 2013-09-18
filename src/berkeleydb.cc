@@ -51,9 +51,7 @@ Berkeleydb::create_env()
 {
   timer t(this, timer::kMisc);
 
-  int ret;
-
-  ret = db_create(&m_db, 0, 0);
+  int ret = db_create(&m_db, 0, 0);
   if (ret)
     return (db2ham(ret));
 
