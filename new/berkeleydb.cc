@@ -83,7 +83,7 @@ BerkeleyDatabase::do_create_env()
 {
   int ret = db_create(&m_db, 0, 0);
   if (ret) {
-    // TODO print error
+    ERROR(("db_create failed w/ status %d\n", ret));
     return (db2ham(ret));
   }
 
@@ -95,7 +95,7 @@ BerkeleyDatabase::do_open_env()
 {
   int ret = db_create(&m_db, 0, 0);
   if (ret) {
-    // TODO
+    ERROR(("db_create failed w/ status %d\n", ret));
     return (db2ham(ret));
   }
 
@@ -114,14 +114,14 @@ BerkeleyDatabase::do_open_env()
       break;
   }
   if (ret) {
-    // TODO
+    ERROR(("set_bt_compare failed w/ status %d\n", ret));
     return (db2ham(ret));
   }
 
   if (m_config->duplicate) {
     ret = m_db->set_flags(m_db, DB_DUP);
     if (ret) {
-      // TODO
+      ERROR(("set_flags(DB_DUP) failed w/ status %d\n", ret));
       return (db2ham(ret));
     }
   }
@@ -136,8 +136,10 @@ BerkeleyDatabase::do_close_env()
 
   if (m_db) {
     ret = m_db->close(m_db, 0);
-    if (ret)
+    if (ret) {
+      ERROR(("db->close() failed w/ status %d\n", ret));
       return (db2ham(ret));
+    }
     m_db = 0;
   }
 
@@ -147,7 +149,7 @@ BerkeleyDatabase::do_close_env()
 ham_status_t
 BerkeleyDatabase::do_create_db()
 {
-  int ret;
+  int ret = 0;
 
   switch (m_config->key_type) {
     case Configuration::kKeyUint8:
@@ -164,14 +166,14 @@ BerkeleyDatabase::do_create_db()
       break;
   }
   if (ret) {
-    // TODO
+    ERROR(("db->set_bt_compare() failed w/ status %d\n", ret));
     return (db2ham(ret));
   }
 
   if (m_config->duplicate) {
     ret = m_db->set_flags(m_db, DB_DUP);
     if (ret) {
-      // TODO print error
+      ERROR(("db->set_flags(DB_DUP) failed w/ status %d\n", ret));
       return (db2ham(ret));
     }
   }
@@ -187,13 +189,13 @@ BerkeleyDatabase::do_create_db()
   ret = m_db->open(m_db, 0, m_config->inmemory ? 0 : "test-berk.db",
           0, DB_BTREE, DB_CREATE, 0644);
   if (ret) {
-    // TODO print error
+    ERROR(("db->open() failed w/ status %d\n", ret));
     return (db2ham(ret));
   }
 
   ret = m_db->cursor(m_db, 0, &m_cursor, 0);
   if (ret) {
-    // TODO print error
+    ERROR(("db->cursor() failed w/ status %d\n", ret));
     return (db2ham(ret));
   }
 
@@ -204,12 +206,16 @@ ham_status_t
 BerkeleyDatabase::do_open_db()
 {
   int ret = m_db->open(m_db, 0, "test-berk.db", 0, DB_BTREE, 0, 0);
-  if (ret)
+  if (ret) {
+    ERROR(("db->open() failed w/ status %d\n", ret));
     return (db2ham(ret));
+  }
 
   ret = m_db->cursor(m_db, 0, &m_cursor, 0);
-  if (ret)
+  if (ret) {
+    ERROR(("db->cursor() failed w/ status %d\n", ret));
     return (db2ham(ret));
+  }
 
   return (0);
 }
@@ -221,8 +227,10 @@ BerkeleyDatabase::do_close_db()
 
   if (m_cursor) {
     ret = m_cursor->c_close(m_cursor);
-    if (ret)
+    if (ret) {
+      ERROR(("cursor->c_close() failed w/ status %d\n", ret));
       return (db2ham(ret));
+    }
     m_cursor = 0;
   }
 
@@ -233,8 +241,10 @@ ham_status_t
 BerkeleyDatabase::do_flush()
 {
   int ret = m_db->sync(m_db, 0);
-  if (ret)
+  if (ret) {
+    ERROR(("db->sync() failed w/ status %d\n", ret));
     return (db2ham(ret));
+  }
   return (0);
 }
 
@@ -328,7 +338,7 @@ BerkeleyDatabase::do_cursor_create(Transaction *txn)
 
   int ret = m_db->cursor(m_db, 0, &cursor, 0);
   if (ret) {
-    TRACE(("failed to create cursor: %d\n", ret));
+    ERROR(("db->cursor() failed w/ status %d\n", ret));
     exit(-1);
   }
 
@@ -458,7 +468,7 @@ BerkeleyDatabase::do_cursor_close(Cursor *cursor)
 
   int ret = c->c_close(c);
   if (ret) {
-    TRACE(("failed to close cursor: %d\n", ret));
+    ERROR(("cursor->close() failed w/ status %d\n", ret));
     exit(-1);
   }
 

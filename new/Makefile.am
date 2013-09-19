@@ -21,7 +21,7 @@ test_SOURCES    = berkeleydb.h \
 				  main.cc
 
 test_LDADD      = -lhamsterdb -lhamserver \
-				  -ldb-5.2 -L/usr/local/BerkeleyDB.5.2/lib -lcrypto \
+				  -ldb -L/usr/local/BerkeleyDB.5.2/lib -lcrypto \
 				  $(BOOST_CHRONO_LIBS) $(BOOST_SYSTEM_LIBS) \
 				  $(BOOST_THREAD_LIBS) $(BOOST_FILESYSTEM_LIBS) \
 				  -lpthread -luv -lprotobuf -ltcmalloc_minimal

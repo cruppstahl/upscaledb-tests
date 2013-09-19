@@ -25,7 +25,7 @@ class BerkeleyDatabase : public Database
 {
   public:
     BerkeleyDatabase(int id, Configuration *config)
-      : Database(id, config), m_db(0) {
+      : Database(id, config), m_db(0), m_cursor(0) {
     }
 
     // Returns a descriptive name
