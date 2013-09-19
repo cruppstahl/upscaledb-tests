@@ -52,11 +52,11 @@
 #define ARG_DIRECT_ACCESS           39
 #define ARG_USE_TRANSACTIONS        41
 #define ARG_USE_FSYNC               42
-#define ARG_NO_BERKELEYDB           43
+#define ARG_USE_BERKELEYDB          43
+#define ARG_USE_HAMSTERDB           47
 #define ARG_NUM_THREADS             44
 #define ARG_ENABLE_ENCRYPTION       45
 #define ARG_USE_REMOTE              46
-#define ARG_NO_HAMSTERDB            47
 #define ARG_ERASE_PCT               48
 #define ARG_FIND_PCT                49
 #define ARG_STOP_TIME               50
@@ -247,17 +247,17 @@ static option_t opts[] = {
     "Calls fsync() when flushing to disk",
     0 },
   {
-    ARG_NO_BERKELEYDB,
+    ARG_USE_BERKELEYDB,
     0,
-    "no-berkeleydb",
-    "disables berkeleydb (and FULLCHECK)",
-    0 },
+    "use-berkeleydb",
+    "Enables use of berkeleydb ('true', 'false' (default))",
+    GETOPTS_NEED_ARGUMENT },
   {
-    ARG_NO_HAMSTERDB,
+    ARG_USE_HAMSTERDB,
     0,
-    "no-hamsterdb",
-    "disables hamsterdb (and FULLCHECK)",
-    0 },
+    "use-hamsterdb",
+    "Enables use of hamsterdb ('true' (default), 'false')",
+    GETOPTS_NEED_ARGUMENT },
   {
     ARG_NUM_THREADS,
     0,
@@ -434,11 +434,25 @@ parse_config(int argc, char **argv, Configuration *c)
     else if (opt == ARG_USE_FSYNC) {
       c->use_fsync = true;
     }
-    else if (opt == ARG_NO_BERKELEYDB) {
-      c->no_berkeleydb = true;
+    else if (opt == ARG_USE_BERKELEYDB) {
+      if (!param || !strcmp(param, "true"))
+        c->use_berkeleydb = true;
+      else if (param && !strcmp(param, "false"))
+        c->use_berkeleydb = false;
+      else {
+        printf("[FAIL] invalid or missing parameter for 'use-berkeleydb'\n");
+        exit(-1);
+      }
     }
-    else if (opt == ARG_NO_HAMSTERDB) {
-      c->no_hamsterdb = true;
+    else if (opt == ARG_USE_HAMSTERDB) {
+      if (!param || !strcmp(param, "true"))
+        c->use_hamsterdb = true;
+      else if (param && !strcmp(param, "false"))
+        c->use_hamsterdb = false;
+      else {
+        printf("[FAIL] invalid or missing parameter for 'use-hamsterdb'\n");
+        exit(-1);
+      }
     }
     else if (opt == ARG_USE_TRANSACTIONS) {
       c->use_transactions = true;
@@ -590,10 +604,10 @@ print_metrics(Metrics *metrics, Configuration *conf)
                   metrics->erase_latency_total / metrics->erase_ops,
                   metrics->erase_latency_max);
   }
-  if (!conf->no_hamsterdb)
+  if (conf->use_hamsterdb)
     printf("\thamsterdb filesize             %lu\n",
                   boost::filesystem::file_size("test-ham.db"));
-  if (!conf->no_berkeleydb)
+  if (conf->use_berkeleydb)
     printf("\tberkeleydb filesize            %lu\n",
                   boost::filesystem::file_size("test-berk.db"));
 
@@ -667,7 +681,7 @@ main(int argc, char **argv)
 
   // if berkeleydb is disabled, and hamsterdb runs in only one thread:
   // just execute the test single-threaded
-  if (c.no_berkeleydb) {
+  if (c.use_hamsterdb && !c.use_berkeleydb) {
     Database *db = new HamsterDatabase(0, &c);
     db->create_env();
     RuntimeGenerator generator(&c, true, db);
@@ -695,7 +709,7 @@ main(int argc, char **argv)
     else
       printf("[FAIL] %s\n", c.filename.c_str());
   }
-  else if (c.no_hamsterdb) {
+  else if (c.use_berkeleydb && !c.use_hamsterdb) {
     Database *db = new BerkeleyDatabase(0, &c);
     db->create_env();
     RuntimeGenerator generator(&c, true, db);

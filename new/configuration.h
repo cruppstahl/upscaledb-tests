@@ -69,7 +69,7 @@ struct Configuration
       use_fsync(false), inmemory(false), use_recovery(false),
       use_transactions(false), no_mmap(false), cacheunlimited(false),
       cachesize(0), hints(0), pagesize(0), num_threads(1), use_cursors(false),
-      direct_access(false), no_berkeleydb(false), no_hamsterdb(false),
+      direct_access(false), use_berkeleydb(false), use_hamsterdb(true),
       fullcheck(kFullcheckDefault), metrics(kMetricsDefault) {
   }
 
@@ -105,10 +105,10 @@ struct Configuration
       printf("--num-threads=%d ", num_threads);
     if (direct_access)
       printf("--direct-access ");
-    if (no_berkeleydb)
-      printf("--no-berkeleydb ");
-    if (no_hamsterdb)
-      printf("--no-hamsterdb ");
+    if (use_berkeleydb)
+      printf("--use-berkeleydb ");
+    if (!use_hamsterdb)
+      printf("--use-hamsterdb=false ");
     if (use_transactions) {
       if (transactions_nth)
         printf("--use-transactions=tmp ");
@@ -205,8 +205,8 @@ struct Configuration
   int num_threads;
   bool use_cursors;
   bool direct_access;
-  bool no_berkeleydb;
-  bool no_hamsterdb;
+  bool use_berkeleydb;
+  bool use_hamsterdb;
   int fullcheck;
   std::string tee_file;
   int metrics;
