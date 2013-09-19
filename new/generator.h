@@ -37,12 +37,22 @@ class Generator
     };
 
     // constructor
-    Generator(Configuration *conf)
-      : m_conf(conf), m_last_status(0) {
+    Generator(Configuration *conf, Database *db)
+      : m_conf(conf), m_db(db), m_last_status(0) {
     }
 
     // destructor
     virtual ~Generator() {
+    }
+
+    // Returns the database
+    Database *get_db() {
+      return (m_db);
+    }
+    
+    // Returns the status of the last database operation
+    ham_status_t get_status() const {
+      return (m_last_status);
     }
 
     // executes the next generated statement; returns true if more statements
@@ -64,6 +74,9 @@ class Generator
   protected:
     // the configuration settings
     Configuration *m_conf;
+
+    // the Database
+    Database *m_db;
 
     // the status of the previous database operation
     ham_status_t m_last_status;

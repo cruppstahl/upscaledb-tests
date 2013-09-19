@@ -60,6 +60,8 @@ Database::flush()
 ham_status_t 
 Database::insert(Transaction *txn, ham_key_t *key, ham_record_t *record)
 {
+  if (key->size == 1 && *(char *)key->data == 'a')
+    printf("hit\n");
   return (do_insert(txn, key, record));
 }
 

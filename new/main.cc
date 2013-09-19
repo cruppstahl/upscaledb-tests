@@ -26,6 +26,7 @@
 #include "hamsterdb.h"
 #include "berkeleydb.h"
 #include "metrics.h"
+#include "misc.h"
 
 #define ARG_HELP                    1
 #define ARG_VERBOSE                 2
@@ -492,7 +493,9 @@ parse_config(int argc, char **argv, Configuration *c)
         c->fullcheck = Configuration::kFullcheckFind;
       else if (param && !strcmp(param, "reverse"))
         c->fullcheck = Configuration::kFullcheckReverse;
-      else if (param && strcmp(param, "forward")) {
+      else if (param && !strcmp(param, "none"))
+        c->fullcheck = Configuration::kFullcheckNone;
+      else if (param && strcmp(param, "default")) {
         printf("[FAIL] invalid parameter for --fullcheck\n");
         exit(-1);
       }
@@ -558,58 +561,60 @@ parse_config(int argc, char **argv, Configuration *c)
     printf("[FAIL] '--duplicate=first' needs 'use-cursors'\n");
     exit(-1);
   }
-
-  if (c->btree_key_size == 0)
-    c->btree_key_size = c->key_size;
-
-  if (c->verbose && c->metrics == Configuration::kMetricsDefault)
-    c->metrics = Configuration::kMetricsAll;
 }
 
 static void
 print_metrics(Metrics *metrics, Configuration *conf)
 {
-  printf("\telapsed time (sec)             %f\n",
-          metrics->elapsed_wallclock_seconds);
-  printf("\ttotal #ops                     %lu\n",
-                  metrics->insert_ops + metrics->erase_ops
+  const char *name = metrics->name;
+  double total = metrics->insert_latency_total + metrics->find_latency_total
+                  + metrics->erase_latency_total
+                  + metrics->txn_commit_latency_total;
+
+  printf("\t%s elapsed time (sec)             %f\n", name, total);
+  printf("\t%s total #ops                     %lu\n",
+                  name, metrics->insert_ops + metrics->erase_ops
                   + metrics->find_ops + metrics->txn_commit_ops
                   + metrics->other_ops);
-  printf("\tinsert #ops                    %lu (%f/sec)\n",
-                  metrics->insert_ops,
+  printf("\t%s insert #ops                    %lu (%f/sec)\n",
+                  name, metrics->insert_ops,
                   (double)metrics->insert_ops / metrics->insert_latency_total);
-  printf("\tinsert throughput              %f/sec\n",
-                  (double)metrics->insert_bytes / metrics->insert_latency_total);
-  printf("\tinsert latency (min, avg, max) %f, %f, %f\n",
-                  metrics->insert_latency_min,
+  printf("\t%s insert throughput              %f/sec\n",
+                  name, (double)metrics->insert_bytes
+                        / metrics->insert_latency_total);
+  printf("\t%s insert latency (min, avg, max) %f, %f, %f\n",
+                  name, metrics->insert_latency_min,
                   metrics->insert_latency_total / metrics->insert_ops,
                   metrics->insert_latency_max);
   if (metrics->find_ops) {
-    printf("\tfind #ops                      %lu (%f/sec)\n",
-                  metrics->find_ops,
+    printf("\t%s find #ops                      %lu (%f/sec)\n",
+                  name, metrics->find_ops,
                   (double)metrics->find_ops / metrics->find_latency_total);
-    printf("\tfind throughput                %f/sec\n",
-                  (double)metrics->find_bytes / metrics->find_latency_total);
-    printf("\tfind latency (min, avg, max)   %f, %f, %f\n",
-                  metrics->find_latency_min,
+    printf("\t%s find throughput                %f/sec\n",
+                  name, (double)metrics->find_bytes
+                        / metrics->find_latency_total);
+    printf("\t%s find latency (min, avg, max)   %f, %f, %f\n",
+                  name, metrics->find_latency_min,
                   metrics->find_latency_total / metrics->find_ops,
                   metrics->find_latency_max);
   }
   if (metrics->erase_ops) {
-    printf("\terase #ops                     %lu (%f/sec)\n",
-                  metrics->erase_ops,
+    printf("\t%s erase #ops                     %lu (%f/sec)\n",
+                  name, metrics->erase_ops,
                   (double)metrics->erase_ops / metrics->erase_latency_total);
-    printf("\terase latency (min, avg, max)  %f, %f, %f\n",
-                  metrics->erase_latency_min,
+    printf("\t%s erase latency (min, avg, max)  %f, %f, %f\n",
+                  name, metrics->erase_latency_min,
                   metrics->erase_latency_total / metrics->erase_ops,
                   metrics->erase_latency_max);
   }
-  if (conf->use_hamsterdb)
-    printf("\thamsterdb filesize             %lu\n",
-                  boost::filesystem::file_size("test-ham.db"));
-  if (conf->use_berkeleydb)
-    printf("\tberkeleydb filesize            %lu\n",
-                  boost::filesystem::file_size("test-berk.db"));
+  if (!conf->inmemory) {
+    if (!strcmp(name, "hamsterdb"))
+      printf("\t%s filesize                       %lu\n",
+                  name, boost::filesystem::file_size("test-ham.db"));
+    else
+      printf("\t%s filesize                       %lu\n",
+                  name, boost::filesystem::file_size("test-berk.db"));
+  }
 
   if (conf->metrics != Configuration::kMetricsAll)
     return;
@@ -660,6 +665,243 @@ print_metrics(Metrics *metrics, Configuration *conf)
           metrics->hamster_metrics.btree_smo_shift);
 }
 
+template<typename T>
+static bool
+run_single_test(Configuration *conf)
+{
+  Database *db = new T(0, conf);
+  db->create_env();
+  RuntimeGenerator generator(conf, db, true);
+  while (generator.execute())
+    ;
+  // have to collect metrics now while the database was not yet closed
+  Metrics metrics;
+  generator.get_metrics(&metrics);
+  if (conf->reopen) {
+    db->close_env();
+    db->open_env();
+    generator.open();
+  }
+  generator.close();
+  delete db;
+
+  bool ok = generator.was_successful();
+
+  if (ok) {
+    printf("[OK] %s\n", conf->filename.c_str());
+    if (!conf->quiet && conf->metrics != Configuration::kMetricsNone) {
+      printf("\ttotal elapsed time (sec)                 %f\n",
+                  metrics.elapsed_wallclock_seconds);
+      print_metrics(&metrics, conf);
+    }
+  }
+  else
+    printf("[FAIL] %s\n", conf->filename.c_str());
+  return (ok);
+}
+
+static bool
+are_keys_equal(ham_key_t *key1, ham_key_t *key2)
+{
+  if (key1->size != key2->size) {
+    ERROR(("keys are not equal - hamsterdb size %u, berkeleydb %u\n",
+                            key1->size, key2->size));
+    return (false);
+  }
+
+  if (key1->size == 0)
+    return (true);
+
+  if (::memcmp(key1->data, key2->data, key1->size)) {
+    ERROR(("keys are not equal - data differs\n"));
+    return (false);
+  }
+  return (true);
+}
+
+static bool
+are_records_equal(ham_record_t *rec1, ham_record_t *rec2)
+{
+  if (rec1->size != rec2->size) {
+    ERROR(("records are not equal - hamsterdb size %u, berkeleydb %u\n",
+                            rec1->size, rec2->size));
+    return (false);
+  }
+
+  if (rec1->size == 0)
+    return (true);
+
+  if (::memcmp(rec1->data, rec2->data, rec1->size)) {
+    ERROR(("records are not equal - data differs\n"));
+    return (false);
+  }
+  return (true);
+}
+
+static bool
+run_fullcheck(Configuration *conf, Generator *gen1, Generator *gen2)
+{
+  ham_status_t st1, st2;
+  Database::Cursor *c1 = gen1->get_db()->cursor_create(0);
+  Database::Cursor *c2 = gen2->get_db()->cursor_create(0);
+
+  if (conf->verbose)
+    std::cout << "FULLCHECK" << std::endl;
+
+  do {
+    ham_key_t key1 = {0};
+    ham_record_t rec1 = {0};
+    ham_key_t key2 = {0};
+    ham_record_t rec2 = {0};
+
+    // iterate over both databases
+    if (conf->fullcheck == Configuration::kFullcheckFind) {
+      st1 = gen1->get_db()->cursor_get_next(c1, &key1, &rec1, false);
+      st2 = gen2->get_db()->find(0, &key1, &rec2);
+      key2 = key1; // make sure are_keys_equal() returns true
+    }
+    else if (conf->fullcheck == Configuration::kFullcheckReverse) {
+      st1 = gen1->get_db()->cursor_get_previous(c1, &key1, &rec1, false);
+      st2 = gen2->get_db()->cursor_get_previous(c2, &key2, &rec2, false);
+    }
+    else {
+      st1 = gen1->get_db()->cursor_get_next(c1, &key1, &rec1, false);
+      st2 = gen2->get_db()->cursor_get_next(c2, &key2, &rec2, false);
+    }
+
+    if (st1 == st2 && st1 == HAM_KEY_NOT_FOUND)
+      break;
+
+    if (conf->verbose > 1) {
+      std::string s1, s2;
+      switch (conf->key_type) {
+        case Configuration::kKeyUint8:
+          printf("fullcheck %d/%d, keys %d/%d, blob size %d/%d\n", st1, st2,
+                  key1.data ? (int)*(char *)key1.data : 0,
+                  key2.data ? (int)*(char *)key2.data : 0,
+                  rec1.size, rec2.size);
+          break;
+        case Configuration::kKeyUint16:
+          printf("fullcheck %d/%d, keys %d/%d, blob size %d/%d\n", st1, st2,
+                  key1.data ? (int)*(uint16_t *)key1.data : 0,
+                  key2.data ? (int)*(uint16_t *)key2.data : 0,
+                  rec1.size, rec2.size);
+          break;
+        case Configuration::kKeyUint32:
+          printf("fullcheck %d/%d, keys %u/%u, blob size %d/%d\n", st1, st2,
+                  key1.data ? *(uint32_t *)key1.data : 0,
+                  key2.data ? *(uint32_t *)key2.data : 0,
+                  rec1.size, rec2.size);
+          break;
+        case Configuration::kKeyUint64:
+          printf("fullcheck %d/%d, keys %lu/%lu, blob size %d/%d\n", st1, st2,
+                  key1.data ? *(uint64_t *)key1.data : 0,
+                  key2.data ? *(uint64_t *)key2.data : 0,
+                  rec1.size, rec2.size);
+          break;
+        default:
+          s1 = std::string((const char *)key1.data, key1.size);
+          s2 = std::string((const char *)key2.data, key2.size);
+          printf("fullcheck %d/%d, keys %s/%s, blob size %d/%d\n", st1, st2,
+                  s1.c_str(), s2.c_str(), rec1.size, rec2.size);
+          break;
+      }
+    }
+
+    // compare status
+    if (st1 != st2) {
+      ERROR(("fullcheck failed: hamster status %d, berkeley status %d\n",
+                              st1, st2));
+      return (false);
+    }
+    // compare keys
+    if (!are_keys_equal(&key1, &key2))
+      return (false);
+    // compare records
+    if (!are_records_equal(&rec1, &rec2))
+      return (false);
+  } while (st1 == 0 && st2 == 0);
+
+  gen1->get_db()->cursor_close(c1);
+  gen2->get_db()->cursor_close(c2);
+
+  // everything was ok
+  return (true);
+}
+
+static bool
+run_both_tests(Configuration *conf)
+{
+  bool ok = true;
+  Database *db1 = new HamsterDatabase(0, conf);
+  Database *db2 = new BerkeleyDatabase(1, conf);
+  db1->create_env();
+  db2->create_env();
+  RuntimeGenerator generator1(conf, db1, true);
+  RuntimeGenerator generator2(conf, db2, false);
+  uint64_t op = 0;
+  while (generator1.execute()) {
+    bool b = generator2.execute();
+    assert(b);
+    op++;
+
+    if (generator1.get_status() != generator2.get_status()) {
+      ERROR(("Status mismatch - %d vs %d\n",
+            generator1.get_status(), generator2.get_status()));
+      ok = false;
+      break;
+    }
+
+    if (conf->fullcheck != Configuration::kFullcheckNone) {
+      if (op > 0 && op % 100 == 0) {
+        ok = run_fullcheck(conf, &generator1, &generator2);
+        if (!ok)
+          break;
+      }
+    }
+  }
+
+  if (ok)
+    assert(false == generator2.execute());
+
+  // have to collect metrics now while the database was not yet closed
+  Metrics metrics1;
+  generator1.get_metrics(&metrics1);
+  Metrics metrics2;
+  generator2.get_metrics(&metrics2);
+
+  // now reopen and run another fullcheck
+  if (conf->reopen) {
+    generator1.close();
+    generator2.close();
+    generator1.open();
+    generator2.open();
+
+    if (conf->fullcheck != Configuration::kFullcheckNone)
+      ok = run_fullcheck(conf, &generator1, &generator2);
+  }
+
+  generator1.close();
+  generator2.close();
+  delete db1;
+  delete db2;
+
+  if (!generator1.was_successful())
+    ok = false;
+
+  if (ok) {
+    printf("[OK] %s\n", conf->filename.c_str());
+    if (!conf->quiet && conf->metrics != Configuration::kMetricsNone)
+      printf("\ttotal elapsed time (sec)                 %f\n",
+                  metrics1.elapsed_wallclock_seconds);
+      print_metrics(&metrics1, conf);
+      print_metrics(&metrics2, conf);
+  }
+  else
+    printf("[FAIL] %s\n", conf->filename.c_str());
+  return (ok);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -670,97 +912,32 @@ main(int argc, char **argv)
   if (c.seed == 0)
     c.seed = ::time(0);
 
+  // ALWAYS dump the configuration
+  c.print();
+
   // set a limit
   if (!c.limit_bytes && !c.limit_seconds && !c.limit_ops)
     c.limit_bytes = 100 * 1024 * 1024;
 
-  // ALWAYS dump the configuration
-  c.print();
+  if (c.btree_key_size == 0)
+    c.btree_key_size = c.key_size;
+
+  if (c.verbose && c.metrics == Configuration::kMetricsDefault)
+    c.metrics = Configuration::kMetricsAll;
 
   bool ok = true;
 
   // if berkeleydb is disabled, and hamsterdb runs in only one thread:
   // just execute the test single-threaded
   if (c.use_hamsterdb && !c.use_berkeleydb) {
-    Database *db = new HamsterDatabase(0, &c);
-    db->create_env();
-    RuntimeGenerator generator(&c, true, db);
-    while (generator.execute())
-      ;
-    // have to collect metrics now while the database was not yet closed
-    Metrics metrics;
-    generator.get_metrics(&metrics);
-    if (c.reopen) {
-      db->close_env();
-      db->open_env();
-      generator.open();
-      generator.close();
-    }
-    db->close_env();
-    delete db;
-
-    ok = generator.was_successful();
-
-    if (ok) {
-      printf("[OK] %s\n", c.filename.c_str());
-      if (!c.quiet && c.metrics != Configuration::kMetricsNone)
-        print_metrics(&metrics, &c);
-    }
-    else
-      printf("[FAIL] %s\n", c.filename.c_str());
+    ok = run_single_test<HamsterDatabase>(&c);
   }
   else if (c.use_berkeleydb && !c.use_hamsterdb) {
-    Database *db = new BerkeleyDatabase(0, &c);
-    db->create_env();
-    RuntimeGenerator generator(&c, true, db);
-    while (generator.execute())
-      ;
-    // have to collect metrics now while the database was not yet closed
-    Metrics metrics;
-    generator.get_metrics(&metrics);
-    if (c.reopen) {
-      db->close_env();
-      db->open_env();
-      generator.open();
-      generator.close();
-    }
-    db->close_env();
-    delete db;
-
-    ok = generator.was_successful();
-
-    if (ok) {
-      printf("[OK] %s\n", c.filename.c_str());
-      if (!c.quiet && c.metrics != Configuration::kMetricsNone)
-        print_metrics(&metrics, &c);
-    }
-    else
-      printf("[FAIL] %s\n", c.filename.c_str());
+    ok = run_single_test<BerkeleyDatabase>(&c);
   }
-
-#if 0
-  //NumericDescendingDatasource<unsigned short> ds;
-  //NumericRandomDatasource<unsigned short> ds;
-  //NumericZipfianDatasource<unsigned int> ds(100);
-  //BinaryRandomDatasource ds(5, false);
-  //BinaryZipfianDatasource ds(100, 5, false);
-  //std::vector<unsigned char> t;
-  RuntimeGenerator generator(&c);
-  while (generator.execute(0)) {
-    //t.clear();
-    //std::cout.width(2);
-    //std::cout.fill('0');
-    //ds.get_next(t);
-    //for (size_t j = 0; j < t.size(); j++)
-      //printf("0x%02x ", t[j]);
-    //std::cout << std::endl;
+  else {
+    ok = run_both_tests(&c);
   }
-
-  if (c.reopen) {
-    generator.open(0);
-    generator.close(0);
-  }
-#endif
 
   return (ok ? 0 : 1);
 }

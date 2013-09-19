@@ -29,8 +29,13 @@ class BerkeleyDatabase : public Database
     }
 
     // Returns a descriptive name
+    //
+    // !!
+    // This typo ("berkeleydb" -> "berkleydb") is intentional; it makes
+    // sure that print_metrics() (in main.cc) creates can properly
+    // align its output.
     virtual const char *get_name() const {
-      return ("berkeleydb");
+      return ("berkleydb");
     }
 
     // Fills |metrics| with additional metrics

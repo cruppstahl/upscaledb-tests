@@ -36,7 +36,7 @@ class RuntimeGenerator : public Generator
 
   public:
     // constructor
-    RuntimeGenerator(Configuration *conf, bool show_progress, Database *db);
+    RuntimeGenerator(Configuration *conf, Database *db, bool show_progress);
 
     // destructor
     virtual ~RuntimeGenerator() {
@@ -63,6 +63,7 @@ class RuntimeGenerator : public Generator
     // returns the collected metrics/statistics
     virtual void get_metrics(Metrics *metrics) {
       m_db->get_metrics(&m_metrics);
+      m_metrics.name = m_db->get_name();
       *metrics = m_metrics;
     }
 
@@ -105,9 +106,6 @@ class RuntimeGenerator : public Generator
     void tee(const char *foo, const ham_key_t *key = 0,
                     const ham_record_t *record = 0);
  
-    // the Database which executes the commands
-    Database *m_db;
-
     // the current state (running, reopening etc)
     int m_state;
 

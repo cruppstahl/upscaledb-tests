@@ -81,13 +81,9 @@ BerkeleyDatabase::get_metrics(Metrics *metrics)
 ham_status_t
 BerkeleyDatabase::do_create_env()
 {
-  int ret = db_create(&m_db, 0, 0);
-  if (ret) {
-    ERROR(("db_create failed w/ status %d\n", ret));
-    return (db2ham(ret));
-  }
+  boost::filesystem::remove("test-berk.db");
 
-  return (0);
+  return (do_open_env());
 }
 
 ham_status_t
@@ -99,29 +95,21 @@ BerkeleyDatabase::do_open_env()
     return (db2ham(ret));
   }
 
-  switch (m_config->key_type) {
-    case Configuration::kKeyUint8:
-      ret = m_db->set_bt_compare(m_db, compare_db8);
-      break;
-    case Configuration::kKeyUint16:
-      ret = m_db->set_bt_compare(m_db, compare_db16);
-      break;
-    case Configuration::kKeyUint32:
-      ret = m_db->set_bt_compare(m_db, compare_db32);
-      break;
-    case Configuration::kKeyUint64:
-      ret = m_db->set_bt_compare(m_db, compare_db64);
-      break;
-  }
+  // use same cachesize as hamsterdb
+  int cachesize = m_config->cachesize;
+  if (cachesize == 0)
+    cachesize = 1024 * 1024 * 2;
+
+  ret = m_db->set_cachesize(m_db, 0, m_config->cachesize, 1);
   if (ret) {
-    ERROR(("set_bt_compare failed w/ status %d\n", ret));
+    ERROR(("db->set_cachesize failed w/ status %d\n", ret));
     return (db2ham(ret));
   }
 
-  if (m_config->duplicate) {
-    ret = m_db->set_flags(m_db, DB_DUP);
+  if (m_config->pagesize) {
+    ret = m_db->set_pagesize(m_db, m_config->pagesize);
     if (ret) {
-      ERROR(("set_flags(DB_DUP) failed w/ status %d\n", ret));
+      ERROR(("db->set_pagesize failed w/ status %d\n", ret));
       return (db2ham(ret));
     }
   }
@@ -166,7 +154,7 @@ BerkeleyDatabase::do_create_db()
       break;
   }
   if (ret) {
-    ERROR(("db->set_bt_compare() failed w/ status %d\n", ret));
+    ERROR(("set_bt_compare failed w/ status %d\n", ret));
     return (db2ham(ret));
   }
 
@@ -266,7 +254,6 @@ BerkeleyDatabase::do_insert(Transaction *txn, ham_key_t *key,
     flags |= DB_NOOVERWRITE;
 
   int ret = m_db->put(m_db, 0, &k, &r, flags);
-
   return (db2ham(ret));
 }
 

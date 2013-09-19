@@ -18,9 +18,9 @@
 
 #define kZipfianLimit       (1024 * 1024 * 5)
 
-RuntimeGenerator::RuntimeGenerator(Configuration *conf, bool show_progress,
-                Database *db)
-  : Generator(conf), m_db(db), m_state(0), m_opcount(0),
+RuntimeGenerator::RuntimeGenerator(Configuration *conf, Database *db,
+                bool show_progress)
+  : Generator(conf, db), m_state(0), m_opcount(0),
     m_datasource(0), m_u01(m_rng), m_elapsed_seconds(0.0), m_txn(0),
     m_cursor(0), m_progress(0), m_success(true)
 {
@@ -192,6 +192,7 @@ void
 RuntimeGenerator::create()
 {
   tee("CREATE");
+  m_db->create_env();
   m_last_status = m_db->create_db();
   
   if (m_conf->use_cursors)
@@ -207,6 +208,7 @@ void
 RuntimeGenerator::open()
 {
   tee("OPEN");
+  m_db->open_env();
   m_last_status = m_db->open_db();
 
   if (m_conf->use_cursors)
@@ -220,7 +222,7 @@ RuntimeGenerator::open()
  
 void
 RuntimeGenerator::close()
- {
+{
   tee("CLOSE");
   if (m_cursor) {
     m_db->cursor_close(m_cursor);
@@ -228,9 +230,10 @@ RuntimeGenerator::close()
   }
 
   m_last_status = m_db->close_db();
-
   if (m_last_status != 0)
     m_success = false;
+
+  m_db->close_env();
 
   m_metrics.other_ops++;
   m_metrics.elapsed_wallclock_seconds = m_start.seconds();
@@ -534,6 +537,6 @@ RuntimeGenerator::tee(const char *foo, const ham_key_t *key,
     if (!m_conf->tee_file.empty())
       m_tee << ss.str() << std::endl;
     else
-      std::cout << ss.str() << std::endl;
+      std::cout << m_db->get_id() << ": " << ss.str() << std::endl;
   }
 }

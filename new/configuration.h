@@ -59,7 +59,7 @@ struct Configuration
   };
 
   Configuration()
-    : profile(true), verbose(0), no_progress(false), reopen(true),
+    : profile(true), verbose(0), no_progress(false), reopen(false),
       quiet(false), key_type(kKeyBinary), record_type(kRecordVariable),
       distribution(kDistributionRandom), seed(0), limit_ops(0),
       limit_seconds(0), limit_bytes(0), key_size(16), btree_key_size(0),
@@ -145,7 +145,7 @@ struct Configuration
         printf("--keysize-fixed ");
       if (record_type == kRecordFixed)
         printf("--record=fixed ");
-      printf("--recordsize=%d ", rec_size);
+      printf("--recsize=%d ", rec_size);
       if (distribution == kDistributionRandom)
         printf("--distribution=random ");
       if (distribution == kDistributionAscending)

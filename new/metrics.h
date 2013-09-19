@@ -15,6 +15,7 @@
 #include <ham/hamsterdb_int.h>
 
 struct Metrics {
+  const char *name;
   uint64_t insert_ops; 
   uint64_t erase_ops; 
   uint64_t find_ops; 
