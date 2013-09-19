@@ -71,6 +71,11 @@ class Generator
     // returns the collected metrics/statistics
     virtual void get_metrics(Metrics *metrics) = 0;
 
+    // Returns the previously retrieved record
+    const ham_record_t *get_record() const {
+      return (&m_record);
+    }
+
   protected:
     // the configuration settings
     Configuration *m_conf;
@@ -80,6 +85,11 @@ class Generator
 
     // the status of the previous database operation
     ham_status_t m_last_status;
+
+    // A record to store data from the last call to find() and
+    // cursor_find(); used by the caller to compare results from
+    // different databases
+    ham_record_t m_record;
 };
 
 #endif /* GENERATOR_H__ */

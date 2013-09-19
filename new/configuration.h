@@ -70,7 +70,8 @@ struct Configuration
       use_transactions(false), no_mmap(false), cacheunlimited(false),
       cachesize(0), hints(0), pagesize(0), num_threads(1), use_cursors(false),
       direct_access(false), use_berkeleydb(false), use_hamsterdb(true),
-      fullcheck(kFullcheckDefault), metrics(kMetricsDefault) {
+      fullcheck(kFullcheckDefault), fullcheck_frequency(100),
+      metrics(kMetricsDefault) {
   }
 
   void print() const {
@@ -208,6 +209,7 @@ struct Configuration
   bool use_berkeleydb;
   bool use_hamsterdb;
   int fullcheck;
+  int fullcheck_frequency;
   std::string tee_file;
   int metrics;
 };

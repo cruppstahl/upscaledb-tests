@@ -48,6 +48,7 @@
 #define ARG_REC                     25
 #define ARG_DUPLICATE               26
 #define ARG_FULLCHECK               27
+#define ARG_FULLCHECK_FREQUENCY     28
 #define ARG_RECOVERY                34
 #define ARG_HINTING                 37
 #define ARG_DIRECT_ACCESS           39
@@ -181,6 +182,13 @@ static option_t opts[] = {
     "fullcheck",
     "Sets 'fullcheck' algorithm ('find' uses ham_db_find,\n"
             "\t'reverse' searches backwards, leave empty for default)",
+    GETOPTS_NEED_ARGUMENT },
+  {
+    ARG_FULLCHECK_FREQUENCY,
+    0,
+    "fullcheck-frequency",
+    "Sets how often/after how many operations the 'fullcheck' is performed\n"
+            "\t(default: 100)",
     GETOPTS_NEED_ARGUMENT },
   {
     ARG_PAGESIZE,
@@ -500,6 +508,13 @@ parse_config(int argc, char **argv, Configuration *c)
         exit(-1);
       }
     }
+    else if (opt == ARG_FULLCHECK_FREQUENCY) {
+      c->fullcheck_frequency = strtoul(param, 0, 0);
+      if (!c->fullcheck_frequency) {
+        printf("[FAIL] invalid parameter for 'fullcheck-frequency'\n");
+        exit(-1);
+      }
+    }
     else if (opt == ARG_ERASE_PCT) {
       c->erase_pct = strtoul(param, 0, 0);
       if (!c->erase_pct || c->erase_pct > 100) {
@@ -720,7 +735,7 @@ are_keys_equal(ham_key_t *key1, ham_key_t *key2)
 }
 
 static bool
-are_records_equal(ham_record_t *rec1, ham_record_t *rec2)
+are_records_equal(const ham_record_t *rec1, const ham_record_t *rec2)
 {
   if (rec1->size != rec2->size) {
     ERROR(("records are not equal - hamsterdb size %u, berkeleydb %u\n",
@@ -852,8 +867,14 @@ run_both_tests(Configuration *conf)
       break;
     }
 
+    if (!are_records_equal(generator1.get_record(), generator2.get_record())) {
+      ERROR(("Record mismatch\n"));
+      ok = false;
+      break;
+    }
+
     if (conf->fullcheck != Configuration::kFullcheckNone) {
-      if (op > 0 && op % 100 == 0) {
+      if (op > 0 && op % conf->fullcheck_frequency == 0) {
         ok = run_fullcheck(conf, &generator1, &generator2);
         if (!ok)
           break;

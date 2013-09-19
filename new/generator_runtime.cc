@@ -304,16 +304,17 @@ void
 RuntimeGenerator::find()
 {
   ham_key_t key = generate_key();
-  ham_record_t rec = {0};
+  ham_record_t m_record = {0};
+  memset(&m_record, 0, sizeof(m_record));
 
   tee("FIND", &key);
 
   Timer<boost::chrono::high_resolution_clock> t;
 
   if (m_cursor)
-    m_last_status = m_db->find(m_cursor, &key, &rec);
+    m_last_status = m_db->cursor_find(m_cursor, &key, &m_record);
   else
-    m_last_status = m_db->find(m_txn, &key, &rec);
+    m_last_status = m_db->find(m_txn, &key, &m_record);
 
   double elapsed = t.seconds();
   if (m_metrics.find_latency_min > elapsed)
@@ -325,7 +326,7 @@ RuntimeGenerator::find()
   if (m_last_status != 0 && m_last_status != HAM_KEY_NOT_FOUND)
     m_success = false;
 
-  m_metrics.find_bytes += rec.size;
+  m_metrics.find_bytes += m_record.size;
   m_metrics.find_ops++;
 }
 
