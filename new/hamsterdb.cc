@@ -159,7 +159,7 @@ HamsterDatabase::do_close_env()
 }
 
 ham_status_t
-HamsterDatabase::do_create_db()
+HamsterDatabase::do_create_db(int id)
 {
   ham_status_t st;
   ham_parameter_t params[6] = {{0, 0}};
@@ -173,20 +173,22 @@ HamsterDatabase::do_create_db()
   if (m_config->btree_key_size < m_config->key_size)
     flags |= HAM_ENABLE_EXTENDED_KEYS;
 
-  st = ham_env_create_db(ms_env, &m_db, 1 + m_id, flags, &params[0]);
-  if (st)
+  st = ham_env_create_db(ms_env, &m_db, 1 + id, flags, &params[0]);
+  if (st) {
     ERROR(("ham_env_create_db failed with error %d (%s)\n", st,
                             ham_strerror(st)));
+    exit(-1);
+  }
 
   return (0);
 }
 
 ham_status_t
-HamsterDatabase::do_open_db()
+HamsterDatabase::do_open_db(int id)
 {
   ham_status_t st;
 
-  st = ham_env_open_db(ms_env, &m_db, 1 + m_id, 0, 0);
+  st = ham_env_open_db(ms_env, &m_db, 1 + id, 0, 0);
   if (st)
     ERROR(("ham_env_open_db failed with error %d (%s)\n", st,
                             ham_strerror(st)));

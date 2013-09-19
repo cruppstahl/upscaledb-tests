@@ -39,6 +39,7 @@ BOOST_REQUIRE([1.36])
 BOOST_SYSTEM()
 BOOST_CHRONO()
 BOOST_FILESYSTEM()
+BOOST_THREADS()
 
 AM_CONDITIONAL([DARWIN],  [AS_CASE([$host_os], [darwin*],  [true], [false])])
 AM_CONDITIONAL([FREEBSD], [AS_CASE([$host_os], [freebsd*], [true], [false])])

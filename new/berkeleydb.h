@@ -46,8 +46,8 @@ class BerkeleyDatabase : public Database
     virtual ham_status_t do_create_env();
     virtual ham_status_t do_open_env();
     virtual ham_status_t do_close_env();
-    virtual ham_status_t do_create_db();
-    virtual ham_status_t do_open_db();
+    virtual ham_status_t do_create_db(int id);
+    virtual ham_status_t do_open_db(int id);
     virtual ham_status_t do_close_db();
     virtual ham_status_t do_flush();
     virtual ham_status_t do_insert(Transaction *txn, ham_key_t *key,

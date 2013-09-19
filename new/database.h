@@ -63,8 +63,8 @@ class Database
 
     // Actual database functions, calling do_*() (and tracking the time
     // spent in these functions)
-    ham_status_t create_db();
-    ham_status_t open_db();
+    ham_status_t create_db(int id);
+    ham_status_t open_db(int id);
     ham_status_t close_db();
     ham_status_t flush();
     ham_status_t insert(Transaction *txn, ham_key_t *key, ham_record_t *record);
@@ -96,8 +96,8 @@ class Database
     virtual ham_status_t do_create_env() = 0;
     virtual ham_status_t do_open_env() = 0;
     virtual ham_status_t do_close_env() = 0;
-    virtual ham_status_t do_create_db() = 0;
-    virtual ham_status_t do_open_db() = 0;
+    virtual ham_status_t do_create_db(int id) = 0;
+    virtual ham_status_t do_open_db(int id) = 0;
     virtual ham_status_t do_close_db() = 0;
     virtual ham_status_t do_flush() = 0;
     virtual ham_status_t do_insert(Transaction *txn, ham_key_t *key,

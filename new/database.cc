@@ -34,15 +34,15 @@ Database::close_env()
 }
 
 ham_status_t 
-Database::create_db()
+Database::create_db(int id)
 {
-  return (do_create_db());
+  return (do_create_db(id));
 }
 
 ham_status_t 
-Database::open_db()
+Database::open_db(int id)
 {
-  return (do_open_db());
+  return (do_open_db(id));
 }
 
 ham_status_t 

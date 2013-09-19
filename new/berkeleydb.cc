@@ -135,7 +135,7 @@ BerkeleyDatabase::do_close_env()
 }
 
 ham_status_t
-BerkeleyDatabase::do_create_db()
+BerkeleyDatabase::do_create_db(int id)
 {
   int ret = 0;
 
@@ -191,7 +191,7 @@ BerkeleyDatabase::do_create_db()
 }
 
 ham_status_t
-BerkeleyDatabase::do_open_db()
+BerkeleyDatabase::do_open_db(int id)
 {
   int ret = m_db->open(m_db, 0, "test-berk.db", 0, DB_BTREE, 0, 0);
   if (ret) {

@@ -37,8 +37,8 @@ class Generator
     };
 
     // constructor
-    Generator(Configuration *conf, Database *db)
-      : m_conf(conf), m_db(db), m_last_status(0) {
+    Generator(int id, Configuration *conf, Database *db)
+      : m_id(id), m_conf(conf), m_db(db), m_last_status(0) {
     }
 
     // destructor
@@ -77,6 +77,9 @@ class Generator
     }
 
   protected:
+    // unique ID - used to create the database
+    int m_id;
+
     // the configuration settings
     Configuration *m_conf;
 

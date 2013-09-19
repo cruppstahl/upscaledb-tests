@@ -15,6 +15,8 @@
 #include <ctime>
 
 #include <boost/filesystem.hpp>
+#include <boost/thread.hpp>
+
 #include <ham/hamsterdb.h>
 
 #include "getopts.h"
@@ -672,13 +674,32 @@ print_metrics(Metrics *metrics, Configuration *conf)
           metrics->hamster_metrics.extkey_cache_hits);
   printf("\thamsterdb extkey_cache_misses         %lu\n",
           metrics->hamster_metrics.extkey_cache_misses);
+#if 0
   printf("\thamsterdb btree_smo_split             %lu\n",
           metrics->hamster_metrics.btree_smo_split);
   printf("\thamsterdb btree_smo_merge             %lu\n",
           metrics->hamster_metrics.btree_smo_merge);
   printf("\thamsterdb btree_smo_shift             %lu\n",
           metrics->hamster_metrics.btree_smo_shift);
+#endif
 }
+
+struct Callable
+{
+  Callable(int id, Configuration *conf, Database *db)
+    : m_conf(conf), m_db(db), m_id(id) {
+  }
+
+  void operator()() {
+    RuntimeGenerator generator(m_id, m_conf, m_db, false);
+    while (generator.execute())
+      ;
+  }
+
+  Configuration *m_conf;
+  Database *m_db;
+  int m_id;
+};
 
 template<typename T>
 static bool
@@ -686,12 +707,29 @@ run_single_test(Configuration *conf)
 {
   Database *db = new T(0, conf);
   db->create_env();
-  RuntimeGenerator generator(conf, db, true);
+  RuntimeGenerator generator(0, conf, db, true);
+
+  // create additional hamsterdb threads
+  std::vector<boost::thread *> threads;
+  for (int i = 1; i < conf->num_threads; i++) {
+    threads.push_back(new boost::thread(Callable(i, conf, db)));
+  }
+
   while (generator.execute())
     ;
+
+  // join the other threads
+  std::vector<boost::thread *>::iterator it;
+  for (it = threads.begin(); it != threads.end(); it++) {
+    (*it)->join();
+    delete *it;
+  }
+
   // have to collect metrics now while the database was not yet closed
   Metrics metrics;
   generator.get_metrics(&metrics);
+
+  // reopen (if required)
   if (conf->reopen) {
     db->close_env();
     db->open_env();
@@ -847,13 +885,18 @@ run_fullcheck(Configuration *conf, Generator *gen1, Generator *gen2)
 static bool
 run_both_tests(Configuration *conf)
 {
+  if (conf->num_threads != 1) {
+    printf("sorry, only one thread supported if running with both databases\n");
+    exit(-1);
+  }
+
   bool ok = true;
   Database *db1 = new HamsterDatabase(0, conf);
   Database *db2 = new BerkeleyDatabase(1, conf);
   db1->create_env();
   db2->create_env();
-  RuntimeGenerator generator1(conf, db1, true);
-  RuntimeGenerator generator2(conf, db2, false);
+  RuntimeGenerator generator1(0, conf, db1, true);
+  RuntimeGenerator generator2(0, conf, db2, false);
   uint64_t op = 0;
   while (generator1.execute()) {
     bool b = generator2.execute();

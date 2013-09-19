@@ -18,9 +18,9 @@
 
 #define kZipfianLimit       (1024 * 1024 * 5)
 
-RuntimeGenerator::RuntimeGenerator(Configuration *conf, Database *db,
+RuntimeGenerator::RuntimeGenerator(int id, Configuration *conf, Database *db,
                 bool show_progress)
-  : Generator(conf, db), m_state(0), m_opcount(0),
+  : Generator(id, conf, db), m_state(0), m_opcount(0),
     m_datasource(0), m_u01(m_rng), m_elapsed_seconds(0.0), m_txn(0),
     m_cursor(0), m_progress(0), m_success(true)
 {
@@ -193,7 +193,7 @@ RuntimeGenerator::create()
 {
   tee("CREATE");
   m_db->create_env();
-  m_last_status = m_db->create_db();
+  m_last_status = m_db->create_db(m_id);
   
   if (m_conf->use_cursors)
     m_cursor = m_db->cursor_create(m_txn);
@@ -209,7 +209,7 @@ RuntimeGenerator::open()
 {
   tee("OPEN");
   m_db->open_env();
-  m_last_status = m_db->open_db();
+  m_last_status = m_db->open_db(m_id);
 
   if (m_conf->use_cursors)
     m_cursor = m_db->cursor_create(m_txn);

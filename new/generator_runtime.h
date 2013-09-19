@@ -36,7 +36,8 @@ class RuntimeGenerator : public Generator
 
   public:
     // constructor
-    RuntimeGenerator(Configuration *conf, Database *db, bool show_progress);
+    RuntimeGenerator(int id, Configuration *conf, Database *db,
+            bool show_progress);
 
     // destructor
     virtual ~RuntimeGenerator() {
