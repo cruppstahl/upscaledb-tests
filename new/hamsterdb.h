@@ -12,7 +12,7 @@
 #ifndef HAMSTERDB_H__
 #define HAMSTERDB_H__
 
-#include <ham/hamsterdb.h>
+#include <ham/hamsterdb_int.h>
 #include <ham/hamsterdb_srv.h>
 
 #include "mutex.h"
@@ -26,7 +26,7 @@ class HamsterDatabase : public Database
 {
   public:
     HamsterDatabase(int id, Configuration *config)
-      : Database(id, config), m_db(0) {
+      : Database(id, config), m_env(0), m_db(0) {
     }
 
     // Returns a descriptive name
@@ -35,7 +35,9 @@ class HamsterDatabase : public Database
     }
 
     // Fills |metrics| with additional metrics
-    virtual void get_metrics(Metrics *metrics);
+    virtual void get_metrics(Metrics *metrics) {
+      metrics->hamster_metrics = m_hamster_metrics;
+    }
 
   protected:
     // the actual implementation(s)
@@ -74,8 +76,11 @@ class HamsterDatabase : public Database
     static ham_env_t *ms_env;
     static ham_env_t *ms_remote_env;
     static ham_srv_t *ms_srv;
+    static int ms_refcount; // counts threads currently accessing ms_env
 
+    ham_env_t *m_env; // only used to access remote servers
     ham_db_t *m_db;
+    ham_env_metrics_t m_hamster_metrics;
 };
 
 #endif /* HAMSTERDB_H__ */

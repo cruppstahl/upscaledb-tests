@@ -686,20 +686,47 @@ print_metrics(Metrics *metrics, Configuration *conf)
 
 struct Callable
 {
-  Callable(int id, Configuration *conf, Database *db)
-    : m_conf(conf), m_db(db), m_id(id) {
+  Callable(int id, Configuration *conf)
+    : m_conf(conf), m_db(new HamsterDatabase(id, conf)), m_id(id),
+        m_generator(m_id, m_conf, m_db, false) {
   }
 
   void operator()() {
-    RuntimeGenerator generator(m_id, m_conf, m_db, false);
-    while (generator.execute())
+    while (m_generator.execute())
       ;
+  }
+
+  void get_metrics(Metrics *metrics) {
+    m_generator.get_metrics(metrics);
   }
 
   Configuration *m_conf;
   Database *m_db;
   int m_id;
+  RuntimeGenerator m_generator;
 };
+
+static void
+thread_callback(Callable *c)
+{
+  return (*c)();
+}
+
+static void
+add_metrics(Metrics *metrics, const Metrics *other)
+{
+  metrics->insert_ops += other->insert_ops;
+  metrics->erase_ops += other->erase_ops;
+  metrics->find_ops += other->find_ops;
+  metrics->txn_commit_ops += other->txn_commit_ops;
+  metrics->other_ops += other->other_ops;
+  metrics->insert_bytes += other->insert_bytes;
+  metrics->find_bytes += other->find_bytes;
+  metrics->insert_latency_total += other->insert_latency_total;
+  metrics->erase_latency_total += other->erase_latency_total;
+  metrics->find_latency_total += other->find_latency_total;
+  metrics->txn_commit_latency_total += other->txn_commit_latency_total;
+}
 
 template<typename T>
 static bool
@@ -711,23 +738,31 @@ run_single_test(Configuration *conf)
 
   // create additional hamsterdb threads
   std::vector<boost::thread *> threads;
+  std::vector<Callable *> callables;
   for (int i = 1; i < conf->num_threads; i++) {
-    threads.push_back(new boost::thread(Callable(i, conf, db)));
+    Callable *c = new Callable(i, conf);
+    callables.push_back(c);
+    threads.push_back(new boost::thread(thread_callback, c));
   }
 
   while (generator.execute())
     ;
 
-  // join the other threads
-  std::vector<boost::thread *>::iterator it;
-  for (it = threads.begin(); it != threads.end(); it++) {
-    (*it)->join();
-    delete *it;
-  }
-
   // have to collect metrics now while the database was not yet closed
   Metrics metrics;
   generator.get_metrics(&metrics);
+
+  // "add up" the metrics from the other threads and join the other threads
+  std::vector<boost::thread *>::iterator it;
+  std::vector<Callable *>::iterator cit = callables.begin();
+  for (it = threads.begin(); it != threads.end(); it++, cit++) {
+    Metrics m;
+    (*cit)->get_metrics(&m);
+    add_metrics(&metrics, &m);
+    (*it)->join();
+    delete *it;
+    delete *cit;
+  }
 
   // reopen (if required)
   if (conf->reopen) {
@@ -741,7 +776,7 @@ run_single_test(Configuration *conf)
   bool ok = generator.was_successful();
 
   if (ok) {
-    printf("[OK] %s\n", conf->filename.c_str());
+    printf("\n[OK] %s\n", conf->filename.c_str());
     if (!conf->quiet && conf->metrics != Configuration::kMetricsNone) {
       printf("\ttotal elapsed time (sec)                 %f\n",
                   metrics.elapsed_wallclock_seconds);
@@ -749,7 +784,7 @@ run_single_test(Configuration *conf)
     }
   }
   else
-    printf("[FAIL] %s\n", conf->filename.c_str());
+    printf("\n[FAIL] %s\n", conf->filename.c_str());
   return (ok);
 }
 

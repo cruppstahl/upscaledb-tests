@@ -23,50 +23,47 @@ ham_env_t *HamsterDatabase::ms_env = 0;
 ham_env_t *HamsterDatabase::ms_remote_env = 0;
 ham_srv_t *HamsterDatabase::ms_srv = 0;
 Mutex      HamsterDatabase::ms_mutex;
-
-void
-HamsterDatabase::get_metrics(Metrics *metrics)
-{
-  ScopedLock lock(ms_mutex);
-  ham_env_get_metrics(ms_env, &metrics->hamster_metrics);
-}
+int        HamsterDatabase::ms_refcount;
 
 ham_status_t
 HamsterDatabase::do_create_env()
 {
-  ScopedLock lock(ms_mutex);
-  // check if another thread was faster
-  if (ms_env != 0)
-    return (0);
-
+  ham_status_t st = 0;
   ham_u32_t flags = 0;
   ham_parameter_t params[6] = {{0, 0}};
 
-  params[0].name = HAM_PARAM_CACHESIZE;
-  params[0].value = m_config->cachesize;
-  params[1].name = HAM_PARAM_PAGESIZE;
-  params[1].value = m_config->pagesize;
-  params[2].name = HAM_PARAM_MAX_DATABASES;
-  params[2].value = 32; // for up to 32 threads
-  if (m_config->use_encryption) {
-    params[3].name = HAM_PARAM_ENCRYPTION_KEY;
-    params[3].value = (ham_u64_t)"1234567890123456";
-  }
+  ScopedLock lock(ms_mutex);
 
-  flags |= m_config->inmemory ? HAM_IN_MEMORY : 0; 
-  flags |= m_config->no_mmap ? HAM_DISABLE_MMAP : 0; 
-  flags |= m_config->use_recovery ? HAM_ENABLE_RECOVERY : 0;
-  flags |= m_config->cacheunlimited ? HAM_CACHE_UNLIMITED : 0;
-  flags |= m_config->use_transactions ? HAM_ENABLE_TRANSACTIONS : 0;
-  flags |= m_config->use_fsync ? HAM_ENABLE_FSYNC : 0;
+  ms_refcount++;
 
-  boost::filesystem::remove("test-ham.db");
+  if (ms_env == 0) {
+    params[0].name = HAM_PARAM_CACHESIZE;
+    params[0].value = m_config->cachesize;
+    params[1].name = HAM_PARAM_PAGESIZE;
+    params[1].value = m_config->pagesize;
+    params[2].name = HAM_PARAM_MAX_DATABASES;
+    params[2].value = 32; // for up to 32 threads
+    if (m_config->use_encryption) {
+      params[3].name = HAM_PARAM_ENCRYPTION_KEY;
+      params[3].value = (ham_u64_t)"1234567890123456";
+    }
 
-  ham_status_t st = ham_env_create(&ms_env, "test-ham.db", flags, 0664,
+    flags |= m_config->inmemory ? HAM_IN_MEMORY : 0; 
+    flags |= m_config->no_mmap ? HAM_DISABLE_MMAP : 0; 
+    flags |= m_config->use_recovery ? HAM_ENABLE_RECOVERY : 0;
+    flags |= m_config->cacheunlimited ? HAM_CACHE_UNLIMITED : 0;
+    flags |= m_config->use_transactions ? HAM_ENABLE_TRANSACTIONS : 0;
+    flags |= m_config->use_fsync ? HAM_ENABLE_FSYNC : 0;
+
+    boost::filesystem::remove("test-ham.db");
+
+    st = ham_env_create(&ms_env, "test-ham.db", flags, 0664,
                   &params[0]);
-  if (st) {
-    ERROR(("ham_env_create failed with error %d (%s)\n", st, ham_strerror(st)));
-    return (st);
+    if (st) {
+      ERROR(("ham_env_create failed with error %d (%s)\n",
+                              st, ham_strerror(st)));
+      return (st);
+    }
   }
 
   // remote client/server? start the server, attach the environment and then
@@ -75,15 +72,17 @@ HamsterDatabase::do_create_env()
     ms_remote_env = ms_env;
     ms_env = 0;
 
-    ham_srv_config_t cfg;
-    memset(&cfg, 0, sizeof(cfg));
-    cfg.port = 10123;
-    ham_srv_init(&cfg, &ms_srv);
-    ham_srv_add_env(ms_srv, ms_remote_env, "/env1.db");
+    if (ms_srv == 0) {
+      ham_srv_config_t cfg;
+      memset(&cfg, 0, sizeof(cfg));
+      cfg.port = 10123;
+      ham_srv_init(&cfg, &ms_srv);
+      ham_srv_add_env(ms_srv, ms_remote_env, "/env1.db");
+    }
 
     ham_u32_t flags = 0;
     flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
-    st = ham_env_open(&ms_env, "ham://localhost:10123/env1.db", flags, 0);
+    st = ham_env_open(&m_env, "ham://localhost:10123/env1.db", flags, 0);
     if (st)
       ERROR(("ham_env_open failed with error %d (%s)\n", st, ham_strerror(st)));
   }
@@ -94,30 +93,33 @@ HamsterDatabase::do_create_env()
 ham_status_t
 HamsterDatabase::do_open_env()
 {
-  ScopedLock lock(ms_mutex);
-  // check if another thread was faster
-  if (ms_env != 0)
-    return (0);
-
+  ham_status_t st = 0;
   ham_u32_t flags = 0;
   ham_parameter_t params[6] = {{0, 0}};
 
-  params[0].name = HAM_PARAM_CACHESIZE;
-  params[0].value = m_config->cachesize;
-  if (m_config->use_encryption) {
-    params[1].name = HAM_PARAM_ENCRYPTION_KEY;
-    params[1].value = (ham_u64_t)"1234567890123456";
-  }
+  ScopedLock lock(ms_mutex);
 
-  flags |= m_config->no_mmap ? HAM_DISABLE_MMAP : 0; 
-  flags |= m_config->cacheunlimited ? HAM_CACHE_UNLIMITED : 0;
-  flags |= m_config->use_transactions ? HAM_ENABLE_TRANSACTIONS : 0;
-  flags |= m_config->use_fsync ? HAM_ENABLE_FSYNC : 0;
+  ms_refcount++;
 
-  ham_status_t st = ham_env_open(&ms_env, "test-ham.db", flags, &params[0]);
-  if (st) {
-    ERROR(("ham_env_open failed with error %d (%s)\n", st, ham_strerror(st)));
-    return (st);
+  // check if another thread was faster
+  if (ms_env == 0) {
+    params[0].name = HAM_PARAM_CACHESIZE;
+    params[0].value = m_config->cachesize;
+    if (m_config->use_encryption) {
+      params[1].name = HAM_PARAM_ENCRYPTION_KEY;
+      params[1].value = (ham_u64_t)"1234567890123456";
+    }
+
+    flags |= m_config->no_mmap ? HAM_DISABLE_MMAP : 0; 
+    flags |= m_config->cacheunlimited ? HAM_CACHE_UNLIMITED : 0;
+    flags |= m_config->use_transactions ? HAM_ENABLE_TRANSACTIONS : 0;
+    flags |= m_config->use_fsync ? HAM_ENABLE_FSYNC : 0;
+
+    st = ham_env_open(&ms_env, "test-ham.db", flags, &params[0]);
+    if (st) {
+      ERROR(("ham_env_open failed with error %d (%s)\n", st, ham_strerror(st)));
+      return (st);
+    }
   }
 
   // remote client/server? start the server, attach the environment and then
@@ -126,15 +128,17 @@ HamsterDatabase::do_open_env()
     ms_remote_env = ms_env;
     ms_env = 0;
 
-    ham_srv_config_t cfg;
-    memset(&cfg, 0, sizeof(cfg));
-    cfg.port = 10123;
-    ham_srv_init(&cfg, &ms_srv);
-    ham_srv_add_env(ms_srv, ms_remote_env, "/env1.db");
+    if (ms_srv == 0) {
+      ham_srv_config_t cfg;
+      memset(&cfg, 0, sizeof(cfg));
+      cfg.port = 10123;
+      ham_srv_init(&cfg, &ms_srv);
+      ham_srv_add_env(ms_srv, ms_remote_env, "/env1.db");
+    }
 
     ham_u32_t flags = 0;
     flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
-    st = ham_env_open(&ms_env, "ham://localhost:10123/env1.db", flags, 0);
+    st = ham_env_open(&m_env, "ham://localhost:10123/env1.db", flags, 0);
     if (st)
       ERROR(("ham_env_open failed with error %d (%s)\n", st, ham_strerror(st)));
   }
@@ -146,8 +150,22 @@ ham_status_t
 HamsterDatabase::do_close_env()
 {
   ScopedLock lock(ms_mutex);
-  if (ms_env)
+
+  if (m_env) {
+    ham_env_get_metrics(m_env, &m_hamster_metrics);
+    ham_env_close(m_env, 0);
+    m_env = 0;
+    return (0);
+  }
+
+  assert(ms_refcount > 0);
+  if (--ms_refcount > 0)
+    return (0);
+
+  if (ms_env) {
+    ham_env_get_metrics(ms_env, &m_hamster_metrics);
     ham_env_close(ms_env, 0);
+  }
   ms_env = 0;
   if (ms_remote_env)
     ham_env_close(ms_remote_env, 0);
@@ -173,7 +191,8 @@ HamsterDatabase::do_create_db(int id)
   if (m_config->btree_key_size < m_config->key_size)
     flags |= HAM_ENABLE_EXTENDED_KEYS;
 
-  st = ham_env_create_db(ms_env, &m_db, 1 + id, flags, &params[0]);
+  st = ham_env_create_db(m_env ? m_env : ms_env, &m_db, 1 + id,
+                  flags, &params[0]);
   if (st) {
     ERROR(("ham_env_create_db failed with error %d (%s)\n", st,
                             ham_strerror(st)));
@@ -188,7 +207,7 @@ HamsterDatabase::do_open_db(int id)
 {
   ham_status_t st;
 
-  st = ham_env_open_db(ms_env, &m_db, 1 + id, 0, 0);
+  st = ham_env_open_db(m_env ? m_env : ms_env, &m_db, 1 + id, 0, 0);
   if (st)
     ERROR(("ham_env_open_db failed with error %d (%s)\n", st,
                             ham_strerror(st)));
@@ -208,7 +227,7 @@ HamsterDatabase::do_close_db()
 ham_status_t
 HamsterDatabase::do_flush()
 {
-  return (ham_env_flush(ms_env, 0));
+  return (ham_env_flush(m_env ? m_env : ms_env, 0));
 }
 
 ham_status_t
@@ -268,7 +287,7 @@ Database::Transaction *
 HamsterDatabase::do_txn_begin()
 {
   ham_txn_t *txn;
-  ham_status_t st = ham_txn_begin(&txn, ms_env, 0, 0, 0);
+  ham_status_t st = ham_txn_begin(&txn, m_env ? m_env : ms_env, 0, 0, 0);
   if (st) {
     ERROR(("ham_txn_begin failed with error %d (%s)\n", st, ham_strerror(st)));
     return (0);
