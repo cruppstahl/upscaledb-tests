@@ -59,11 +59,11 @@ struct Configuration
   };
 
   Configuration()
-    : profile(true), verbose(0), no_progress(false), reopen(false),
+    : profile(true), verbose(0), no_progress(false), reopen(false), open(false),
       quiet(false), key_type(kKeyBinary), record_type(kRecordVariable),
       distribution(kDistributionRandom), seed(0), limit_ops(0),
       limit_seconds(0), limit_bytes(0), key_size(16), btree_key_size(0),
-      key_is_fixed_size(false), rec_size(1024), open(false), erase_pct(0),
+      key_is_fixed_size(false), rec_size(1024), erase_pct(0),
       find_pct(0), use_encryption(false), use_remote(false),
       duplicate(kDuplicateDisabled), overwrite(false), transactions_nth(0),
       use_fsync(false), inmemory(false), use_recovery(false),
@@ -75,7 +75,7 @@ struct Configuration
   }
 
   void print() const {
-    printf("--seed=%lu ", seed);
+    printf("Configuration: --seed=%lu ", seed);
     if (use_encryption)
       printf("--use-encryption ");
     if (use_remote)
@@ -173,6 +173,7 @@ struct Configuration
   unsigned verbose;
   bool no_progress;
   bool reopen;
+  bool open;
   std::string filename;
   bool quiet;
   int key_type;
@@ -186,7 +187,6 @@ struct Configuration
   int btree_key_size;
   bool key_is_fixed_size;
   int rec_size;
-  bool open;
   int erase_pct;
   int find_pct;
   bool use_encryption;

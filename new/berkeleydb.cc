@@ -354,7 +354,9 @@ BerkeleyDatabase::do_cursor_insert(Cursor *cursor, ham_key_t *key,
     ret = m_cursor->c_put(m_cursor, &k, &r, DB_KEYFIRST);
   }
   else {
-    ret = m_cursor->c_put(m_cursor, &k, &r, flags);
+    // do not use cursors - they fail mysteriously
+    // ret = m_cursor->c_put(m_cursor, &k, &r, flags);
+    ret = m_db->put(m_db, 0, &k, &r, flags);
   }
 
   return (db2ham(ret));

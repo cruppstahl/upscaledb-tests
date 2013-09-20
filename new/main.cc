@@ -34,6 +34,7 @@
 #define ARG_VERBOSE                 2
 #define ARG_QUIET                   3
 #define ARG_NO_PROGRESS             4
+#define ARG_OPEN                    8
 #define ARG_REOPEN                  5
 #define ARG_METRICS                 6
 #define ARG_KEYSIZE_BTREE           7
@@ -103,6 +104,12 @@ static option_t opts[] = {
     "r",
     "reopen",
     "Calls OPEN/FULLCHECK/CLOSE after each close",
+    0 },
+  {
+    ARG_OPEN,
+    "o",
+    "open",
+    "Opens an existing Environment",
     0 },
   {
     ARG_METRICS,
@@ -261,8 +268,8 @@ static option_t opts[] = {
     ARG_USE_BERKELEYDB,
     0,
     "use-berkeleydb",
-    "Enables use of berkeleydb ('true', 'false' (default))",
-    GETOPTS_NEED_ARGUMENT },
+    "Enables use of berkeleydb (default: disabled)",
+    0 },
   {
     ARG_USE_HAMSTERDB,
     0,
@@ -446,14 +453,7 @@ parse_config(int argc, char **argv, Configuration *c)
       c->use_fsync = true;
     }
     else if (opt == ARG_USE_BERKELEYDB) {
-      if (!param || !strcmp(param, "true"))
-        c->use_berkeleydb = true;
-      else if (param && !strcmp(param, "false"))
-        c->use_berkeleydb = false;
-      else {
-        printf("[FAIL] invalid or missing parameter for 'use-berkeleydb'\n");
-        exit(-1);
-      }
+      c->use_berkeleydb = true;
     }
     else if (opt == ARG_USE_HAMSTERDB) {
       if (!param || !strcmp(param, "true"))
@@ -481,6 +481,9 @@ parse_config(int argc, char **argv, Configuration *c)
     }
     else if (opt == ARG_REOPEN) {
       c->reopen = true;
+    }
+    else if (opt == ARG_OPEN) {
+      c->open = true;
     }
     else if (opt == ARG_METRICS) {
       if (param && !strcmp(param, "none"))
@@ -593,16 +596,18 @@ print_metrics(Metrics *metrics, Configuration *conf)
                   name, metrics->insert_ops + metrics->erase_ops
                   + metrics->find_ops + metrics->txn_commit_ops
                   + metrics->other_ops);
-  printf("\t%s insert #ops                    %lu (%f/sec)\n",
+  if (metrics->insert_ops) {
+    printf("\t%s insert #ops                    %lu (%f/sec)\n",
                   name, metrics->insert_ops,
                   (double)metrics->insert_ops / metrics->insert_latency_total);
-  printf("\t%s insert throughput              %f/sec\n",
+    printf("\t%s insert throughput              %f/sec\n",
                   name, (double)metrics->insert_bytes
                         / metrics->insert_latency_total);
-  printf("\t%s insert latency (min, avg, max) %f, %f, %f\n",
+    printf("\t%s insert latency (min, avg, max) %f, %f, %f\n",
                   name, metrics->insert_latency_min,
                   metrics->insert_latency_total / metrics->insert_ops,
                   metrics->insert_latency_max);
+  }
   if (metrics->find_ops) {
     printf("\t%s find #ops                      %lu (%f/sec)\n",
                   name, metrics->find_ops,
@@ -733,7 +738,10 @@ static bool
 run_single_test(Configuration *conf)
 {
   Database *db = new T(0, conf);
-  db->create_env();
+  if (conf->open)
+    db->open_env();
+  else
+    db->create_env();
   RuntimeGenerator generator(0, conf, db, true);
 
   // create additional hamsterdb threads
@@ -928,8 +936,14 @@ run_both_tests(Configuration *conf)
   bool ok = true;
   Database *db1 = new HamsterDatabase(0, conf);
   Database *db2 = new BerkeleyDatabase(1, conf);
-  db1->create_env();
-  db2->create_env();
+  if (conf->open) {
+    db1->open_env();
+    db2->open_env();
+  }
+  else {
+    db1->create_env();
+    db2->create_env();
+  }
   RuntimeGenerator generator1(0, conf, db1, true);
   RuntimeGenerator generator2(0, conf, db2, false);
   uint64_t op = 0;
@@ -1004,6 +1018,11 @@ run_both_tests(Configuration *conf)
 int
 main(int argc, char **argv)
 {
+  ham_u32_t maj, min, rev;
+  const char *licensee, *product;
+  ham_get_license(&licensee, &product);
+  ham_get_version(&maj, &min, &rev);
+
   Configuration c;
   parse_config(argc, argv, &c);
 
@@ -1011,12 +1030,31 @@ main(int argc, char **argv)
   if (c.seed == 0)
     c.seed = ::time(0);
 
+  if (!c.quiet) {
+    printf("hamsterdb %d.%d.%d - Copyright (C) 2005-2013 "
+         "Christoph Rupp (chris@crupp.de).\n\n",
+         maj, min, rev);
+
+    if (licensee[0] == '\0')
+      printf(
+         "This program is free software; you can redistribute "
+         "it and/or modify it\nunder the terms of the GNU "
+         "General Public License as published by the Free\n"
+         "Software Foundation; either version 2 of the License,\n"
+         "or (at your option) any later version.\n\n"
+         "See file COPYING.GPL2 and COPYING.GPL3 for License "
+         "information.\n\n");
+    else
+      printf("Commercial version; licensed for %s (%s)\n\n",
+          licensee, product);
+  }
+
   // ALWAYS dump the configuration
   c.print();
 
   // set a limit
   if (!c.limit_bytes && !c.limit_seconds && !c.limit_ops)
-    c.limit_bytes = 100 * 1024 * 1024;
+    c.limit_ops = 1000000;
 
   if (c.btree_key_size == 0)
     c.btree_key_size = c.key_size;

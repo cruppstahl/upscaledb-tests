@@ -75,10 +75,9 @@ class BinaryAscendingDatasource : public Datasource
 
     // returns the next piece of data; overflows are ignored
     virtual void get_next(std::vector<uint8_t> &vec) {
-      vec.resize(m_data.size() + 1);
+      vec.resize(m_data.size());
       for (size_t i = 0; i < m_data.size(); i++)
         vec[i] = m_alphabet[m_data[i]];
-      vec[m_data.size()] = 0;
 
       size_t size = m_data.size();
       if (m_fixed_size || m_data.size() == m_size) {
@@ -140,10 +139,9 @@ class BinaryDescendingDatasource : public Datasource
 
     // returns the next piece of data; overflows are ignored
     virtual void get_next(std::vector<uint8_t> &vec) {
-      vec.resize(m_data.size() + 1);
+      vec.resize(m_data.size());
       for (size_t i = 0; i < m_data.size(); i++)
         vec[i] = m_alphabet[m_data[i]];
-      vec[m_data.size()] = 0;
 
       size_t size = m_data.size();
       if (m_fixed_size || m_data.size() == m_size) {

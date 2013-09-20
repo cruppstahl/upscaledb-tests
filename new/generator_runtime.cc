@@ -16,7 +16,7 @@
 #include "datasource_binary.h"
 #include "generator_runtime.h"
 
-#define kZipfianLimit       (1024 * 1024 * 5)
+#define kZipfianLimit       (1024 * 1024)
 
 RuntimeGenerator::RuntimeGenerator(int id, Configuration *conf, Database *db,
                 bool show_progress)
