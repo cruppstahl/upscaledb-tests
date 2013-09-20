@@ -1,11 +1,11 @@
 
 noinst_PROGRAMS	= test
 
-AM_CPPFLAGS = -I$(top_builddir)/env/common
+AM_CPPFLAGS =
 
 # debug or release mode? - the test program is always compiled in 
 # debug mode, because it contains a lot of asserts and debug output
-AM_CXXFLAGS = -DDEBUG -DHAM_DEBUG -I/usr/local/BerkeleyDB.5.2/include
+AM_CXXFLAGS = -DDEBUG -DHAM_DEBUG
 
 test_SOURCES    = berkeleydb.cc \
 				  berkeleydb.h \
@@ -32,6 +32,5 @@ test_SOURCES    = berkeleydb.cc \
 				  thread.h
 
 test_LDFLAGS    = 
-test_LDADD      = -lhamsterdb -lhamserver \
-				  -ldb -L/usr/local/BerkeleyDB.5.2/lib -lcrypto \
+test_LDADD      = -lhamsterdb -lhamserver -lcrypto \
 				  -lboost_thread -lpthread -luv -lprotobuf -ltcmalloc_minimal

@@ -15,6 +15,9 @@
 /* Define to 1 if you have <boost/thread.hpp> */
 #undef HAVE_BOOST_THREAD_HPP
 
+/* Define to 1 if you have the <db.h> header file. */
+#undef HAVE_DB_H
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
@@ -32,6 +35,9 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `db' library (-ldb). */
+#undef HAVE_LIBDB
 
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
@@ -111,11 +117,6 @@
 
 /* Version number of package */
 #undef VERSION
-
-/* Enable large inode numbers on Mac OS X 10.5.  */
-#ifndef _DARWIN_USE_64_BIT_INODE
-# define _DARWIN_USE_64_BIT_INODE 1
-#endif
 
 /* Number of bits in a file offset, on hosts where this is settable. */
 #undef _FILE_OFFSET_BITS

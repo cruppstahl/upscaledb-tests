@@ -30,7 +30,7 @@ LT_INIT
 AC_CONFIG_SRCDIR(src/hamsterdb.cc)
 AC_CONFIG_HEADERS(config.h)
 AC_CHECK_FUNCS(mmap munmap getpagesize fdatasync fsync writev pread pwrite)
-AC_CHECK_HEADERS(fcntl.h unistd.h malloc.h uv.h)
+AC_CHECK_HEADERS(fcntl.h unistd.h malloc.h uv.h db.h)
 AC_TYPE_OFF_T
 AC_FUNC_MMAP
 
@@ -59,6 +59,21 @@ AC_ARG_ENABLE(debug,
       CFLAGS="-g -O0 -DHAM_DEBUG -Wall -pedantic"
       settings="$settings (debug)"
      fi])
+
+# -------------------------------------------------------------------------
+# Berkeleydb header files and libraries
+# -------------------------------------------------------------------------
+if test "x$ac_cv_header_db_h" = "xyes"; then
+  AC_CHECK_LIB(db, db_create)
+  AM_CONDITIONAL(WITH_BERKELEYDB, test "x$ac_cv_lib_db_db_create" = "xyes")
+  if test "x$ac_cv_lib_db_db_create" = "xyes"; then
+    settings="$settings (berkeleydb)"
+  else
+    settings="$settings (without berkeleydb)"
+  fi
+else
+  settings="$settings (without berkeleydb)"
+fi
 
 # -------------------------------------------------------------------------
 # The path of the hamsterdb library
