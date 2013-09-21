@@ -966,24 +966,33 @@ run_both_tests(Configuration *conf)
     assert(b);
     op++;
 
-    if (generator1.get_status() != generator2.get_status()) {
-      ERROR(("Status mismatch - %d vs %d\n",
-            generator1.get_status(), generator2.get_status()));
-      ok = false;
-      break;
+    bool fullcheck = false;
+    if (generator1.get_status() == Generator::kCommandFullcheck) {
+      fullcheck = true;
+    }
+    else if (conf->fullcheck != Configuration::kFullcheckNone) {
+      if (op > 0 && op % conf->fullcheck_frequency == 0)
+        fullcheck = true;
     }
 
-    if (!are_records_equal(generator1.get_record(), generator2.get_record())) {
-      ERROR(("Record mismatch\n"));
-      ok = false;
-      break;
+    if (fullcheck) {
+      ok = run_fullcheck(conf, &generator1, &generator2);
+      if (!ok)
+        break;
     }
+    else {
+      if (generator1.get_status() != generator2.get_status()) {
+        ERROR(("Status mismatch - %d vs %d\n",
+              generator1.get_status(), generator2.get_status()));
+        ok = false;
+        break;
+      }
 
-    if (conf->fullcheck != Configuration::kFullcheckNone) {
-      if (op > 0 && op % conf->fullcheck_frequency == 0) {
-        ok = run_fullcheck(conf, &generator1, &generator2);
-        if (!ok)
-          break;
+      if (!are_records_equal(generator1.get_record(),
+                  generator2.get_record())) {
+        ERROR(("Record mismatch\n"));
+        ok = false;
+        break;
       }
     }
   }

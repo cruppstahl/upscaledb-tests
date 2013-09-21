@@ -30,17 +30,18 @@ class Generator
       kCommandInsert,
       kCommandErase,
       kCommandFind,
-      kCommandFullcheck,
       kCommandBeginTransaction,
       kCommandAbortTransaction,
       kCommandCommitTransaction,
       kCommandFlush,
-      kCommandNop
+      kCommandNop,
+      kCommandFullcheck = 999999 // avoid conflicts with ham_status_t
     };
 
     // constructor
     Generator(int id, Configuration *conf, Database *db)
       : m_id(id), m_config(conf), m_db(db), m_last_status(0) {
+      memset(&m_record, 0, sizeof(m_record));
     }
 
     // destructor

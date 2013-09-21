@@ -73,7 +73,9 @@ ParserGenerator::execute()
     case Generator::kCommandCommitTransaction:
       txn_commit();
       break;
-    case Generator::kCommandFullcheck: // TODO
+    case Generator::kCommandFullcheck:
+      m_last_status = Generator::kCommandFullcheck;
+      break;
     case Generator::kCommandFlush: // TODO
     case Generator::kCommandNop:
       break;
@@ -355,7 +357,6 @@ ParserGenerator::get_next_command(const char **pflags, const char **pkeydata,
     return (kCommandFind);
   }
   if (tokens[0] == "FULLCHECK") {
-    // TODO return (true); // this is executed in main.cpp
     return (kCommandFullcheck);
   }
   if (tokens[0] == "BEGIN_TXN") {
