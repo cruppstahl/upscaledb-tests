@@ -40,8 +40,8 @@ RuntimeGenerator::RuntimeGenerator(int id, Configuration *conf, Database *db,
                               conf->limit_seconds));
   }
 
-  if (!m_conf->tee_file.empty())
-    m_tee.open(m_conf->tee_file.c_str(), std::ios::out);
+  if (!m_config->tee_file.empty())
+    m_tee.open(m_config->tee_file.c_str(), std::ios::out);
 
   switch (conf->key_type) {
     case Configuration::kKeyUint8:
@@ -182,7 +182,7 @@ RuntimeGenerator::execute()
 
   m_opcount++;
 
-  if (m_progress && m_conf->limit_ops)
+  if (m_progress && m_config->limit_ops)
     (*m_progress) += 1;
 
   return (true);
@@ -195,7 +195,7 @@ RuntimeGenerator::create()
   m_db->create_env();
   m_last_status = m_db->create_db(m_id);
   
-  if (m_conf->use_cursors)
+  if (m_config->use_cursors)
     m_cursor = m_db->cursor_create(m_txn);
 
   if (m_last_status != 0)
@@ -211,7 +211,7 @@ RuntimeGenerator::open()
   m_db->open_env();
   m_last_status = m_db->open_db(m_id);
 
-  if (m_conf->use_cursors)
+  if (m_config->use_cursors)
     m_cursor = m_db->cursor_create(m_txn);
 
   if (m_last_status != 0)
@@ -266,7 +266,7 @@ RuntimeGenerator::insert()
 
   if (m_last_status == 0) {
     m_metrics.insert_bytes += key.size + rec.size;
-    if (m_progress && m_conf->limit_bytes)
+    if (m_progress && m_config->limit_bytes)
       (*m_progress) += key.size + rec.size;
   }
 
@@ -343,7 +343,7 @@ RuntimeGenerator::txn_begin()
 
   m_txn = m_db->txn_begin();
 
-  if (m_conf->use_cursors)
+  if (m_config->use_cursors)
     m_cursor = m_db->cursor_create(m_txn);
 
   m_metrics.other_ops++;
@@ -417,11 +417,11 @@ ham_record_t
 RuntimeGenerator::generate_record()
 {
   ham_record_t rec = {0};
-  m_record_data.resize(m_conf->rec_size);
+  m_record_data.resize(m_config->rec_size);
   // make the record unique (more or less)
-  size_t size = std::min((int)sizeof(m_opcount), m_conf->rec_size);
+  size_t size = std::min((int)sizeof(m_opcount), m_config->rec_size);
   memcpy(&m_record_data[0], &m_opcount, size);
-  for (int i = size; i < m_conf->rec_size; i++)
+  for (int i = size; i < m_config->rec_size; i++)
     m_record_data[i] = (uint8_t)i;
 
   rec.data = &m_record_data[0];
@@ -444,28 +444,28 @@ RuntimeGenerator::get_next_command()
 
   // first command? then either 'create' or 'reopen', depending on flags
   if (m_opcount == 0) {
-    if (m_conf->open)
+    if (m_config->open)
       return (Generator::kCommandOpen);
     else
       return (Generator::kCommandCreate);
   }
 
   // begin/abort/commit transactions!
-  if (m_conf->transactions_nth) {
+  if (m_config->transactions_nth) {
     if (!m_txn)
       return (Generator::kCommandBeginTransaction);
     // add +2 because txn_begin/txn_commit are also counted in m_opcount
-    if (m_opcount % (m_conf->transactions_nth + 2) == 0)
+    if (m_opcount % (m_config->transactions_nth + 2) == 0)
       return (Generator::kCommandCommitTransaction);
   }
 
   // perform "real" work
-  if (m_conf->erase_pct || m_conf->find_pct) {
+  if (m_config->erase_pct || m_config->find_pct) {
     double d = m_u01();
-    if (d * 100 < m_conf->erase_pct)
+    if (d * 100 < m_config->erase_pct)
       return (Generator::kCommandErase);
-    if (d * 100 >= m_conf->erase_pct
-        && d * 100 < (m_conf->erase_pct + m_conf->find_pct))
+    if (d * 100 >= m_config->erase_pct
+        && d * 100 < (m_config->erase_pct + m_config->find_pct))
       return (Generator::kCommandFind);
   }
   return (Generator::kCommandInsert);
@@ -475,27 +475,27 @@ bool
 RuntimeGenerator::limit_reached()
 {
   // reached IOPS limit?
-  if (m_conf->limit_ops) {
-    if (m_opcount == m_conf->limit_ops)
+  if (m_config->limit_ops) {
+    if (m_opcount == m_config->limit_ops)
       return (true);
   }
 
   // reached time limit?
-  if (m_conf->limit_seconds) {
+  if (m_config->limit_seconds) {
     double new_elapsed = m_start.seconds();
     if (m_progress && new_elapsed - m_elapsed_seconds >= 1.) {
       (*m_progress) += (unsigned)(new_elapsed - m_elapsed_seconds);
       m_elapsed_seconds = new_elapsed;
     }
-    if (new_elapsed > m_conf->limit_seconds) {
+    if (new_elapsed > m_config->limit_seconds) {
       m_elapsed_seconds = new_elapsed;
       return (true);
     }
   }
 
   // check inserted bytes
-  if (m_conf->limit_bytes) {
-    if (m_metrics.insert_bytes >= m_conf->limit_bytes)
+  if (m_config->limit_bytes) {
+    if (m_metrics.insert_bytes >= m_config->limit_bytes)
       return (true);
   }
 
@@ -506,11 +506,11 @@ void
 RuntimeGenerator::tee(const char *foo, const ham_key_t *key,
                     const ham_record_t *record)
 {
-  if (!m_conf->tee_file.empty() || m_conf->verbose) {
+  if (!m_config->tee_file.empty() || m_config->verbose) {
     std::stringstream ss;
     ss << foo;
     if (key) {
-      switch (m_conf->key_type) {
+      switch (m_config->key_type) {
         case Configuration::kKeyBinary:
           ss << " (" << (const char *)key->data;
           break;
@@ -535,7 +535,7 @@ RuntimeGenerator::tee(const char *foo, const ham_key_t *key,
     if (key || record)
       ss << ")";
 
-    if (!m_conf->tee_file.empty())
+    if (!m_config->tee_file.empty())
       m_tee << ss.str() << std::endl;
     else
       std::cout << m_db->get_id() << ": " << ss.str() << std::endl;

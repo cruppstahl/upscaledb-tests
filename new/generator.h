@@ -33,12 +33,14 @@ class Generator
       kCommandFullcheck,
       kCommandBeginTransaction,
       kCommandAbortTransaction,
-      kCommandCommitTransaction
+      kCommandCommitTransaction,
+      kCommandFlush,
+      kCommandNop
     };
 
     // constructor
     Generator(int id, Configuration *conf, Database *db)
-      : m_id(id), m_conf(conf), m_db(db), m_last_status(0) {
+      : m_id(id), m_config(conf), m_db(db), m_last_status(0) {
     }
 
     // destructor
@@ -66,7 +68,7 @@ class Generator
     virtual void close() = 0;
 
     // returns true if the test was successful
-    virtual bool was_successful() = 0;
+    virtual bool was_successful() const = 0;
 
     // returns the collected metrics/statistics
     virtual void get_metrics(Metrics *metrics) = 0;
@@ -81,7 +83,7 @@ class Generator
     int m_id;
 
     // the configuration settings
-    Configuration *m_conf;
+    Configuration *m_config;
 
     // the Database
     Database *m_db;

@@ -9,6 +9,8 @@
  * See files COPYING.* for License information.
  */
 
+#ifdef HAM_WITH_BERKELEYDB
+
 #include <iostream>
 #include <boost/filesystem.hpp>
 
@@ -476,3 +478,5 @@ BerkeleyDatabase::db2ham(int ret)
   TRACE(("unknown berkeley return code %d\n", ret));
   return ((ham_status_t)ret);
 }
+
+#endif // HAM_WITH_BERKELEYDB

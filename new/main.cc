@@ -25,8 +25,11 @@
 #include "datasource_numeric.h"
 #include "datasource_binary.h"
 #include "generator_runtime.h"
+#include "generator_parser.h"
 #include "hamsterdb.h"
-#include "berkeleydb.h"
+#ifdef HAM_WITH_BERKELEYDB
+#  include "berkeleydb.h"
+#endif
 #include "metrics.h"
 #include "misc.h"
 
@@ -693,22 +696,31 @@ struct Callable
 {
   Callable(int id, Configuration *conf)
     : m_conf(conf), m_db(new HamsterDatabase(id, conf)), m_id(id),
-        m_generator(m_id, m_conf, m_db, false) {
+        m_generator(0) {
+      if (m_conf->filename.empty())
+        m_generator = new RuntimeGenerator(m_id, m_conf, m_db, false);
+      else
+        m_generator = new ParserGenerator(m_id, m_conf, m_db, false);
+  }
+
+  ~Callable() {
+    // TODO delete m_db!
+    delete m_generator;
   }
 
   void operator()() {
-    while (m_generator.execute())
+    while (m_generator->execute())
       ;
   }
 
   void get_metrics(Metrics *metrics) {
-    m_generator.get_metrics(metrics);
+    m_generator->get_metrics(metrics);
   }
 
   Configuration *m_conf;
   Database *m_db;
   int m_id;
-  RuntimeGenerator m_generator;
+  Generator *m_generator;
 };
 
 static void
@@ -733,16 +745,16 @@ add_metrics(Metrics *metrics, const Metrics *other)
   metrics->txn_commit_latency_total += other->txn_commit_latency_total;
 }
 
-template<typename T>
+template<typename DatabaseType, typename GeneratorType>
 static bool
 run_single_test(Configuration *conf)
 {
-  Database *db = new T(0, conf);
+  Database *db = new DatabaseType(0, conf);
   if (conf->open)
     db->open_env();
   else
     db->create_env();
-  RuntimeGenerator generator(0, conf, db, true);
+  GeneratorType generator(0, conf, db, true);
 
   // create additional hamsterdb threads
   std::vector<boost::thread *> threads;
@@ -796,6 +808,7 @@ run_single_test(Configuration *conf)
   return (ok);
 }
 
+#ifdef HAM_WITH_BERKELEYDB
 static bool
 are_keys_equal(ham_key_t *key1, ham_key_t *key2)
 {
@@ -925,6 +938,7 @@ run_fullcheck(Configuration *conf, Generator *gen1, Generator *gen2)
   return (true);
 }
 
+template<typename GeneratorType>
 static bool
 run_both_tests(Configuration *conf)
 {
@@ -944,8 +958,8 @@ run_both_tests(Configuration *conf)
     db1->create_env();
     db2->create_env();
   }
-  RuntimeGenerator generator1(0, conf, db1, true);
-  RuntimeGenerator generator2(0, conf, db2, false);
+  GeneratorType generator1(0, conf, db1, true);
+  GeneratorType generator2(0, conf, db2, false);
   uint64_t op = 0;
   while (generator1.execute()) {
     bool b = generator2.execute();
@@ -1014,6 +1028,7 @@ run_both_tests(Configuration *conf)
     printf("[FAIL] %s\n", conf->filename.c_str());
   return (ok);
 }
+#endif
 
 int
 main(int argc, char **argv)
@@ -1067,13 +1082,32 @@ main(int argc, char **argv)
   // if berkeleydb is disabled, and hamsterdb runs in only one thread:
   // just execute the test single-threaded
   if (c.use_hamsterdb && !c.use_berkeleydb) {
-    ok = run_single_test<HamsterDatabase>(&c);
+    if (c.filename.empty())
+      ok = run_single_test<HamsterDatabase, RuntimeGenerator>(&c);
+    else
+      ok = run_single_test<HamsterDatabase, ParserGenerator>(&c);
   }
   else if (c.use_berkeleydb && !c.use_hamsterdb) {
-    ok = run_single_test<BerkeleyDatabase>(&c);
+#ifdef HAM_WITH_BERKELEYDB
+    if (c.filename.empty())
+      ok = run_single_test<BerkeleyDatabase, RuntimeGenerator>(&c);
+    else
+      ok = run_single_test<BerkeleyDatabase, ParserGenerator>(&c);
+#else
+    printf("[FAIL] I was built without support for berkeleydb!\n");
+    ok = false;
+#endif
   }
   else {
-    ok = run_both_tests(&c);
+#ifdef HAM_WITH_BERKELEYDB
+    if (c.filename.empty())
+      ok = run_both_tests<RuntimeGenerator>(&c);
+    else
+      ok = run_both_tests<ParserGenerator>(&c);
+#else
+    printf("[FAIL] I was built without support for berkeleydb!\n");
+    ok = false;
+#endif
   }
 
   return (ok ? 0 : 1);

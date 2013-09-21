@@ -14,6 +14,8 @@ test_SOURCES    = berkeleydb.h \
 				  datasource_binary.h \
 				  datasource_numeric.h \
 				  generator.h \
+				  generator_parser.h \
+				  generator_parser.cc \
 				  generator_runtime.h \
 				  generator_runtime.cc \
 				  getopts.h \

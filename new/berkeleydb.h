@@ -12,6 +12,8 @@
 #ifndef BERKELEYDB_H__
 #define BERKELEYDB_H__
 
+#ifdef HAM_WITH_BERKELEYDB
+
 #include <db.h>
 #include <ham/hamsterdb.h> // for ham_status_t, ham_key_t etc
 
@@ -79,5 +81,7 @@ class BerkeleyDatabase : public Database
     DB *m_db;
     DBC *m_cursor;
 };
+
+#endif // HAM_WITH_BERKELEYDB
 
 #endif /* BERKELEYDB_H__ */

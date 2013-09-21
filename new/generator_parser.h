@@ -9,41 +9,33 @@
  * See files COPYING.* for License information.
  */
 
-#ifndef RUNTIME_GENERATOR_H__
-#define RUNTIME_GENERATOR_H__
+#ifndef PARSER_GENERATOR_H__
+#define PARSER_GENERATOR_H__
 
 #include <iostream>
 #include <fstream>
-#include <boost/random.hpp>
-#include <boost/random/uniform_01.hpp>
+#include <string>
+#include <vector>
 #include <boost/progress.hpp>
 
 #include "timer.h"
 #include "generator.h"
-#include "datasource.h"
 #include "database.h"
 
 //
-// generates data based on configuration settings
+// executes test scripts
 //
-class RuntimeGenerator : public Generator
+class ParserGenerator : public Generator
 {
-    enum {
-      kStateRunning = 0,
-      kStateReopening,
-      kStateStopped
-    };
-
   public:
     // constructor
-    RuntimeGenerator(int id, Configuration *conf, Database *db,
+    ParserGenerator(int id, Configuration *conf, Database *db,
             bool show_progress);
 
     // destructor
-    virtual ~RuntimeGenerator() {
+    virtual ~ParserGenerator() {
       assert(m_txn == 0);
       assert(m_cursor == 0);
-      delete m_datasource;
       delete m_progress;
     }
 
@@ -73,13 +65,13 @@ class RuntimeGenerator : public Generator
     void create();
 
     // inserts a key/value pair
-    void insert();
+    void insert(const char *keydata, const char *recdata, const char *flags);
 
     // erases a key/value pair
-    void erase();
+    void erase(const char *keydata);
 
     // lookup of a key/value pair
-    void find();
+    void find(const char *keydata);
 
     // begins a new transaction
     void txn_begin();
@@ -90,49 +82,20 @@ class RuntimeGenerator : public Generator
     // aborts a transaction
     void txn_abort();
 
-    // generates a new key, based on the Datasource
-    ham_key_t generate_key();
-
-    // generates a new record
-    ham_record_t generate_record();
+    // Reads the whole test file into m_lines
+    void read_file();
 
     // which command to execute next?
-    int get_next_command();
+    int get_next_command(const char **pflags, const char **pkeydata,
+            const char **precdata = 0);
 
-    // returs true if test should stop now
-    bool limit_reached();
+    // Returns the number of lines
+    unsigned get_line_count() const {
+      return (m_lines.size());
+    }
 
-    // "tee"s the generated test data to a file (and/or to stdout 
-    // if 'verbose' is enabled)
-    void tee(const char *foo, const ham_key_t *key = 0,
-                    const ham_record_t *record = 0);
- 
-    // the current state (running, reopening etc)
-    int m_state;
-
-    // counting the number of operations
-    uint64_t m_opcount;
-
-    // the datasource
-    Datasource *m_datasource;
-
-    // a vector which temporarily stores the data from the Datasource
-    std::vector<uint8_t> m_key_data;
-
-    // a vector which temporarily stores the data for the records
-    std::vector<uint8_t> m_record_data;
-
-    // rng
-    boost::mt19937 m_rng;
-
-    // uniform distribution from 0..1
-    boost::uniform_01<boost::mt19937> m_u01;
-
-    // start time
-    Timer<boost::chrono::system_clock> m_start;
-
-    // elapsed time
-    double m_elapsed_seconds;
+    // Tokenizes a line and returns the tokens in a vector
+    std::vector<std::string> tokenize(const std::string &str);
 
     // the currently active Transaction
     Database::Transaction *m_txn;
@@ -143,15 +106,21 @@ class RuntimeGenerator : public Generator
     // boost progress bar, can be null if progress is not shown
     boost::progress_display *m_progress;
 
-    // file to dump the generated test data ("tee")
-    std::ofstream m_tee;
-
     // test was successful?
     bool m_success;
 
     // the collected metrics/statistics
     Metrics m_metrics;
+
+    // All lines from the file
+    std::vector<std::string> m_lines;
+
+    // The current line in m_lines
+    uint32_t m_cur_line;
+
+    // start time
+    Timer<boost::chrono::system_clock> m_start;
 };
 
-#endif /* RUNTIME_GENERATOR_H__ */
+#endif /* PARSER_GENERATOR_H__ */
 

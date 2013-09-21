@@ -128,8 +128,9 @@ struct Configuration
       printf("--fullcheck=reverse ");
     if (fullcheck == kFullcheckNone)
       printf("--fullcheck=none ");
-    if (!filename.empty())
-      printf("%s", filename.c_str());
+    if (!filename.empty()) {
+      printf("%s\n", filename.c_str());
+    }
     else {
       if (key_type == kKeyUint8)
         printf("--key=uint8 ");

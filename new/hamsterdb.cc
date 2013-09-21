@@ -158,7 +158,12 @@ HamsterDatabase::do_close_env()
     return (0);
   }
 
-  assert(ms_refcount > 0);
+  if (ms_refcount == 0) {
+    assert(m_env == 0);
+    assert(ms_env == 0);
+    return (0);
+  }
+
   if (--ms_refcount > 0)
     return (0);
 

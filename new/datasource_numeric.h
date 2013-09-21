@@ -96,13 +96,21 @@ class NumericZipfianDatasource : public Datasource
 {
   public:
     NumericZipfianDatasource(uint64_t n, long seed = 0, double alpha = 0.8)
-      : m_alpha(alpha), m_n(n), m_u01(m_rng) {
+      : m_alpha(alpha), m_u01(m_rng) {
       if (seed)
         m_rng.seed(seed);
+
       // Compute normalization constant
       for (uint64_t i = 1; i <= n; i++)
-        m_c = m_c + (1.0 / pow((double) i, m_alpha));
+        m_c = m_c + (1.0 / pow((double)i, alpha));
       m_c = 1.0 / m_c;
+
+      m_values.resize(n);
+      double sum_prob = 0;
+      for (uint64_t i = 1; i <= n; i++) {
+        sum_prob = sum_prob + m_c / pow((double) i, m_alpha);
+        m_values[i - 1] = sum_prob;
+      }
     }
 
     // returns the next piece of data
@@ -113,31 +121,25 @@ class NumericZipfianDatasource : public Datasource
     }
 
     T get_next_number() {
-      T rv;
       // Pull a uniform random number (0 < z < 1)
       double z = m_u01();
+      while (z == 0.0 || z == 1.0)
+        z = m_u01();
 
       // Map z to the value
-      double sum_prob = 0;
-      for (uint64_t i = 1; i <= m_n; i++) {
-        sum_prob = sum_prob + m_c / pow((double) i, m_alpha);
-        if (sum_prob >= z) {
-          rv = i;
-          break;
-        }
+      for (uint64_t i = 1; i <= m_values.size(); i++) {
+        if (m_values[i] >= z)
+          return ((T)(m_values[i] * m_values.size()));
       }
 
-      // Assert that rv is between 1 and N
-      assert ((rv >= 1) && (rv <= (T)m_n));
-
-      return ((T)rv);
+      assert(!"shouldn't be here");
+      return ((T)0);
     }
 
   private:
-    T m_value;
-    double m_c;
     double m_alpha;
-    uint64_t m_n;
+    double m_c;
+    std::vector<double> m_values;
     boost::mt19937 m_rng;
     boost::uniform_01<boost::mt19937> m_u01;
 };

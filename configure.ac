@@ -72,6 +72,7 @@ if test "x$ac_cv_header_db_h" = "xyes"; then
     settings="$settings (without berkeleydb)"
   fi
 else
+  AM_CONDITIONAL(WITH_BERKELEYDB, false)
   settings="$settings (without berkeleydb)"
 fi
 
