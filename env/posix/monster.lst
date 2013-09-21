@@ -1,0 +1,192 @@
+
+# AES encryption
+3, "--use-encryption --reopen"
+3, "--use-encryption --use-transactions=10 --reopen"
+
+# client/server
+3, "--use-remote --reopen"
+3, "--use-remote --use-transactions=10 --reopen"
+
+3, "--reopen"
+3, "--fullcheck=find"
+3, "--overwrite --reopen"
+3, "--inmemorydb"
+3, "--overwrite --inmemorydb"
+3, "--use-cursors --reopen"
+3, "--use-cursors --overwrite --reopen"
+3, "--use-cursors --inmemorydb"
+3, "--use-cursors --overwrite --inmemorydb"
+3, "--use-cursors --duplicate=first --reopen"
+
+3, "--fullcheck=reverse --inmemorydb"
+3, "--fullcheck=reverse --reopen"
+3, "--fullcheck=reverse --duplicate=last --reopen"
+3, "--fullcheck=reverse --overwrite --reopen"
+
+3, "--duplicate=last --reopen"
+3, "--fullcheck=find"
+3, "--duplicate=last --inmemorydb"
+3, "--duplicate=last --use-cursors --reopen"
+3, "--duplicate=last --use-cursors --inmemorydb"
+
+3, "--no-mmap --reopen"
+3, "--no-mmap --overwrite --reopen"
+
+3, "--keysize=8 --reopen"
+3, "--keysize=8 --overwrite --reopen"
+3, "--keysize=8 --inmemorydb"
+3, "--keysize=8 --overwrite --inmemorydb"
+3, "--keysize=8 --use-cursors --overwrite --inmemorydb"
+
+3, "--keysize=12 --reopen"
+3, "--keysize=12 --overwrite --reopen"
+3, "--keysize=12 --inmemorydb"
+3, "--keysize=12 --overwrite --inmemorydb"
+
+3, "--keysize=33 --reopen"
+3, "--keysize=33 --overwrite --reopen"
+3, "--keysize=33 --inmemorydb"
+3, "--keysize=33 --overwrite --inmemorydb"
+
+3, "--keysize=680 --reopen"
+3, "--keysize=680 --overwrite --reopen"
+3, "--keysize=680 --inmemorydb"
+3, "--keysize=680 --overwrite --inmemorydb"
+
+3, "--pagesize=1024 --reopen"
+3, "--pagesize=1024 --overwrite --reopen"
+3, "--pagesize=1024 --inmemorydb"
+3, "--pagesize=1024 --overwrite --inmemorydb"
+
+3, "--pagesize=8192 --reopen"
+3, "--pagesize=8192 --overwrite --reopen"
+3, "--pagesize=8192 --inmemorydb"
+3, "--pagesize=8192 --overwrite --inmemorydb"
+
+3, "--pagesize=131072 --reopen"
+3, "--pagesize=131072 --overwrite --reopen"
+3, "--pagesize=131072 --inmemorydb"
+3, "--pagesize=131072 --overwrite --inmemorydb"
+
+3, "--cache=unlimited --reopen"
+3, "--cache=unlimited --reopen"
+3, "--cache=unlimited --overwrite --reopen"
+3, "--cache=unlimited --no-mmap --reopen"
+3, "--cache=unlimited --overwrite --no-mmap --reopen"
+
+3, "--cache=50 --reopen"
+3, "--cache=50 --overwrite --reopen"
+3, "--cache=50 --no-mmap --reopen"
+3, "--cache=50 --overwrite --no-mmap --reopen"
+3, "--cache=50 --use-cursors --overwrite --no-mmap --reopen"
+
+3, "--cache=1024 --reopen"
+3, "--cache=1024 --overwrite --reopen"
+3, "--cache=1024 --no-mmap --reopen"
+3, "--cache=1024 --overwrite --no-mmap --reopen"
+
+3, "--use-recovery --reopen"
+3, "--use-recovery --overwrite --reopen"
+3, "--use-recovery --pagesize=1024 --reopen"
+3, "--use-recovery --duplicate=last --reopen"
+3, "--use-recovery --overwrite --no-mmap --reopen"
+3, "--use-recovery --keysize=16 --reopen"
+
+# HAM_HINT_APPEND
+3, "--hints=HAM_HINT_APPEND --use-cursors --reopen"
+3, "--hints=HAM_HINT_APPEND --use-cursors --inmemorydb"
+
+# HAM_HINT_PREPEND
+3, "--hints=HAM_HINT_PREPEND --use-cursors --reopen"
+3, "--hints=HAM_HINT_PREPEND --use-cursors --inmemorydb"
+
+# HAM_DIRECT_ACCESS
+3, "--direct-access --inmemorydb"
+3, "--direct-access --inmemorydb --fullcheck=find"
+3, "--direct-access --inmemorydb --overwrite"
+3, "--direct-access --inmemorydb --use-cursors"
+3, "--direct-access --inmemorydb --use-cursors --overwrite $1 $2 $3"
+3, "--direct-access --inmemorydb --use-cursors --duplicate=first"
+3, "--direct-access --inmemorydb --fullcheck=reverse"
+
+# use temporary transactions
+3, "--use-transactions=tmp"
+3, "--use-transactions=tmp --overwrite"
+3, "--use-transactions=tmp --duplicate=last"
+3, "--use-transactions=tmp --use-cursors"
+3, "--use-transactions=tmp --use-cursors --overwrite"
+3, "--use-transactions=tmp --use-cursors --duplicate=last"
+3, "--use-transactions=tmp --use-cursors --duplicate=first"
+3, "--use-transactions=tmp --no-mmap
+3, "--use-transactions=tmp --fullcheck=find"
+3, "--use-transactions=tmp --fullcheck=reverse"
+3, "--use-transactions=tmp --pagesize=1024"
+3, "--use-transactions=tmp --pagesize=10240"
+3, "--use-transactions=tmp --pagesize=102400"
+3, "--use-transactions=tmp --cache=1024"
+3, "--use-transactions=tmp --cache=102400"
+3, "--use-transactions=tmp --cache=10240000"
+
+# use transactions: group 5 ops in one txn
+3, "--use-transactions=5"
+3, "--use-transactions=5 --overwrite"
+3, "--use-transactions=5 --duplicate=last"
+3, "--use-transactions=5 --use-cursors"
+3, "--use-transactions=5 --use-cursors --overwrite"
+3, "--use-transactions=5 --use-cursors --duplicate=last"
+3, "--use-transactions=5 --use-cursors --duplicate=first"
+3, "--use-transactions=5 --fullcheck=find"
+3, "--use-transactions=5 --fullcheck=reverse"
+
+# use transactions: group 20 ops in one txn
+3, "--use-transactions=20"
+3, "--use-transactions=20 --overwrite"
+3, "--use-transactions=20 --duplicate=last"
+3, "--use-transactions=20 --use-cursors"
+3, "--use-transactions=20 --use-cursors --overwrite"
+3, "--use-transactions=20 --use-cursors --duplicate=last"
+3, "--use-transactions=20 --use-cursors --duplicate=first"
+3, "--use-transactions=20 --fullcheck=find"
+3, "--use-transactions=20 --fullcheck=reverse"
+
+# use transactions: group 200 ops in one txn
+3, "--use-transactions=200"
+3, "--use-transactions=200 --overwrite"
+3, "--use-transactions=200 --duplicate=last"
+3, "--use-transactions=200 --use-cursors"
+3, "--use-transactions=200 --use-cursors --overwrite"
+3, "--use-transactions=200 --use-cursors --duplicate=last"
+3, "--use-transactions=200 --use-cursors --duplicate=first"
+3, "--use-transactions=200 --fullcheck=find"
+3, "--use-transactions=200 --fullcheck=reverse"
+
+# use transactions: group ALL ops in one txn
+3, "--use-transactions=all"
+3, "--use-transactions=all --overwrite"
+3, "--use-transactions=all --duplicate=last"
+3, "--use-transactions=all --use-cursors"
+3, "--use-transactions=all --use-cursors --overwrite"
+3, "--use-transactions=all --use-cursors --duplicate=last"
+3, "--use-transactions=all --use-cursors --duplicate=first"
+3, "--use-transactions=all --fullcheck=find"
+3, "--use-transactions=all --fullcheck=reverse"
+
+# use 2 threads
+3, "--num-threads=2"
+3, "--num-threads=2 --overwrite"
+3, "--num-threads=2 --use-cursors"
+3, "--num-threads=2 --use-cursors --duplicate=first"
+3, "--num-threads=2 --fullcheck=reverse"
+3, "--num-threads=2 --use-transactions=20"
+2, "--num-threads=2 --use-transactions=20 --overwrite"
+2, "--num-threads=2 --use-transactions=20 --duplicate=last"
+2, "--num-threads=2 --use-transactions=20 --use-cursors"
+2, "--num-threads=2 --use-transactions=20 --use-cursors --overwrite"
+2, "--num-threads=2 --use-transactions=20 --use-cursors --duplicate=last"
+2, "--num-threads=2 --use-cursors --duplicate=first"
+
+# use 10 threads
+2, "--num-threads=10"
+2, "--num-threads=10 --overwrite"
+2, "--num-threads=10 --use-cursors --duplicate=last"
+2, "--num-threads=10 --use-transactions=20"

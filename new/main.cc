@@ -316,6 +316,12 @@ static option_t opts[] = {
     "Stops test after inserting specified number of bytes (default: 100 mb)",
     GETOPTS_NEED_ARGUMENT },
   {
+    ARG_ENABLE_ENCRYPTION,
+    0,
+    "use-encryption",
+    "Enables use of AES encryption",
+    0 },
+  {
     ARG_USE_REMOTE,
     0,
     "use-remote",

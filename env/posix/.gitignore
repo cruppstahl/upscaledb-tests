@@ -8,3 +8,4 @@ callgrind*
 *.a
 test
 test.exe
+monster.txt

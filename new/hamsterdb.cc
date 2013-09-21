@@ -151,12 +151,8 @@ HamsterDatabase::do_close_env()
 {
   ScopedLock lock(ms_mutex);
 
-  if (m_env) {
+  if (m_env)
     ham_env_get_metrics(m_env, &m_hamster_metrics);
-    ham_env_close(m_env, 0);
-    m_env = 0;
-    return (0);
-  }
 
   if (ms_refcount == 0) {
     assert(m_env == 0);

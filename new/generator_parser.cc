@@ -94,8 +94,7 @@ ParserGenerator::execute()
 void
 ParserGenerator::create()
 {
-  // Environment was already created in main.cc
-  // m_db->create_env();
+  m_db->create_env();
   m_last_status = m_db->create_db(m_id);
   
   if (m_config->use_cursors)
@@ -110,8 +109,7 @@ ParserGenerator::create()
 void
 ParserGenerator::open()
 {
-  // Environment was already opened in main.cc
-  // m_db->open_env();
+  m_db->open_env();
   m_last_status = m_db->open_db(m_id);
 
   if (m_config->use_cursors)
