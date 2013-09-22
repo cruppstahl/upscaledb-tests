@@ -601,39 +601,39 @@ print_metrics(Metrics *metrics, Configuration *conf)
                   + metrics->txn_commit_latency_total;
 
   printf("\t%s elapsed time (sec)             %f\n", name, total);
-  printf("\t%s total #ops                     %lu\n",
+  printf("\t%s total_#ops                     %lu\n",
                   name, metrics->insert_ops + metrics->erase_ops
                   + metrics->find_ops + metrics->txn_commit_ops
                   + metrics->other_ops);
   if (metrics->insert_ops) {
-    printf("\t%s insert #ops                    %lu (%f/sec)\n",
+    printf("\t%s insert_#ops                    %lu (%f/sec)\n",
                   name, metrics->insert_ops,
                   (double)metrics->insert_ops / metrics->insert_latency_total);
-    printf("\t%s insert throughput              %f/sec\n",
+    printf("\t%s insert_throughput              %f/sec\n",
                   name, (double)metrics->insert_bytes
                         / metrics->insert_latency_total);
-    printf("\t%s insert latency (min, avg, max) %f, %f, %f\n",
+    printf("\t%s insert_latency (min, avg, max) %f, %f, %f\n",
                   name, metrics->insert_latency_min,
                   metrics->insert_latency_total / metrics->insert_ops,
                   metrics->insert_latency_max);
   }
   if (metrics->find_ops) {
-    printf("\t%s find #ops                      %lu (%f/sec)\n",
+    printf("\t%s find_#ops                      %lu (%f/sec)\n",
                   name, metrics->find_ops,
                   (double)metrics->find_ops / metrics->find_latency_total);
-    printf("\t%s find throughput                %f/sec\n",
+    printf("\t%s find_throughput                %f/sec\n",
                   name, (double)metrics->find_bytes
                         / metrics->find_latency_total);
-    printf("\t%s find latency (min, avg, max)   %f, %f, %f\n",
+    printf("\t%s find_latency (min, avg, max)   %f, %f, %f\n",
                   name, metrics->find_latency_min,
                   metrics->find_latency_total / metrics->find_ops,
                   metrics->find_latency_max);
   }
   if (metrics->erase_ops) {
-    printf("\t%s erase #ops                     %lu (%f/sec)\n",
+    printf("\t%s erase_#ops                     %lu (%f/sec)\n",
                   name, metrics->erase_ops,
                   (double)metrics->erase_ops / metrics->erase_latency_total);
-    printf("\t%s erase latency (min, avg, max)  %f, %f, %f\n",
+    printf("\t%s erase_latency (min, avg, max)  %f, %f, %f\n",
                   name, metrics->erase_latency_min,
                   metrics->erase_latency_total / metrics->erase_ops,
                   metrics->erase_latency_max);
@@ -803,7 +803,7 @@ run_single_test(Configuration *conf)
 
   if (ok) {
     printf("\n[OK] %s\n", conf->filename.c_str());
-    if (!conf->quiet && conf->metrics != Configuration::kMetricsNone) {
+    if (!conf->quiet || conf->metrics != Configuration::kMetricsNone) {
       printf("\ttotal elapsed time (sec)                 %f\n",
                   metrics.elapsed_wallclock_seconds);
       print_metrics(&metrics, conf);

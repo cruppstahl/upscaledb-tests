@@ -3,43 +3,28 @@
 use strict;
 use App::Rad;
 use Term::ANSIColor;
+use Data::Dumper;
 
 sub higher_is_better
 {
   my $metric = shift;
   my @tags = (
-	"cache-hits",
-	"freelist-hits"
+	"cache_hits",
+	"freelist_hits",
+	"extkey_cache_hits",
+    "insert_#ops",
+    "erase_#ops",
+    "find_#ops",
+    "insert_throughput",
+    "find_throughput",
+    "erase_throughput"
   );
   return grep(/$metric/, @tags);
 }
 
 sub lower_is_better
 {
-  my $metric = shift;
-  my @tags = (
-	"cache-misses",
-	"filesize",
-	"freelist-misses",
-	"mem-peak-usage",
-	"mem-total-allocations",
-	"page-count-fetched",
-	"page-count-flushed",
-	"page-count-type-blob",
-	"page-count-type-freelist",
-	"page-count-type-index",
-	"perf-cursor",
-	"perf-erase",
-	"perf-find"	,
-	"perf-insert",
-	"perf-misc",
-	"perf-txn",
-	"perf-total",
-    "btree-smo-split",
-    "btree-smo-merge",
-    "btree-smo-shift"
-  );
-  return grep(/$metric/, @tags);
+  return (!higher_is_better(shift));
 }
 
 sub run_single_test {
@@ -47,10 +32,10 @@ sub run_single_test {
   my $params = shift;
 
   open(FH, ">>perftest.txt") or die "Cannot open perftest.txt for writing";
-  print "[START] ./test $params --no-berkeleydb $file\n";
-  my $output = `./test $params --no-berkeleydb $file`;
-  print "[STOP]  ./test $params --no-berkeleydb $file\n";
-  print FH "./test $params --no-berkeleydb $file\n";
+  print "[START] ./test $params --quiet --metrics=all $file\n";
+  my $output = `./test $params --quiet --metrics=all $file`;
+  print "[STOP]  ./test $params --quiet --metrics=all $file\n";
+  print FH "./test $params --quiet --metrics=all $file\n";
   print FH $output;
   print FH "\n";
   close(FH);
@@ -68,21 +53,21 @@ sub run {
   run_single_test($blbtest);
   run_single_test($duptest);
   run_single_test($deftest);
-  run_single_test($deftest, "--disable-mmap");
-  run_single_test($deftest, "--cacheunlimited");
-  run_single_test($duptest, "--duplicate");
+  run_single_test($deftest, "--no-mmap");
+  run_single_test($deftest, "--cache=unlimited");
+  run_single_test($duptest, "--duplicate=last");
   run_single_test($deftest, "--use-cursors");
   run_single_test($deftest, "--use-transactions=5");
   run_single_test($deftest, "--use-transactions=20");
   run_single_test($deftest, "--use-transactions=100");
-  run_single_test($deftest, "--writethrough --use-transactions=5");
+  run_single_test($deftest, "--use-fsync --use-transactions=5");
   run_single_test($deftest, "--use-recovery");
   run_single_test($deftest, "--inmemorydb");
-  run_single_test($duptest, "--use-cursors --duplicate");
-  run_single_test($duptest, "--use-cursors --duplicate --use-transactions=5");
+  run_single_test($duptest, "--use-cursors --duplicate=last");
+  run_single_test($duptest, "--use-cursors --duplicate=last --use-transactions=5");
   run_single_test($deftest, "--num-threads=5");
   run_single_test($deftest, "--num-threads=5 --use-transactions=5");
-  run_single_test($duptest, "--enable-remote --use-cursors --duplicate --use-transactions=5");
+  run_single_test($duptest, "--use-remote --use-cursors --duplicate=last --use-transactions=5");
   return '';
 }
 
@@ -96,19 +81,24 @@ sub read_data {
     my $test = $_;
 
     $_ = <FH>;
-    chomp;
-    die "expected '[OK]...'" unless /^\[OK\]/;
-
+    die "expected 'Configuration: ...'" unless /^Configuration/;
+    $_ = <FH>; # skip empty line
     $_ = <FH>;
-    chomp;
-    die "expected 'hamsterdb'" unless /^hamsterdb/;
+    die "expected '[OK]...'" unless /^\[OK\]/;
 
     my %t = ();
     while (<FH>) {
       chomp;
       last if ($_ eq '');
-      /^\s*(\S+)\s*(\S+)$/;
-      $t{$1} = $2;
+      if (/total elapsed time \(sec\)\s*(\S+)$/) {
+        $t{'total_elapsed_time'} = $1;
+      }
+      elsif (/latency \(min, avg, max\)/) {
+        # skip
+      }
+      elsif (/^\s+hamsterdb (\S+)\s*(\S+)$/) {
+        $t{$1} = $2;
+      }
     }
     $h{$test} = \%t;
   }

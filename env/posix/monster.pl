@@ -18,6 +18,8 @@ sub run_single_test {
   my $output;
   if ($valgrind) {
     $output = `valgrind --tool=memcheck --suppressions=valgrind.suppress ./test $params $file`;
+    $errors++ unless $output =~ /ERROR SUMMARY: 0 errors from 0 contexts/;
+    $errors++ unless $output =~ /in use at exit: 0 bytes in 0 blocks/;
   }
   else {
     $output = `./test $params --use-berkeleydb=true --reopen=true $file`;
