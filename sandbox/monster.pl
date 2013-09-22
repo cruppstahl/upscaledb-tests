@@ -45,13 +45,13 @@ sub run_directory {
     my @files = ('1/45.tst', '1/220.tst', '1/ext_020.tst', '2/ext_060.tst',
         '2/blb-001.tst');
     foreach my $file (@files) {
-      run_single_test($valgrind, "../../testfiles/$file", $options);
+      run_single_test($valgrind, "../testfiles/$file", $options);
       return if $dryrun;
     }
   }
   else {
     for (my $i = 1; $i <= $maxdir; $i++) {
-      my @files = <../../testfiles/$i/*.tst>;
+      my @files = <../testfiles/$i/*.tst>;
       foreach my $file (@files) {
         run_single_test($valgrind, $file, $options);
         return if $dryrun;

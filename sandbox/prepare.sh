@@ -3,11 +3,11 @@
 CUR=`pwd`
 
 # make the test
-cd ../../new/
+cd ../new/
 make -j 8
 cd $CUR
 
 # copy the test binary
-cp ../../new/.libs/lt-test test
+cp ../new/.libs/lt-test test
 
 # done!
