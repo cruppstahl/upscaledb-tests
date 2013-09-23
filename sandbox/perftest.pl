@@ -42,10 +42,10 @@ sub run_single_test {
 }
 
 sub run {
-  my $exttest="../../testfiles/2/ext_062.tst";
-  my $blbtest="../../testfiles/4/blb-003.tst";
-  my $duptest="../../testfiles/4/215.tst";
-  my $deftest="../../testfiles/4/301.tst";
+  my $exttest="../testfiles/2/ext_062.tst";
+  my $blbtest="../testfiles/4/blb-003.tst";
+  my $duptest="../testfiles/4/215.tst";
+  my $deftest="../testfiles/4/301.tst";
 
   unlink 'perftest.txt';
 

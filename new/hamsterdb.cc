@@ -81,7 +81,7 @@ HamsterDatabase::do_create_env()
     }
 
     ham_u32_t flags = 0;
-    flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
+    // flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
     st = ham_env_open(&m_env, "ham://localhost:10123/env1.db", flags, 0);
     if (st)
       ERROR(("ham_env_open failed with error %d (%s)\n", st, ham_strerror(st)));
@@ -137,7 +137,7 @@ HamsterDatabase::do_open_env()
     }
 
     ham_u32_t flags = 0;
-    flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
+    // flags |= m_config->duplicate ? HAM_ENABLE_DUPLICATES : 0;
     st = ham_env_open(&m_env, "ham://localhost:10123/env1.db", flags, 0);
     if (st)
       ERROR(("ham_env_open failed with error %d (%s)\n", st, ham_strerror(st)));
@@ -163,17 +163,23 @@ HamsterDatabase::do_close_env()
   if (--ms_refcount > 0)
     return (0);
 
+  if (m_env) {
+    ham_env_close(m_env, 0);
+    m_env = 0;
+  }
   if (ms_env) {
     ham_env_get_metrics(ms_env, &m_hamster_metrics);
     ham_env_close(ms_env, 0);
+    ms_env = 0;
   }
-  ms_env = 0;
-  if (ms_remote_env)
+  if (ms_remote_env) {
     ham_env_close(ms_remote_env, 0);
-  ms_remote_env = 0;
-  if (ms_srv)
+    ms_remote_env = 0;
+  }
+  if (ms_srv) {
     ham_srv_close(ms_srv);
-  ms_srv = 0;
+    ms_srv = 0;
+  }
   return (0);
 }
 

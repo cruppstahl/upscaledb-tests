@@ -756,10 +756,6 @@ static bool
 run_single_test(Configuration *conf)
 {
   Database *db = new DatabaseType(0, conf);
-  if (conf->open)
-    db->open_env();
-  else
-    db->create_env();
   GeneratorType generator(0, conf, db, true);
 
   // create additional hamsterdb threads
@@ -872,6 +868,8 @@ run_fullcheck(Configuration *conf, Generator *gen1, Generator *gen2)
     // iterate over both databases
     if (conf->fullcheck == Configuration::kFullcheckFind) {
       st1 = gen1->get_db()->cursor_get_next(c1, &key1, &rec1, false);
+      if (st1 == HAM_KEY_NOT_FOUND)
+        goto bail;
       st2 = gen2->get_db()->find(0, &key1, &rec2);
       key2 = key1; // make sure are_keys_equal() returns true
     }
@@ -937,6 +935,7 @@ run_fullcheck(Configuration *conf, Generator *gen1, Generator *gen2)
       return (false);
   } while (st1 == 0 && st2 == 0);
 
+bail:
   gen1->get_db()->cursor_close(c1);
   gen2->get_db()->cursor_close(c2);
 
@@ -956,14 +955,6 @@ run_both_tests(Configuration *conf)
   bool ok = true;
   Database *db1 = new HamsterDatabase(0, conf);
   Database *db2 = new BerkeleyDatabase(1, conf);
-  if (conf->open) {
-    db1->open_env();
-    db2->open_env();
-  }
-  else {
-    db1->create_env();
-    db2->create_env();
-  }
   GeneratorType generator1(0, conf, db1, true);
   GeneratorType generator2(0, conf, db2, false);
   uint64_t op = 0;

@@ -12,14 +12,20 @@ sub run_single_test {
   my $file = shift;
   my $params = shift;
 
-  open(FH, ">>monster.txt") or die "Cannot open monster.txt for writing";
+  if ($valgrind) {
+    open(FH, ">>valgrind.txt") or die "Cannot open valgrind.txt for writing";
+  }
+  else {
+    open(FH, ">>monster.txt") or die "Cannot open monster.txt for writing";
+  }
   print "[START] ./test $params $file\n";
 
+  my $fail = 0;
   my $output;
   if ($valgrind) {
-    $output = `valgrind --tool=memcheck --suppressions=valgrind.suppress ./test $params $file`;
-    $errors++ unless $output =~ /ERROR SUMMARY: 0 errors from 0 contexts/;
-    $errors++ unless $output =~ /in use at exit: 0 bytes in 0 blocks/;
+    $output = `valgrind --tool=memcheck --suppressions=valgrind.suppress ./test --quiet $params $file 2>&1`;
+    #$fail++ unless $output =~ /ERROR SUMMARY: 0 errors from 0 contexts/;
+    $fail++ unless $output =~ /in use at exit: 0 bytes in 0 blocks/;
   }
   else {
     $output = `./test $params --use-berkeleydb=true --reopen=true $file`;
@@ -28,8 +34,9 @@ sub run_single_test {
   print FH "./test $params $file\n";
   print FH $output;
   print FH "\n";
-  $errors++ if ($output =~ /FAIL/);
+  $fail++ if ($output =~ /FAIL/);
   $total++;
+  $errors++ if $fail;
   close(FH);
 }
 
