@@ -118,7 +118,7 @@ static option_t opts[] = {
     ARG_METRICS,
     0,
     "metrics",
-    "Prints metrics and statistics ('none', 'default', 'all)",
+    "Prints metrics and statistics ('none', 'default', 'png', 'all')",
     GETOPTS_NEED_ARGUMENT },
   {
     ARG_TEE,
@@ -499,6 +499,8 @@ parse_config(int argc, char **argv, Configuration *c)
         c->metrics = Configuration::kMetricsNone;
       else if (param && !strcmp(param, "all"))
         c->metrics = Configuration::kMetricsAll;
+      else if (param && !strcmp(param, "png"))
+        c->metrics = Configuration::kMetricsPng;
       else if (param && strcmp(param, "default")) {
         printf("[FAIL] invalid parameter for '--metrics'\n");
         exit(-1);

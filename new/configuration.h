@@ -55,6 +55,7 @@ struct Configuration
   enum {
     kMetricsNone,
     kMetricsDefault,
+    kMetricsPng,
     kMetricsAll
   };
 

@@ -255,6 +255,10 @@ RuntimeGenerator::insert()
     m_last_status = m_db->insert(m_txn, &key, &rec);
 
   double elapsed = t.seconds();
+
+  m_opspersec[kCommandInsert]++;
+  add_latency_graph(kCommandInsert, m_start.seconds(), elapsed);
+
   if (m_metrics.insert_latency_min > elapsed)
     m_metrics.insert_latency_min = elapsed;
   if (m_metrics.insert_latency_max < elapsed)
@@ -288,6 +292,10 @@ RuntimeGenerator::erase()
     m_last_status = m_db->erase(m_txn, &key);
 
   double elapsed = t.seconds();
+
+  m_opspersec[kCommandErase]++;
+  add_latency_graph(kCommandErase, m_start.seconds(), elapsed);
+
   if (m_metrics.erase_latency_min > elapsed)
     m_metrics.erase_latency_min = elapsed;
   if (m_metrics.erase_latency_max < elapsed)
@@ -317,6 +325,10 @@ RuntimeGenerator::find()
     m_last_status = m_db->find(m_txn, &key, &m_record);
 
   double elapsed = t.seconds();
+
+  m_opspersec[kCommandFind]++;
+  add_latency_graph(kCommandFind, m_start.seconds(), elapsed);
+
   if (m_metrics.find_latency_min > elapsed)
     m_metrics.find_latency_min = elapsed;
   if (m_metrics.find_latency_max < elapsed)
@@ -386,6 +398,10 @@ RuntimeGenerator::txn_commit()
   m_txn = 0;
 
   double elapsed = t.seconds();
+
+  m_opspersec[kCommandCommitTransaction]++;
+  add_latency_graph(kCommandCommitTransaction, m_start.seconds(), elapsed);
+
   if (m_metrics.txn_commit_latency_min > elapsed)
     m_metrics.txn_commit_latency_min = elapsed;
   if (m_metrics.txn_commit_latency_max < elapsed)
@@ -486,6 +502,8 @@ RuntimeGenerator::limit_reached()
     if (m_progress && new_elapsed - m_elapsed_seconds >= 1.) {
       (*m_progress) += (unsigned)(new_elapsed - m_elapsed_seconds);
       m_elapsed_seconds = new_elapsed;
+      add_opspersec_graph(m_elapsed_seconds);
+      memset(&m_opspersec, 0, sizeof(m_opspersec));
     }
     if (new_elapsed > m_config->limit_seconds) {
       m_elapsed_seconds = new_elapsed;
