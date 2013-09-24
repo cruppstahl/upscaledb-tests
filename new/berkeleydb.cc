@@ -76,7 +76,7 @@ compare_db64(DB *db, const DBT *dbt1, const DBT *dbt2, size_t *)
 }
 
 void
-BerkeleyDatabase::get_metrics(Metrics *metrics)
+BerkeleyDatabase::get_metrics(Metrics *metrics, bool live)
 {
 }
 

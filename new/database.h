@@ -89,7 +89,7 @@ class Database
     ham_status_t cursor_close(Cursor *cursor);
 
     // Fills |metrics| with additional metrics
-    virtual void get_metrics(Metrics *metrics) = 0;
+    virtual void get_metrics(Metrics *metrics, bool live = false) = 0;
 
   protected:
     // the actual implementation(s)

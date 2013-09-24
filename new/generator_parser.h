@@ -19,6 +19,7 @@
 #include <boost/progress.hpp>
 
 #include "timer.h"
+#include "metrics.h"
 #include "generator.h"
 #include "database.h"
 

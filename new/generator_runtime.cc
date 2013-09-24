@@ -147,6 +147,11 @@ RuntimeGenerator::execute()
   if (m_state == kStateStopped)
     return (false);
 
+  double insert_latency = 0.0;
+  double erase_latency = 0.0;
+  double find_latency = 0.0;
+  double commit_latency = 0.0;
+
   int cmd = get_next_command();
   switch (cmd) {
     case Generator::kCommandCreate:
@@ -159,13 +164,13 @@ RuntimeGenerator::execute()
       close();
       break;
     case Generator::kCommandInsert:
-      insert();
+      insert_latency = insert();
       break;
     case Generator::kCommandErase:
-      erase();
+      erase_latency = erase();
       break;
     case Generator::kCommandFind:
-      find();
+      find_latency = find();
       break;
     case Generator::kCommandBeginTransaction:
       txn_begin();
@@ -174,7 +179,7 @@ RuntimeGenerator::execute()
       txn_abort();
       break;
     case Generator::kCommandCommitTransaction:
-      txn_commit();
+      commit_latency = txn_commit();
       break;
     default:
       assert(!"shouldn't be here");
@@ -184,6 +189,35 @@ RuntimeGenerator::execute()
 
   if (m_progress && m_config->limit_ops)
     (*m_progress) += 1;
+
+  // write page fetch/flush graphs?
+  if (m_graph) {
+    Metrics m;
+    m_db->get_metrics(&m);
+
+    double elapsed = m_start.seconds();
+
+    uint32_t flushes = 0;
+    uint32_t fetches = 0;
+    if (m.hamster_metrics.page_count_flushed
+            > m_metrics.hamster_metrics.page_count_flushed) {
+      flushes = m.hamster_metrics.page_count_flushed
+              - m_metrics.hamster_metrics.page_count_flushed;
+      m_metrics.hamster_metrics.page_count_flushed
+              = m.hamster_metrics.page_count_flushed;
+    }
+    if (m.hamster_metrics.page_count_fetched
+            > m_metrics.hamster_metrics.page_count_fetched) {
+      fetches = m.hamster_metrics.page_count_fetched
+              - m_metrics.hamster_metrics.page_count_fetched;
+      m_metrics.hamster_metrics.page_count_fetched
+              = m.hamster_metrics.page_count_fetched;
+    }
+
+    m_graph->add_latency_metrics(elapsed, insert_latency, find_latency,
+                erase_latency, commit_latency, fetches, flushes);
+  }
+
 
   return (true);
 }
@@ -239,7 +273,7 @@ RuntimeGenerator::close()
   m_metrics.elapsed_wallclock_seconds = m_start.seconds();
 }
 
-void
+double
 RuntimeGenerator::insert()
 {
   ham_key_t key = generate_key();
@@ -257,7 +291,6 @@ RuntimeGenerator::insert()
   double elapsed = t.seconds();
 
   m_opspersec[kCommandInsert]++;
-  add_latency_graph(kCommandInsert, m_start.seconds(), elapsed);
 
   if (m_metrics.insert_latency_min > elapsed)
     m_metrics.insert_latency_min = elapsed;
@@ -275,9 +308,11 @@ RuntimeGenerator::insert()
   }
 
   m_metrics.insert_ops++;
+
+  return (elapsed);
 }
 
-void
+double
 RuntimeGenerator::erase()
 {
   ham_key_t key = generate_key();
@@ -294,7 +329,6 @@ RuntimeGenerator::erase()
   double elapsed = t.seconds();
 
   m_opspersec[kCommandErase]++;
-  add_latency_graph(kCommandErase, m_start.seconds(), elapsed);
 
   if (m_metrics.erase_latency_min > elapsed)
     m_metrics.erase_latency_min = elapsed;
@@ -306,9 +340,11 @@ RuntimeGenerator::erase()
     m_success = false;
 
   m_metrics.erase_ops++;
+
+  return (elapsed);
 }
 
-void
+double
 RuntimeGenerator::find()
 {
   ham_key_t key = generate_key();
@@ -327,7 +363,6 @@ RuntimeGenerator::find()
   double elapsed = t.seconds();
 
   m_opspersec[kCommandFind]++;
-  add_latency_graph(kCommandFind, m_start.seconds(), elapsed);
 
   if (m_metrics.find_latency_min > elapsed)
     m_metrics.find_latency_min = elapsed;
@@ -340,6 +375,8 @@ RuntimeGenerator::find()
 
   m_metrics.find_bytes += m_record.size;
   m_metrics.find_ops++;
+
+  return (elapsed);
 }
 
 void
@@ -381,7 +418,7 @@ RuntimeGenerator::txn_abort()
   m_metrics.other_ops++;
 }
 
-void
+double
 RuntimeGenerator::txn_commit()
 {
   tee("TXN_COMMIT");
@@ -400,7 +437,6 @@ RuntimeGenerator::txn_commit()
   double elapsed = t.seconds();
 
   m_opspersec[kCommandCommitTransaction]++;
-  add_latency_graph(kCommandCommitTransaction, m_start.seconds(), elapsed);
 
   if (m_metrics.txn_commit_latency_min > elapsed)
     m_metrics.txn_commit_latency_min = elapsed;
@@ -412,6 +448,7 @@ RuntimeGenerator::txn_commit()
     m_success = false;
 
   m_metrics.txn_commit_ops++;
+  return (elapsed);
 }
 
 ham_key_t
@@ -496,15 +533,16 @@ RuntimeGenerator::limit_reached()
       return (true);
   }
 
-  // reached time limit?
-  if (m_config->limit_seconds
-      || m_config->metrics >= Configuration::kMetricsPng) {
+  // reached time limit and/or update latency graphs?
+  if (m_config->limit_seconds || m_graph) {
     double new_elapsed = m_start.seconds();
     if (new_elapsed - m_elapsed_seconds >= 1.) {
       if (m_progress)
         (*m_progress) += (unsigned)(new_elapsed - m_elapsed_seconds);
       m_elapsed_seconds = new_elapsed;
-      add_opspersec_graph(m_elapsed_seconds);
+      if (m_graph)
+        m_graph->add_opspersec_graph(m_elapsed_seconds, m_opspersec[0],
+                        m_opspersec[1], m_opspersec[2], m_opspersec[3]);
       memset(&m_opspersec, 0, sizeof(m_opspersec));
     }
     if (m_config->limit_seconds && new_elapsed > m_config->limit_seconds) {

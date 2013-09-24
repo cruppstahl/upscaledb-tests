@@ -35,7 +35,9 @@ class HamsterDatabase : public Database
     }
 
     // Fills |metrics| with additional metrics
-    virtual void get_metrics(Metrics *metrics) {
+    virtual void get_metrics(Metrics *metrics, bool live = false) {
+      if (live)
+        ham_env_get_metrics(ms_env, &metrics->hamster_metrics);
       metrics->hamster_metrics = m_hamster_metrics;
     }
 

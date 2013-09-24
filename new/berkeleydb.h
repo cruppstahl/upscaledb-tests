@@ -41,7 +41,7 @@ class BerkeleyDatabase : public Database
     }
 
     // Fills |metrics| with additional metrics
-    virtual void get_metrics(Metrics *metrics);
+    virtual void get_metrics(Metrics *metrics, bool live = false);
 
   protected:
     // the actual implementation(s)

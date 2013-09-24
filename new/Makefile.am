@@ -20,6 +20,7 @@ test_SOURCES    = berkeleydb.h \
 				  generator_runtime.cc \
 				  getopts.h \
 				  getopts.c \
+				  graph.h \
 				  hamsterdb.h \
 				  hamsterdb.cc \
 				  main.cc

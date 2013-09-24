@@ -18,6 +18,7 @@
 #include <boost/random/uniform_01.hpp>
 #include <boost/progress.hpp>
 
+#include "metrics.h"
 #include "timer.h"
 #include "generator.h"
 #include "datasource.h"
@@ -73,19 +74,19 @@ class RuntimeGenerator : public Generator
     void create();
 
     // inserts a key/value pair
-    void insert();
+    double insert();
 
     // erases a key/value pair
-    void erase();
+    double erase();
 
     // lookup of a key/value pair
-    void find();
+    double find();
 
     // begins a new transaction
     void txn_begin();
 
     // commits a transaction
-    void txn_commit();
+    double txn_commit();
 
     // aborts a transaction
     void txn_abort();
