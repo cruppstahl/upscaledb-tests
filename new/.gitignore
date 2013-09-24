@@ -5,3 +5,5 @@ test.exe
 *.db
 *.db.*
 .libs
+*.dat
+*.png

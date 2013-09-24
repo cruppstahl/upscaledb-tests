@@ -497,15 +497,17 @@ RuntimeGenerator::limit_reached()
   }
 
   // reached time limit?
-  if (m_config->limit_seconds) {
+  if (m_config->limit_seconds
+      || m_config->metrics >= Configuration::kMetricsPng) {
     double new_elapsed = m_start.seconds();
-    if (m_progress && new_elapsed - m_elapsed_seconds >= 1.) {
-      (*m_progress) += (unsigned)(new_elapsed - m_elapsed_seconds);
+    if (new_elapsed - m_elapsed_seconds >= 1.) {
+      if (m_progress)
+        (*m_progress) += (unsigned)(new_elapsed - m_elapsed_seconds);
       m_elapsed_seconds = new_elapsed;
       add_opspersec_graph(m_elapsed_seconds);
       memset(&m_opspersec, 0, sizeof(m_opspersec));
     }
-    if (new_elapsed > m_config->limit_seconds) {
+    if (m_config->limit_seconds && new_elapsed > m_config->limit_seconds) {
       m_elapsed_seconds = new_elapsed;
       return (true);
     }

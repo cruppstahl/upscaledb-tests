@@ -1,0 +1,9 @@
+reset
+set terminal png
+set xlabel "time"
+set ylabel "latency (thread #1)"
+set style data linespoint
+plot "hamsterdb-lat0.dat" using 1:2 title "insert", \
+"hamsterdb-lat1.dat" using 1:2 title "erase", \
+"hamsterdb-lat2.dat" using 1:2 title "find", \
+"hamsterdb-lat3.dat" using 1:2 title "txn-commit"

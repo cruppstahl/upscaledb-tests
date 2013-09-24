@@ -9,5 +9,6 @@ cd $CUR
 
 # copy the test binary
 cp ../new/.libs/lt-test test
+cp ../new/gnuplot* .
 
 # done!

@@ -1118,5 +1118,11 @@ main(int argc, char **argv)
 #endif
   }
 
+  // try to generate the graphs
+  if (ok && c.metrics >= Configuration::kMetricsPng) {
+    system("gnuplot gnuplot-ops > graph-ops.png");
+    system("gnuplot gnuplot-lat > graph-lat.png");
+  }
+
   return (ok ? 0 : 1);
 }

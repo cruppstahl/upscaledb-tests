@@ -1,0 +1,9 @@
+reset
+set terminal png
+set xlabel "time"
+set ylabel "operations (all threads)"
+set style data linespoint
+plot "hamsterdb-ops.dat" using 1:2 title "insert", \
+"" using 1:3 title "erase", \
+"" using 1:4 title "find", \
+"" using 1:5 title "txn-commit"
