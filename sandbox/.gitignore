@@ -3,3 +3,5 @@
 *.db*
 test
 test.exe
+gnuplot*
+*.png

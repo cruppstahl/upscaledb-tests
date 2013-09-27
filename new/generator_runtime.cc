@@ -116,6 +116,7 @@ RuntimeGenerator::RuntimeGenerator(int id, Configuration *conf, Database *db,
           break;
       }
       break;
+    case Configuration::kKeyCustom:
     case Configuration::kKeyBinary:
       switch (conf->distribution) {
         case Configuration::kDistributionRandom:
@@ -529,7 +530,7 @@ RuntimeGenerator::limit_reached()
 {
   // reached IOPS limit?
   if (m_config->limit_ops) {
-    if (m_opcount == m_config->limit_ops)
+    if (m_opcount >= m_config->limit_ops)
       return (true);
   }
 

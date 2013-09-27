@@ -10,6 +10,12 @@
 3, "--use-cursors --overwrite --inmemorydb"
 3, "--use-cursors --duplicate=first"
 
+3, "--key=custom"
+3, "--key=custom --fullcheck=find"
+3, "--key=custom --overwrite"
+3, "--key=custom --use-cursors"
+3, "--key=custom --use-cursors --duplicate=first"
+
 # AES encryption
 3, "--use-encryption"
 3, "--use-encryption --use-transactions=10"

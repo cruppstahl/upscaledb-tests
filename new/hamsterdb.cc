@@ -25,6 +25,39 @@ ham_srv_t *HamsterDatabase::ms_srv = 0;
 Mutex      HamsterDatabase::ms_mutex;
 int        HamsterDatabase::ms_refcount;
 
+static int 
+compare_keys(ham_db_t *db,
+      const ham_u8_t *lhs_data, ham_size_t lhs_size, 
+      const ham_u8_t *rhs_data, ham_size_t rhs_size)
+{
+  (void)db;
+
+  if (lhs_size < rhs_size) {
+    int m = ::memcmp(lhs_data, rhs_data, lhs_size);
+    if (m < 0)
+      return (-1);
+    if (m > 0)
+      return (+1);
+    return (-1);
+  }
+  else if (rhs_size < lhs_size) {
+    int m = ::memcmp(lhs_data, rhs_data, rhs_size);
+    if (m < 0)
+      return (-1);
+    if (m > 0)
+      return (+1);
+    return (+1);
+  }
+  else {
+    int m = memcmp(lhs_data, rhs_data, lhs_size);
+    if (m < 0)
+      return (-1);
+    if (m > 0)
+      return (+1);
+    return (0);
+  }
+}
+
 ham_status_t
 HamsterDatabase::do_create_env()
 {
@@ -189,8 +222,12 @@ HamsterDatabase::do_create_db(int id)
   ham_status_t st;
   ham_parameter_t params[6] = {{0, 0}};
 
-  params[0].name = HAM_PARAM_KEYSIZE;
+  params[0].name = HAM_PARAM_KEY_SIZE;
   params[0].value = m_config->btree_key_size;
+  if (m_config->key_type == Configuration::kKeyCustom) {
+    params[1].name = HAM_PARAM_KEY_TYPE;
+    params[1].value = HAM_TYPE_CUSTOM;
+  }
 
   ham_u32_t flags = 0;
 
@@ -206,6 +243,15 @@ HamsterDatabase::do_create_db(int id)
     exit(-1);
   }
 
+  if (m_config->key_type == Configuration::kKeyCustom) {
+    st = ham_db_set_compare_func(m_db, compare_keys);
+    if (st) {
+      ERROR(("ham_db_set_compare_func failed with error %d (%s)\n", st,
+                              ham_strerror(st)));
+      exit(-1);
+    }
+  }
+
   return (0);
 }
 
@@ -214,10 +260,28 @@ HamsterDatabase::do_open_db(int id)
 {
   ham_status_t st;
 
-  st = ham_env_open_db(m_env ? m_env : ms_env, &m_db, 1 + id, 0, 0);
-  if (st)
+  ham_parameter_t params[6] = {{0, 0}};
+
+  if (m_config->key_type == Configuration::kKeyCustom) {
+    params[0].name = HAM_PARAM_KEY_TYPE;
+    params[0].value = HAM_TYPE_CUSTOM;
+  }
+
+  st = ham_env_open_db(m_env ? m_env : ms_env, &m_db, 1 + id, 0, &params[0]);
+  if (st) {
     ERROR(("ham_env_open_db failed with error %d (%s)\n", st,
                             ham_strerror(st)));
+    exit(-1);
+  }
+
+  if (m_config->key_type == Configuration::kKeyCustom) {
+    st = ham_db_set_compare_func(m_db, compare_keys);
+    if (st) {
+      ERROR(("ham_db_set_compare_func failed with error %d (%s)\n", st,
+                              ham_strerror(st)));
+      exit(-1);
+    }
+  }
  
   return (st);
 }

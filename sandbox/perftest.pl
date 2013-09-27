@@ -28,46 +28,83 @@ sub lower_is_better
 }
 
 sub run_single_test {
-  my $file = shift;
   my $params = shift;
 
   open(FH, ">>perftest.txt") or die "Cannot open perftest.txt for writing";
-  print "[START] ./test $params --quiet --metrics=all $file\n";
-  my $output = `./test $params --quiet --metrics=all $file`;
-  print "[STOP]  ./test $params --quiet --metrics=all $file\n";
-  print FH "./test $params --quiet --metrics=all $file\n";
+  print "[START] ./test $params --quiet --metrics=all\n";
+  my $output = `./test $params --quiet --metrics=all`;
+  print "[STOP]  ./test $params --quiet --metrics=all\n";
+  print FH "./test $params --quiet --metrics=all\n";
   print FH $output;
   print FH "\n";
   close(FH);
 }
 
 sub run {
-  my $exttest="../testfiles/2/ext_062.tst";
-  my $blbtest="../testfiles/4/blb-003.tst";
-  my $duptest="../testfiles/4/215.tst";
-  my $deftest="../testfiles/4/301.tst";
-
   unlink 'perftest.txt';
 
-  run_single_test($exttest);
-  run_single_test($blbtest);
-  run_single_test($duptest);
-  run_single_test($deftest);
-  run_single_test($deftest, "--no-mmap");
-  run_single_test($deftest, "--cache=unlimited");
-  run_single_test($duptest, "--duplicate=last");
-  run_single_test($deftest, "--use-cursors");
-  run_single_test($deftest, "--use-transactions=5");
-  run_single_test($deftest, "--use-transactions=20");
-  run_single_test($deftest, "--use-transactions=100");
-  run_single_test($deftest, "--use-fsync --use-transactions=5");
-  run_single_test($deftest, "--use-recovery");
-  run_single_test($deftest, "--inmemorydb");
-  run_single_test($duptest, "--use-cursors --duplicate=last");
-  run_single_test($duptest, "--use-cursors --duplicate=last --use-transactions=5");
-  run_single_test($deftest, "--num-threads=5");
-  run_single_test($deftest, "--num-threads=5 --use-transactions=5");
-  run_single_test($duptest, "--use-remote --use-cursors --duplicate=last --use-transactions=5");
+  my $opt = "--seed=1380279291 --stop-ops=5000000";
+
+  # a quickie
+  run_single_test("--seed=12345 --stop-ops=50000");
+
+  # mixed work load (random distribution)
+  run_single_test("$opt --erase-pct=25 --find-pct=40");
+  # write work load (random distribution)
+  run_single_test("$opt");
+  # read work load (random distribution)
+  run_single_test("$opt --open --find-pct=100");
+  # mixed work load (ascending distribution)
+  run_single_test("$opt --distribution=ascending --erase-pct=25 --find-pct=40");
+  # write work load (ascending distribution)
+  run_single_test("$opt --distribution=ascending");
+  # read work load (ascending distribution)
+  run_single_test("$opt --distribution=ascending --open --find-pct=100");
+  # extended keys
+  run_single_test("$opt --btree-keysize=20 --keysize=1024");
+  # record size 8
+  run_single_test("$opt --recsize=8");
+  # record size 256
+  run_single_test("$opt --recsize=256");
+  # disabled mmap
+  run_single_test("$opt --no-mmap");
+  # small cache
+  run_single_test("$opt --cache=10");
+  # unlimited cache
+  run_single_test("$opt --cache=unlimited");
+  # inmemory
+  run_single_test("$opt --inmemorydb");
+  # duplicates
+  run_single_test("$opt --duplicate=last");
+  # overwrites
+  run_single_test("$opt --overwrite");
+  # cursors
+  run_single_test("$opt --use-cursors");
+  # cursors w/ duplicate=first
+  run_single_test("$opt --use-cursors --duplicate=first");
+  # cursors w/ duplicate=last
+  run_single_test("$opt --use-cursors --duplicate=last");
+  # cursors w/ overwrites
+  run_single_test("$opt --use-cursors --overwrite");
+  # recovery
+  run_single_test("$opt --use-recovery");
+  # txn temp
+  run_single_test("$opt --use-transactions=tmp");
+  # txn 5
+  run_single_test("$opt --use-transactions=5");
+  # txn 20
+  run_single_test("$opt --use-transactions=20");
+  # txn 100
+  run_single_test("$opt --use-transactions=100");
+  # txn 5 w/ fsync
+  run_single_test("$opt --use-transactions=5 --use-fsync");
+  # threads 5
+  run_single_test("$opt --use-threads=5");
+  # encryption
+  run_single_test("$opt --use-encryption");
+  # remote
+  run_single_test("$opt --use-remote");
+
   return '';
 }
 

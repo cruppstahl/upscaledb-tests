@@ -15,6 +15,7 @@
 1, "--fullcheck=reverse"
 1, "--fullcheck=reverse --duplicate=last"
 1, "--no-mmap --overwrite --reopen"
+1, "--key=custom"
 1, "--keysize=8 --overwrite --reopen"
 1, "--keysize=12 --overwrite --reopen"
 1, "--keysize=33 --overwrite --reopen"

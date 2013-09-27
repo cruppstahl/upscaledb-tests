@@ -174,7 +174,7 @@ static option_t opts[] = {
     ARG_KEY,
     0,
     "key",
-    "Describes the key type ('uint16', 'uint32', 'uint64', 'binary' (default))",
+    "Describes the key type ('uint16', 'uint32', 'uint64', 'custom', 'binary' (default))",
     GETOPTS_NEED_ARGUMENT },
   {
     ARG_REC,
@@ -397,7 +397,9 @@ parse_config(int argc, char **argv, Configuration *c)
       c->use_recovery = true;
     }
     else if (opt == ARG_KEY) {
-      if (param && !strcmp(param, "uint8"))
+      if (param && !strcmp(param, "custom"))
+        c->key_type = Configuration::kKeyCustom;
+      else if (param && !strcmp(param, "uint8"))
         c->key_type = Configuration::kKeyUint8;
       else if (param && !strcmp(param, "uint16"))
         c->key_type = Configuration::kKeyUint16;
@@ -690,14 +692,12 @@ print_metrics(Metrics *metrics, Configuration *conf)
           metrics->hamster_metrics.extkey_cache_hits);
   printf("\thamsterdb extkey_cache_misses         %lu\n",
           metrics->hamster_metrics.extkey_cache_misses);
-#if 0
   printf("\thamsterdb btree_smo_split             %lu\n",
           metrics->hamster_metrics.btree_smo_split);
   printf("\thamsterdb btree_smo_merge             %lu\n",
           metrics->hamster_metrics.btree_smo_merge);
   printf("\thamsterdb btree_smo_shift             %lu\n",
           metrics->hamster_metrics.btree_smo_shift);
-#endif
 }
 
 struct Callable
@@ -1070,6 +1070,13 @@ main(int argc, char **argv)
     else
       printf("Commercial version; licensed for %s (%s)\n\n",
           licensee, product);
+  }
+
+  if (ham_is_debug_build()) {
+      printf("\t!!!!!!!! DEBUG BUILD\n");
+      printf("\tDebug builds contain many integrity checks and are "
+             "extremely\n\tslow. Please do not use for "
+             "benchmarking!\n\n");
   }
 
   // ALWAYS dump the configuration

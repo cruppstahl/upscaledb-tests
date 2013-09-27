@@ -21,6 +21,7 @@ struct Configuration
 {
   enum {
     kKeyBinary = 0,
+    kKeyCustom,
     kKeyUint8,
     kKeyUint16,
     kKeyUint32,
@@ -133,7 +134,9 @@ struct Configuration
       printf("%s\n", filename.c_str());
     }
     else {
-      if (key_type == kKeyUint8)
+      if (key_type == kKeyCustom)
+        printf("--key=custom ");
+      else if (key_type == kKeyUint8)
         printf("--key=uint8 ");
       else if (key_type == kKeyUint16)
         printf("--key=uint16 ");
