@@ -3,5 +3,7 @@
 *.db*
 test
 test.exe
+ham_bench
+ham_bench.exe
 gnuplot*
 *.png

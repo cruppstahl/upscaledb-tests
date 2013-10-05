@@ -31,10 +31,10 @@ sub run_single_test {
   my $params = shift;
 
   open(FH, ">>perftest.txt") or die "Cannot open perftest.txt for writing";
-  print "[START] ./test $params --quiet --metrics=all\n";
-  my $output = `./test $params --quiet --metrics=all`;
-  print "[STOP]  ./test $params --quiet --metrics=all\n";
-  print FH "./test $params --quiet --metrics=all\n";
+  print "[START] ./ham_bench $params --quiet --metrics=all\n";
+  my $output = `./ham_bench $params --quiet --metrics=all`;
+  print "[STOP]  ./ham_bench $params --quiet --metrics=all\n";
+  print FH "./ham_bench $params --quiet --metrics=all\n";
   print FH $output;
   print FH "\n";
   close(FH);

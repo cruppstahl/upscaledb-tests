@@ -1,7 +1,0 @@
-*.o
-*.db
-*.exe
-test
-gmon.out
-*.jrn*
-*.log*

@@ -1,6 +1,0 @@
-reset
-set terminal png
-set xlabel "time"
-set ylabel "operations (all threads)"
-set style data linespoint
-plot "hamsterdb-ops.dat" using 1:2 title "insert"

@@ -18,20 +18,20 @@ sub run_single_test {
   else {
     open(FH, ">>monster.txt") or die "Cannot open monster.txt for writing";
   }
-  print "[START] ./test $params $file\n";
+  print "[START] ./ham_bench --quiet $params $file\n";
 
   my $fail = 0;
   my $output;
   if ($valgrind) {
-    $output = `valgrind --tool=memcheck --suppressions=valgrind.suppress ./test --quiet $params $file 2>&1`;
+    $output = `valgrind --tool=memcheck --suppressions=valgrind.suppress ./ham_bench --quiet $params $file 2>&1`;
     #$fail++ unless $output =~ /ERROR SUMMARY: 0 errors from 0 contexts/;
     $fail++ unless $output =~ /in use at exit: 0 bytes in 0 blocks/;
   }
   else {
-    $output = `./test $params --use-berkeleydb=true --reopen=true $file`;
+    $output = `./ham_bench --quiet $params --use-berkeleydb=true --reopen=true $file`;
   }
-  print "[STOP]  ./test $params $file\n";
-  print FH "./test $params $file\n";
+  print "[STOP]  ./ham_bench --quiet $params $file\n";
+  print FH "./ham_bench --quiet $params $file\n";
   print FH $output;
   print FH "\n";
   $fail++ if ($output =~ /FAIL/);
