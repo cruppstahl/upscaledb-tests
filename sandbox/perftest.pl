@@ -96,6 +96,14 @@ sub run {
   run_single_test("$opt --use-transactions=20");
   # txn 100
   run_single_test("$opt --use-transactions=100");
+  # txn temp (inmemory)
+  run_single_test("$opt --use-transactions=tmp --inmemorydb");
+  # txn 5 (inmemory)
+  run_single_test("$opt --use-transactions=5 --inmemorydb");
+  # txn 20 (inmemory)
+  run_single_test("$opt --use-transactions=20 --inmemorydb");
+  # txn 100 (inmemory)
+  run_single_test("$opt --use-transactions=100 --inmemorydb");
   # txn 5 w/ fsync
   run_single_test("$opt --use-transactions=5 --use-fsync");
   # threads 5
