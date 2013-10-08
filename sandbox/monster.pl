@@ -28,7 +28,13 @@ sub run_single_test {
     $fail++ unless $output =~ /in use at exit: 0 bytes in 0 blocks/;
   }
   else {
-    $output = `./ham_bench --quiet $params --use-berkeleydb=true --reopen=true $file`;
+    # do not reopen file if 'inmemorydb' is set
+    if ($params =~ /inmemorydb/) {
+      $output = `./ham_bench --quiet $params --use-berkeleydb=true $file`;
+    }
+    else {
+      $output = `./ham_bench --quiet $params --use-berkeleydb=true --reopen=true $file`;
+    }
   }
   print "[STOP]  ./ham_bench --quiet $params $file\n";
   print FH "./ham_bench --quiet $params $file\n";
@@ -49,11 +55,18 @@ sub run_directory {
   print "[CONFIGURATION] $options\n";
 
   if ($valgrind) {
-    my @files = ('1/45.tst', '1/220.tst', '1/ext_020.tst', '2/ext_060.tst',
+    if ($maxdir == 1) {
+      # run tests with scripts
+      my @files = ('1/45.tst', '1/220.tst', '1/ext_020.tst', '2/ext_060.tst',
         '2/blb-001.tst');
-    foreach my $file (@files) {
-      run_single_test($valgrind, "../testfiles/$file", $options);
-      return if $dryrun;
+      foreach my $file (@files) {
+        run_single_test($valgrind, "../testfiles/$file", $options);
+        return if $dryrun;
+      }
+    }
+    else {
+      # or with generated data
+      run_single_test($valgrind, "--stop-ops=500000", $options);
     }
   }
   else {

@@ -45,21 +45,37 @@ sub run {
 
   my $opt = "--seed=1380279291 --stop-ops=5000000";
 
-  # a quickie
+  # a few quickies
   run_single_test("--seed=12345 --stop-ops=50000");
+  run_single_test("--seed=12345 --stop-ops=50000 --key=uint16");
+  run_single_test("--seed=12345 --stop-ops=50000 --key=uint32");
+  run_single_test("--seed=12345 --stop-ops=50000 --key=uint64");
 
-  # mixed work load (random distribution)
+  # various work loads (uint16)
+  run_single_test("$opt --key=uint16 --erase-pct=25 --find-pct=40");
+  run_single_test("$opt --key=uint16");
+  run_single_test("$opt --key=uint16 --open --find-pct=100");
+
+  # various work loads (uint32)
+  run_single_test("$opt --key=uint32 --erase-pct=25 --find-pct=40");
+  run_single_test("$opt --key=uint32");
+  run_single_test("$opt --key=uint32 --open --find-pct=100");
+
+  # various work loads (uint64)
+  run_single_test("$opt --key=uint64 --erase-pct=25 --find-pct=40");
+  run_single_test("$opt --key=uint64");
+  run_single_test("$opt --key=uint64 --open --find-pct=100");
+
+  # various work loads (random distribution)
   run_single_test("$opt --erase-pct=25 --find-pct=40");
-  # write work load (random distribution)
   run_single_test("$opt");
-  # read work load (random distribution)
   run_single_test("$opt --open --find-pct=100");
-  # mixed work load (ascending distribution)
+
+  # various work loads (ascending distribution)
   run_single_test("$opt --distribution=ascending --erase-pct=25 --find-pct=40");
-  # write work load (ascending distribution)
   run_single_test("$opt --distribution=ascending");
-  # read work load (ascending distribution)
   run_single_test("$opt --distribution=ascending --open --find-pct=100");
+
   # extended keys
   run_single_test("$opt --btree-keysize=20 --keysize=1024");
   # record size 8

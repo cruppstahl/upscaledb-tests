@@ -31,3 +31,14 @@
 1, "--use-transactions=10"
 1, "--use-transactions=10000"
 1, "--use-transactions=all"
+
+2, "--key=uint16 --erase-pct=30 --find-pct=30"
+2, "--key=uint16"
+2, "--key=uint16 --reopen --find-pct=100"
+2, "--key=uint32 --erase-pct=30 --find-pct=30"
+2, "--key=uint32"
+2, "--key=uint32 --reopen --find-pct=100"
+2, "--key=uint64 --erase-pct=30 --find-pct=30"
+2, "--key=uint64"
+2, "--key=uint64 --reopen --find-pct=100"
+

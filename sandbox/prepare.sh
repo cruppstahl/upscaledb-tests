@@ -1,7 +1,7 @@
 
 
 CUR=`pwd`
-DIR=$HOME/prj/hamsterdb
+DIR=$HOME/Downloads/hamsterdb
 
 # make the test
 #cd $DIR
@@ -12,3 +12,4 @@ DIR=$HOME/prj/hamsterdb
 cp $DIR/tools/ham_bench/ham_bench ham_bench
 
 # done!
+echo "ok"
