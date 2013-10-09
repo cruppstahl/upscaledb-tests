@@ -12,37 +12,59 @@ sub run_single_test {
   my $file = shift;
   my $params = shift;
 
+  # if filename starts with "ext_": enable extended keys
+  $params = "--use-extended $params" if ($file =~ /ext_/);
+
   if ($valgrind) {
     open(FH, ">>valgrind.txt") or die "Cannot open valgrind.txt for writing";
   }
   else {
     open(FH, ">>monster.txt") or die "Cannot open monster.txt for writing";
   }
-  print "[START] ./ham_bench --quiet $params $file\n";
 
-  my $fail = 0;
   my $output;
+  my $fail = 0;
+  my $real_params;
+
   if ($valgrind) {
-    $output = `valgrind --tool=memcheck --suppressions=valgrind.suppress ./ham_bench --quiet $params $file 2>&1`;
-    #$fail++ unless $output =~ /ERROR SUMMARY: 0 errors from 0 contexts/;
-    $fail++ unless $output =~ /in use at exit: 0 bytes in 0 blocks/;
+    $real_params = "--quiet $params $file";
+    print "[START] ./ham_bench $real_params $file\n";
+    $output = `valgrind --tool=memcheck --suppressions=valgrind.suppress ./ham_bench $real_params 2>&1`;
   }
   else {
     # do not reopen file if 'inmemorydb' is set
     if ($params =~ /inmemorydb/) {
-      $output = `./ham_bench --quiet $params --use-berkeleydb=true $file`;
+      $real_params = "--quiet --use-berkeleydb=true $params";
     }
     else {
-      $output = `./ham_bench --quiet $params --use-berkeleydb=true --reopen=true $file`;
+      $real_params = "--quiet --use-berkeleydb=true --reopen=true $params";
     }
+    print "[START] ./ham_bench $real_params $file\n";
+    $output = `./ham_bench $real_params $file`;
   }
-  print "[STOP]  ./ham_bench --quiet $params $file\n";
-  print FH "./ham_bench --quiet $params $file\n";
-  print FH $output;
-  print FH "\n";
+
+
+  if ($valgrind) {
+    $fail++ unless $output =~ /ERROR SUMMARY: 0 errors from 0 contexts/;
+    $fail++ unless $output =~ /in use at exit: 0 bytes in 0 blocks/;
+  }
+
+  $fail++ if $?;
   $fail++ if ($output =~ /FAIL/);
   $total++;
   $errors++ if $fail;
+
+  print FH "./ham_bench $real_params $file\n";
+  print FH $output;
+  if ($fail) {
+    print FH "[FAIL]\n";
+    print "[FAIL]\n";
+  }
+  else {
+    print FH "\n";
+    print "[OK]\n";
+  }
+  
   close(FH);
 }
 
@@ -70,11 +92,20 @@ sub run_directory {
     }
   }
   else {
-    for (my $i = 1; $i <= $maxdir; $i++) {
-      my @files = <../testfiles/$i/*.tst>;
-      foreach my $file (@files) {
-        run_single_test($valgrind, $file, $options);
-        return if $dryrun;
+    if ($maxdir == 0) {
+      # run tests with random data
+      my $max = 1000000;
+      $max = 1000 if $dryrun;
+      run_single_test(0, "--stop-ops=$max", $options);
+    }
+    else {
+      # or with generated data
+      for (my $i = 1; $i <= $maxdir; $i++) {
+        my @files = <../testfiles/$i/*.tst>;
+        foreach my $file (@files) {
+          run_single_test(0, $file, $options);
+          return if $dryrun;
+        }
       }
     }
   }

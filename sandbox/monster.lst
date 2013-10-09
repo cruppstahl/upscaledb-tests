@@ -1,4 +1,44 @@
+# 8 byte keys
+0, "--key=uint8"
+0, "--key=uint8 --fullcheck=find"
+0, "--key=uint8 --overwrite"
+0, "--key=uint8 --use-cursors"
+0, "--key=uint8 --use-cursors --duplicate=first"
+0, "--key=uint8 --use-cursors --duplicate=last"
 
+# 16 byte keys
+0, "--key=uint16"
+0, "--key=uint16 --fullcheck=find"
+0, "--key=uint16 --overwrite"
+0, "--key=uint16 --use-cursors"
+0, "--key=uint16 --use-cursors --duplicate=first"
+0, "--key=uint16 --use-cursors --duplicate=last"
+
+# 32 byte keys
+0, "--key=uint32"
+0, "--key=uint32 --fullcheck=find"
+0, "--key=uint32 --overwrite"
+0, "--key=uint32 --use-cursors"
+0, "--key=uint32 --use-cursors --duplicate=first"
+0, "--key=uint32 --use-cursors --duplicate=last"
+
+# 64 byte keys
+0, "--key=uint64"
+0, "--key=uint64 --fullcheck=find"
+0, "--key=uint64 --overwrite"
+0, "--key=uint64 --use-cursors"
+0, "--key=uint64 --use-cursors --duplicate=first"
+0, "--key=uint64 --use-cursors --duplicate=last"
+
+# binary keys, 16 bytes
+0, "--key=binary"
+0, "--key=binary --fullcheck=find"
+0, "--key=binary --overwrite"
+0, "--key=binary --use-cursors"
+0, "--key=binary --use-cursors --duplicate=first"
+0, "--key=binary --use-cursors --duplicate=last"
+
+# binary keys - scripts
 3, ""
 3, "--fullcheck=find"
 3, "--overwrite"
@@ -15,6 +55,7 @@
 3, "--key=custom --overwrite"
 3, "--key=custom --use-cursors"
 3, "--key=custom --use-cursors --duplicate=first"
+3, "--key=custom --use-cursors --duplicate=last"
 
 # AES encryption
 3, "--use-encryption"
@@ -176,23 +217,3 @@
 3, "--use-transactions=all --use-cursors --duplicate=first"
 3, "--use-transactions=all --fullcheck=find"
 3, "--use-transactions=all --fullcheck=reverse"
-
-# use 2 threads
-3, "--num-threads=2"
-3, "--num-threads=2 --overwrite"
-3, "--num-threads=2 --use-cursors"
-3, "--num-threads=2 --use-cursors --duplicate=first"
-3, "--num-threads=2 --fullcheck=reverse"
-3, "--num-threads=2 --use-transactions=20"
-2, "--num-threads=2 --use-transactions=20 --overwrite"
-2, "--num-threads=2 --use-transactions=20 --duplicate=last"
-2, "--num-threads=2 --use-transactions=20 --use-cursors"
-2, "--num-threads=2 --use-transactions=20 --use-cursors --overwrite"
-2, "--num-threads=2 --use-transactions=20 --use-cursors --duplicate=last"
-2, "--num-threads=2 --use-cursors --duplicate=first"
-
-# use 10 threads
-2, "--num-threads=10"
-2, "--num-threads=10 --overwrite"
-2, "--num-threads=10 --use-cursors --duplicate=last"
-2, "--num-threads=10 --use-transactions=20"
