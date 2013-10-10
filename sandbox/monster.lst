@@ -1,18 +1,10 @@
-# 8 byte keys
-0, "--key=uint8"
-0, "--key=uint8 --fullcheck=find"
-0, "--key=uint8 --overwrite"
-0, "--key=uint8 --use-cursors"
-0, "--key=uint8 --use-cursors --duplicate=first"
-0, "--key=uint8 --use-cursors --duplicate=last"
-
-# 16 byte keys
-0, "--key=uint16"
-0, "--key=uint16 --fullcheck=find"
-0, "--key=uint16 --overwrite"
-0, "--key=uint16 --use-cursors"
-0, "--key=uint16 --use-cursors --duplicate=first"
-0, "--key=uint16 --use-cursors --duplicate=last"
+# 64 byte keys
+0, "--key=uint64"
+0, "--key=uint64 --fullcheck=find"
+0, "--key=uint64 --overwrite"
+0, "--key=uint64 --use-cursors"
+0, "--key=uint64 --use-cursors --duplicate=first"
+0, "--key=uint64 --use-cursors --duplicate=last"
 
 # 32 byte keys
 0, "--key=uint32"
@@ -22,13 +14,37 @@
 0, "--key=uint32 --use-cursors --duplicate=first"
 0, "--key=uint32 --use-cursors --duplicate=last"
 
-# 64 byte keys
-0, "--key=uint64"
-0, "--key=uint64 --fullcheck=find"
-0, "--key=uint64 --overwrite"
-0, "--key=uint64 --use-cursors"
-0, "--key=uint64 --use-cursors --duplicate=first"
-0, "--key=uint64 --use-cursors --duplicate=last"
+# 16 byte keys
+0, "--key=uint16"
+0, "--key=uint16 --fullcheck=find"
+0, "--key=uint16 --overwrite"
+0, "--key=uint16 --use-cursors"
+0, "--key=uint16 --use-cursors --duplicate=first"
+0, "--key=uint16 --use-cursors --duplicate=last"
+
+# 8 byte keys
+0, "--key=uint8"
+0, "--key=uint8 --fullcheck=find"
+0, "--key=uint8 --overwrite"
+0, "--key=uint8 --use-cursors"
+0, "--key=uint8 --use-cursors --duplicate=first"
+0, "--key=uint8 --use-cursors --duplicate=last"
+
+# 4 byte float
+0, "--key=real32"
+0, "--key=real32 --fullcheck=find"
+0, "--key=real32 --overwrite"
+0, "--key=real32 --use-cursors"
+0, "--key=real32 --use-cursors --duplicate=first"
+0, "--key=real32 --use-cursors --duplicate=last"
+
+# 8 byte double
+0, "--key=real64"
+0, "--key=real64 --fullcheck=find"
+0, "--key=real64 --overwrite"
+0, "--key=real64 --use-cursors"
+0, "--key=real64 --use-cursors --duplicate=first"
+0, "--key=real64 --use-cursors --duplicate=last"
 
 # binary keys, 16 bytes
 0, "--key=binary"
@@ -37,6 +53,9 @@
 0, "--key=binary --use-cursors"
 0, "--key=binary --use-cursors --duplicate=first"
 0, "--key=binary --use-cursors --duplicate=last"
+
+# extended keys
+0, "--btree-keysize=20 --keysize=1024"
 
 # binary keys - scripts
 3, ""

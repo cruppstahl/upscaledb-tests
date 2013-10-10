@@ -73,6 +73,9 @@ sub run_directory {
   my $valgrind = shift;
   my $maxdir = shift;
   my $options = shift;
+  my $limit = shift;
+  $limit = 1000000 unless $limit;
+  $limit = 1000 if $dryrun;
 
   print "[CONFIGURATION] $options\n";
 
@@ -94,9 +97,7 @@ sub run_directory {
   else {
     if ($maxdir == 0) {
       # run tests with random data
-      my $max = 1000000;
-      $max = 1000 if $dryrun;
-      run_single_test(0, "--stop-ops=$max", $options);
+      run_single_test(0, "--stop-ops=$limit", $options);
     }
     else {
       # or with generated data
@@ -118,13 +119,14 @@ sub run {
   `rm -f *.db* monster.txt`;
 
   if ($c->options->{'dir'}) {
-    run_directory($dryrun, 0, $c->options->{'dir'}, $c->options->{'options'});
+    run_directory($dryrun, 0, $c->options->{'dir'}, $c->options->{'options'},
+                $c->options->{'limit'});
   }
   else {
     open FILE, 'monster.lst' or die "Couldn't open file monster.lst: $!";
     foreach (<FILE>) {
       if (/(\d), \"(.*?)\"$/) {
-        run_directory($dryrun, 0, $1, $2);
+        run_directory($dryrun, 0, $1, $2, $c->options->{'limit'});
       }
     }
   }
@@ -142,7 +144,7 @@ sub valgrind {
   open FILE, 'valgrind.lst' or die "Couldn't open file valgrind.lst: $!";
   foreach (<FILE>) {
     if (/(\d), \"(.*?)\"$/) {
-      run_directory($dryrun, 1, $1, $2);
+      run_directory($dryrun, 1, $1, $2, 100000);
     }
   }
 
