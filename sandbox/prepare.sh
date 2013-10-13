@@ -1,12 +1,7 @@
 
 
 CUR=`pwd`
-DIR=$HOME/Downloads/hamsterdb
-
-# make the test
-#cd $DIR
-#make -j 8
-#cd $CUR
+DIR=$HOME/prj/hamsterdb
 
 # copy the test binary
 cp $DIR/tools/ham_bench/ham_bench ham_bench

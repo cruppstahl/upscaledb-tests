@@ -51,4 +51,9 @@
 2, "--key=real64"
 2, "--key=real64 --reopen --find-pct=100"
 
+# binary keys, 16 bytes fixed length
+2, "--key=binary --keysize-fixed --erase-pct=30 --find-pct=30"
+2, "--key=binary --keysize-fixed "
+2, "--key=binary --keysize-fixed --reopen --find-pct=100"
+
 1, "--btree-keysize=20 --keysize=1024"

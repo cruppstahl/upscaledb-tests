@@ -76,6 +76,11 @@ sub run {
   run_single_test("$opt --key=real64");
   run_single_test("$opt --key=real64 --open --find-pct=100");
 
+  # various work loads (binary, fixed size)
+  run_single_test("$opt --key=binary --keysize-fixed --erase-pct=25 --find-pct=40");
+  run_single_test("$opt --key=binary --keysize-fixed");
+  run_single_test("$opt --key=binary --keysize-fixed --open --find-pct=100");
+
   # various work loads (random distribution)
   run_single_test("$opt --erase-pct=25 --find-pct=40");
   run_single_test("$opt");
