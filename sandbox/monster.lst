@@ -1,3 +1,23 @@
+# fixed records
+0, "--key=uint32 --recsize-fixed=0"
+0, "--key=uint32 --recsize-fixed=4 --inmemorydb"
+0, "--key=uint64 --recsize-fixed=8 --overwrite"
+0, "--key=uint64 --recsize-fixed=8 --pagesize=65536 --use-cursors --overwrite"
+0, "--key=uint64 --recsize-fixed=10 --fullcheck=find"
+0, "--key=uint64 --recsize-fixed=12 --duplicate=last"
+0, "--key=uint64 --recsize-fixed=14 --use-cursors"
+0, "--key=uint64 --recsize-fixed=100 --force-records-inline"
+0, "--key=uint32 --recsize-fixed=4 --distribution=ascending"
+0, "--key=uint32 --recsize-fixed=8 --overwrite --distribution=ascending"
+0, "--key=uint64 --recsize-fixed=10 --fullcheck=find --distribution=ascending"
+0, "--key=uint32 --recsize-fixed=4 --distribution=descending"
+0, "--key=uint32 --recsize-fixed=8 --overwrite --distribution=descending"
+0, "--key=uint64 --recsize-fixed=10 --fullcheck=find --distribution=descending"
+0, "--key=uint32 --recsize-fixed=0 --erase-pct=50"
+0, "--key=uint32 --recsize-fixed=4 --erase-pct=40"
+0, "--key=uint32 --recsize-fixed=8 --overwrite --erase-pct=40"
+0, "--key=uint64 --recsize-fixed=10 --fullcheck=find --erase-pct=40"
+
 # 64 byte keys
 0, "--key=uint64"
 0, "--key=uint64 --fullcheck=find"

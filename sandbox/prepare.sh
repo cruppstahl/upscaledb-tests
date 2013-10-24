@@ -1,7 +1,7 @@
 
 
 CUR=`pwd`
-DIR=$HOME/prj/hamsterdb
+DIR=$HOME/Downloads/hamsterdb
 
 # copy the test binary
 cp $DIR/tools/ham_bench/ham_bench ham_bench

@@ -50,6 +50,7 @@ sub run {
   run_single_test("--seed=12345 --stop-ops=50000 --key=uint16");
   run_single_test("--seed=12345 --stop-ops=50000 --key=uint32");
   run_single_test("--seed=12345 --stop-ops=50000 --key=uint64");
+  run_single_test("--seed=12345 --stop-ops=50000 --key=uint64 --recsize-fixed=5");
 
   # various work loads (uint16)
   run_single_test("$opt --key=uint16 --erase-pct=25 --find-pct=40");
@@ -91,6 +92,11 @@ sub run {
   run_single_test("$opt --distribution=ascending");
   run_single_test("$opt --distribution=ascending --open --find-pct=100");
 
+  # fixed length records
+  run_single_test("$opt --key=uint32 --recsize-fixed=10 --erase-pct=25 --find-pct=40");
+  run_single_test("$opt --key=uint32 --recsize-fixed=10");
+  run_single_test("$opt --key=uint32 --recsize-fixed=10 --open --find-pct=100");
+
   # extended keys
   run_single_test("$opt --btree-keysize=20 --keysize=1024");
   # record size 8
@@ -117,8 +123,6 @@ sub run {
   run_single_test("$opt --use-cursors --duplicate=last");
   # cursors w/ overwrites
   run_single_test("$opt --use-cursors --overwrite");
-  # recovery
-  run_single_test("$opt --use-recovery");
   # txn temp
   run_single_test("$opt --use-transactions=tmp");
   # txn 5
@@ -143,6 +147,12 @@ sub run {
   run_single_test("$opt --use-encryption");
   # remote
   run_single_test("$opt --use-remote");
+
+  # recovery
+  run_single_test("$opt --use-recovery");
+  run_single_test("$opt --use-recovery --recsize=8");
+  run_single_test("$opt --use-recovery --btree-keysize=20 --keysize=128");
+  run_single_test("$opt --use-recovery --recsize=8 --btree-keysize=20 --keysize=128");
 
   return '';
 }

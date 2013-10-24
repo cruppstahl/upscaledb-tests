@@ -1,3 +1,12 @@
+
+0, "--reopen --key=uint32 --recsize-fixed=0"
+0, "--reopen --key=uint64 --recsize-fixed=8 --overwrite"
+0, "--reopen --key=uint64 --recsize-fixed=10 --fullcheck=find"
+0, "--inmemorydb --key=uint64 --recsize-fixed=12 --duplicate=last"
+0, "--inmemorydb --key=uint32 --recsize-fixed=0 --erase-pct=50"
+0, "--key=uint32 --recsize-fixed=8 --overwrite --erase-pct=40"
+0, "--key=uint64 --recsize-fixed=10 --fullcheck=find --erase-pct=40"
+
 1, "--reopen"
 1, "--overwrite --reopen"
 1, "--duplicate=last --reopen"
