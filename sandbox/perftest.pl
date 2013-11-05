@@ -77,10 +77,25 @@ sub run {
   run_single_test("$opt --key=real64");
   run_single_test("$opt --key=real64 --open --find-pct=100");
 
-  # various work loads (binary, fixed size)
+  # various work loads (16 byte binary, fixed size)
   run_single_test("$opt --key=binary --keysize-fixed --erase-pct=25 --find-pct=40");
   run_single_test("$opt --key=binary --keysize-fixed");
   run_single_test("$opt --key=binary --keysize-fixed --open --find-pct=100");
+
+  # various work loads (128 byte binary, fixed size)
+  run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --erase-pct=25 --find-pct=40");
+  run_single_test("$opt --key=binary --keysize=128 --keysize-fixed");
+  run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --open --find-pct=100");
+
+  # various work loads (16 byte binary, fixed size, duplicates)
+  run_single_test("$opt --key=binary --keysize-fixed --duplicate=last --erase-pct=25 --find-pct=40");
+  run_single_test("$opt --key=binary --keysize-fixed --duplicate=last");
+  run_single_test("$opt --key=binary --keysize-fixed --duplicate=last --open --find-pct=100");
+
+  # various work loads (128 byte binary, fixed size, duplicates)
+  run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --duplicate=last --erase-pct=25 --find-pct=40");
+  run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --duplicate=last");
+  run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --duplicate=last --open --find-pct=100");
 
   # various work loads (random distribution)
   run_single_test("$opt --erase-pct=25 --find-pct=40");
@@ -97,8 +112,6 @@ sub run {
   run_single_test("$opt --key=uint32 --recsize-fixed=10");
   run_single_test("$opt --key=uint32 --recsize-fixed=10 --open --find-pct=100");
 
-  # extended keys
-  run_single_test("$opt --btree-keysize=20 --keysize=1024");
   # record size 8
   run_single_test("$opt --recsize=8");
   # record size 256
@@ -151,8 +164,8 @@ sub run {
   # recovery
   run_single_test("$opt --use-recovery");
   run_single_test("$opt --use-recovery --recsize=8");
-  run_single_test("$opt --use-recovery --btree-keysize=20 --keysize=128");
-  run_single_test("$opt --use-recovery --recsize=8 --btree-keysize=20 --keysize=128");
+  run_single_test("$opt --use-recovery --keysize=128 --keysize-fixed");
+  run_single_test("$opt --use-recovery --recsize=8 --keysize=128 --keysize-fixed");
 
   return '';
 }

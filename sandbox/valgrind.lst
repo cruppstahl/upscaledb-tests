@@ -6,6 +6,12 @@
 0, "--inmemorydb --key=uint32 --recsize-fixed=0 --erase-pct=50"
 0, "--key=uint32 --recsize-fixed=8 --overwrite --erase-pct=40"
 0, "--key=uint64 --recsize-fixed=10 --fullcheck=find --erase-pct=40"
+0, "--key=binary --keysize=10 --duplicate=last --erase-pct=40"
+0, "--key=binary --keysize=20 --duplicate=last --erase-pct=10"
+0, "--key=binary --keysize=128 --duplicate=last --erase-pct=10"
+0, "--key=binary --keysize=10 --keysize-fixed --duplicate=last --erase-pct=40"
+0, "--key=binary --keysize=20 --keysize-fixed --duplicate=last --erase-pct=10"
+0, "--key=binary --keysize=128 --keysize-fixed --duplicate=last --erase-pct=10"
 
 1, "--reopen"
 1, "--overwrite --reopen"
@@ -25,9 +31,9 @@
 1, "--fullcheck=reverse --duplicate=last"
 1, "--no-mmap --overwrite --reopen"
 1, "--key=custom"
-1, "--keysize=8 --overwrite --reopen"
-1, "--keysize=12 --overwrite --reopen"
-1, "--keysize=33 --overwrite --reopen"
+1, "--keysize=8 --keysize-fixed --overwrite --reopen"
+1, "--keysize=12 --keysize-fixed --overwrite --reopen"
+1, "--keysize=33 --keysize-fixed --overwrite --reopen"
 1, "--keysize=680 --overwrite --reopen"
 1, "--pagesize=1024 --overwrite --reopen"
 1, "--pagesize=8192 --overwrite --reopen"
@@ -59,10 +65,3 @@
 2, "--key=real64 --erase-pct=30 --find-pct=30"
 2, "--key=real64"
 2, "--key=real64 --reopen --find-pct=100"
-
-# binary keys, 16 bytes fixed length
-2, "--key=binary --keysize-fixed --erase-pct=30 --find-pct=30"
-2, "--key=binary --keysize-fixed "
-2, "--key=binary --keysize-fixed --reopen --find-pct=100"
-
-1, "--btree-keysize=20 --keysize=1024"

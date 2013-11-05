@@ -1,12 +1,21 @@
+# binary keys, fixed length and duplicates
+0, "--key=binary --keysize-fixed --keysize=10 --erase-pct=30 --find-pct=30 --duplicate=last"
+0, "--key=binary --keysize-fixed --keysize=20 --erase-pct=30 --find-pct=30 --duplicate=last"
+0, "--key=binary --keysize-fixed --keysize=60 --erase-pct=30 --find-pct=30 --duplicate=last"
+
 # fixed records
 0, "--key=uint32 --recsize-fixed=0"
+0, "--key=uint32 --recsize-fixed=0 --erase-pct=30 --find-pct=30"
 0, "--key=uint32 --recsize-fixed=4 --inmemorydb"
 0, "--key=uint64 --recsize-fixed=8 --overwrite"
+0, "--key=uint64 --recsize-fixed=8 --overwrite --erase-pct=30 --find-pct=30"
 0, "--key=uint64 --recsize-fixed=8 --pagesize=65536 --use-cursors --overwrite"
 0, "--key=uint64 --recsize-fixed=10 --fullcheck=find"
+0, "--key=uint64 --recsize-fixed=10 --fullcheck=find --erase-pct=30 --find-pct=30"
 0, "--key=uint64 --recsize-fixed=12 --duplicate=last"
 0, "--key=uint64 --recsize-fixed=14 --use-cursors"
 0, "--key=uint64 --recsize-fixed=100 --force-records-inline"
+0, "--key=uint64 --recsize-fixed=100 --force-records-inline --erase-pct=30 --find-pct=30"
 0, "--key=uint32 --recsize-fixed=4 --distribution=ascending"
 0, "--key=uint32 --recsize-fixed=8 --overwrite --distribution=ascending"
 0, "--key=uint64 --recsize-fixed=10 --fullcheck=find --distribution=ascending"
@@ -20,7 +29,9 @@
 
 # 64 byte keys
 0, "--key=uint64"
+0, "--key=uint64 --erase-pct=30 --find-pct=30"
 0, "--key=uint64 --fullcheck=find"
+0, "--key=uint64 --fullcheck=find --erase-pct=30"
 0, "--key=uint64 --overwrite"
 0, "--key=uint64 --use-cursors"
 0, "--key=uint64 --use-cursors --duplicate=first"
@@ -28,7 +39,9 @@
 
 # 32 byte keys
 0, "--key=uint32"
+0, "--key=uint32 --erase-pct=30 --find-pct=30"
 0, "--key=uint32 --fullcheck=find"
+0, "--key=uint32 --fullcheck=find --erase-pct=30"
 0, "--key=uint32 --overwrite"
 0, "--key=uint32 --use-cursors"
 0, "--key=uint32 --use-cursors --duplicate=first"
@@ -68,22 +81,39 @@
 
 # binary keys, 16 bytes
 0, "--key=binary"
+0, "--key=binary --erase-pct=30 --find-pct=30"
 0, "--key=binary --fullcheck=find"
 0, "--key=binary --overwrite"
+0, "--key=binary --overwrite --erase-pct=30 --find-pct=30"
 0, "--key=binary --use-cursors"
 0, "--key=binary --use-cursors --duplicate=first"
 0, "--key=binary --use-cursors --duplicate=last"
+0, "--key=binary --use-cursors --duplicate=last --erase-pct=30 --find-pct=30"
 
 # binary keys, 16 bytes fixed length
 0, "--key=binary --keysize-fixed"
+0, "--key=binary --keysize-fixed --erase-pct=30 --find-pct=30"
 0, "--key=binary --keysize-fixed --fullcheck=find"
 0, "--key=binary --keysize-fixed --overwrite"
+0, "--key=binary --keysize-fixed --overwrite --erase-pct=30 --find-pct=30"
 0, "--key=binary --keysize-fixed --use-cursors"
 0, "--key=binary --keysize-fixed --use-cursors --duplicate=first"
 0, "--key=binary --keysize-fixed --use-cursors --duplicate=last"
+0, "--key=binary --keysize-fixed --use-cursors --duplicate=last --erase-pct=30 --find-pct=30"
+
+# binary keys, 256 bytes fixed length
+0, "--key=binary --keysize=256 --keysize-fixed"
+0, "--key=binary --keysize=256 --keysize-fixed --erase-pct=30 --find-pct=30"
+0, "--key=binary --keysize=256 --keysize-fixed --fullcheck=find"
+0, "--key=binary --keysize=256 --keysize-fixed --overwrite"
+0, "--key=binary --keysize=256 --keysize-fixed --overwrite --erase-pct=30 --find-pct=30"
+0, "--key=binary --keysize=256 --keysize-fixed --use-cursors"
+0, "--key=binary --keysize=256 --keysize-fixed --use-cursors --duplicate=first"
+0, "--key=binary --keysize=256 --keysize-fixed --use-cursors --duplicate=last"
+0, "--key=binary --keysize=256 --keysize-fixed --use-cursors --duplicate=last --erase-pct=30 --find-pct=30"
 
 # extended keys
-0, "--btree-keysize=20 --keysize=1024"
+0, "--keysize=1024"
 
 # binary keys - scripts
 3, ""
@@ -111,6 +141,7 @@
 # client/server
 3, "--use-remote"
 3, "--use-remote --use-transactions=10"
+3, "--use-remote --use-transactions=10 --use-cursors"
 
 3, "--fullcheck=reverse --inmemorydb"
 3, "--fullcheck=reverse"
@@ -126,21 +157,11 @@
 3, "--no-mmap"
 3, "--no-mmap --overwrite"
 
-3, "--keysize=8"
-3, "--keysize=8 --overwrite"
-3, "--keysize=8 --inmemorydb"
-3, "--keysize=8 --overwrite --inmemorydb"
-3, "--keysize=8 --use-cursors --overwrite --inmemorydb"
-
-3, "--keysize=12"
-3, "--keysize=12 --overwrite"
-3, "--keysize=12 --inmemorydb"
-3, "--keysize=12 --overwrite --inmemorydb"
-
-3, "--keysize=33"
-3, "--keysize=33 --overwrite"
-3, "--keysize=33 --inmemorydb"
-3, "--keysize=33 --overwrite --inmemorydb"
+3, "--keysize=8 --keysize-fixed"
+3, "--keysize=8 --keysize-fixed --overwrite"
+3, "--keysize=8 --keysize-fixed --inmemorydb"
+3, "--keysize=8 --keysize-fixed --overwrite --inmemorydb"
+3, "--keysize=8 --keysize-fixed --use-cursors --overwrite --inmemorydb"
 
 3, "--keysize=680"
 3, "--keysize=680 --overwrite"
