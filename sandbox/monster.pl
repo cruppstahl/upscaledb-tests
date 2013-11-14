@@ -12,9 +12,6 @@ sub run_single_test {
   my $file = shift;
   my $params = shift;
 
-  # if filename starts with "ext_": enable extended keys
-  $params = "--use-extended $params" if ($file =~ /ext_/);
-
   if ($valgrind) {
     open(FH, ">>valgrind.txt") or die "Cannot open valgrind.txt for writing";
   }

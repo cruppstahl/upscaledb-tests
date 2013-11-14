@@ -155,7 +155,7 @@ sub run {
   # txn 5 w/ fsync
   run_single_test("$opt --use-transactions=5 --use-fsync");
   # threads 5
-  run_single_test("$opt --use-threads=5");
+  run_single_test("$opt --num-threads=5");
   # encryption
   run_single_test("$opt --use-encryption");
   # remote
@@ -176,7 +176,8 @@ sub read_data {
   open(FH, "< $path") or die "Cannot open $path for reading";
   while (<FH>) {
     chomp;
-    die "expected './test ...'" unless /^\.\/test /;
+    next if $_ eq '';
+    die "expected './ham_bench ...', found $_" unless /^\.\/ham_bench /;
     my $test = $_;
 
     $_ = <FH>;

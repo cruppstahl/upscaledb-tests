@@ -1,6 +1,6 @@
 
 
-CUR=`pwd`
+#DIR=$HOME/tmp/hamsterdb-2.1.3-unstable
 DIR=$HOME/prj/hamsterdb
 
 # copy the test binary
