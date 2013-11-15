@@ -1,3 +1,11 @@
+# duplicates, low threshold
+0, "--duptable-threshold=2 --key=uint16 --duplicate=last --recsize-fixed=1"
+0, "--duptable-threshold=2 --key=uint16 --duplicate=last --recsize-fixed=0"
+0, "--duptable-threshold=32 --key=uint16 --duplicate=last"
+0, "--duptable-threshold=32 --key=uint16 --open --erase-pct=50 --duplicate=last"
+0, "--duptable-threshold=32 --key=binary --keysize=5 --duplicate=first --use-cursors"
+0, "--duptable-threshold=32 --key=binary --keysize=5 --open --erase-pct=50 --duplicate=first --use-cursors"
+
 # binary keys, fixed length and duplicates
 0, "--key=binary --keysize-fixed --keysize=10 --erase-pct=30 --find-pct=30 --duplicate=last"
 0, "--key=binary --keysize-fixed --keysize=20 --erase-pct=30 --find-pct=30 --duplicate=last"
@@ -181,6 +189,7 @@
 3, "--duplicate=last"
 3, "--fullcheck=find"
 3, "--duplicate=last --inmemorydb"
+3, "--duplicate=last --inmemorydb --duptable-threshold=2"
 3, "--duplicate=last --use-cursors"
 3, "--duplicate=last --use-cursors --inmemorydb"
 
