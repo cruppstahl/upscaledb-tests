@@ -12,6 +12,9 @@
 0, "--key=binary --keysize=10 --keysize-fixed --duplicate=last --erase-pct=40"
 0, "--key=binary --keysize=20 --keysize-fixed --duplicate=last --erase-pct=10"
 0, "--key=binary --keysize=128 --keysize-fixed --duplicate=last --erase-pct=10"
+0, "--key=binary --keysize=512"
+0, "--key=binary --keysize=1024 --duplicate=last"
+0, "--key=binary --keysize=1024 --open --erase-pct=100 --duplicate=last"
 
 1, "--reopen"
 1, "--overwrite --reopen"

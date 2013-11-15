@@ -1,7 +1,18 @@
 # binary keys, fixed length and duplicates
 0, "--key=binary --keysize-fixed --keysize=10 --erase-pct=30 --find-pct=30 --duplicate=last"
 0, "--key=binary --keysize-fixed --keysize=20 --erase-pct=30 --find-pct=30 --duplicate=last"
-0, "--key=binary --keysize-fixed --keysize=60 --erase-pct=30 --find-pct=30 --duplicate=last"
+0, "--key=binary --keysize-fixed --keysize=60 --erase-pct=30 --find-pct=30 --duplicate=last --fullcheck=find"
+
+# binary keys, variable length and duplicates
+0, "--key=binary --keysize=10 --erase-pct=30 --find-pct=30 --duplicate=last"
+0, "--key=binary --keysize=20 --erase-pct=30 --find-pct=30 --duplicate=last"
+0, "--key=binary --keysize=60 --erase-pct=30 --find-pct=30 --duplicate=last"
+0, "--key=binary --keysize=60 --erase-pct=30 --find-pct=30 --duplicate=last --fullcheck=find"
+0, "--key=binary --keysize=512 --duplicate=last"
+0, "--key=binary --keysize=512 --duplicate=last --fullcheck=find"
+0, "--key=binary --keysize=512 --open --erase-pct=50 --find-pct=50 --duplicate=last"
+0, "--key=binary --keysize=1024 --duplicate=last --fullcheck=find"
+0, "--key=binary --keysize=1024 --open --erase-pct=100 --duplicate=last"
 
 # fixed records
 0, "--key=uint32 --recsize-fixed=0"

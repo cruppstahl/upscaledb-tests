@@ -97,6 +97,16 @@ sub run {
   run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --duplicate=last");
   run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --duplicate=last --open --find-pct=100");
 
+  # various work loads (fixed length extended keys)
+  run_single_test("$opt --key=binary --keysize=512 --keysize-fixed --duplicate=last --erase-pct=25 --find-pct=40");
+  run_single_test("$opt --key=binary --keysize=512 --keysize-fixed --duplicate=last");
+  run_single_test("$opt --key=binary --keysize=512 --keysize-fixed --duplicate=last --open --find-pct=100");
+
+  # various work loads (variable length extended keys)
+  run_single_test("$opt --key=binary --keysize=512 --duplicate=last --erase-pct=25 --find-pct=40");
+  run_single_test("$opt --key=binary --keysize=512 --duplicate=last");
+  run_single_test("$opt --key=binary --keysize=512 --duplicate=last --open --find-pct=100");
+
   # various work loads (random distribution)
   run_single_test("$opt --erase-pct=25 --find-pct=40");
   run_single_test("$opt");
