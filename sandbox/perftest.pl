@@ -97,6 +97,10 @@ sub run {
   run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --duplicate=last");
   run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --duplicate=last --open --find-pct=100");
 
+  # default node layout, large pages
+  run_single_test("$opt --key=binary --keysize-fixed --keysize=10 --erase-pct=30 --find-pct=30 --duplicate=last --pagesize=131072");
+  run_single_test("$opt --key=binary --keysize=32 --erase-pct=30 --find-pct=30 --pagesize=131072");
+
   # various work loads (fixed length extended keys)
   run_single_test("$opt --key=binary --keysize=512 --keysize-fixed --duplicate=last --erase-pct=25 --find-pct=40");
   run_single_test("$opt --key=binary --keysize=512 --keysize-fixed --duplicate=last");

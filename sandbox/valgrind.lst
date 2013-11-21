@@ -15,6 +15,8 @@
 0, "--key=binary --keysize=512"
 0, "--key=binary --keysize=1024 --duplicate=last"
 0, "--key=binary --keysize=1024 --open --erase-pct=100 --duplicate=last"
+0, "--key=binary --keysize-fixed --keysize=10 --erase-pct=30 --find-pct=30 --duplicate=last --pagesize=131072"
+0, "--key=binary --keysize=32 --erase-pct=30 --find-pct=30 --pagesize=131072"
 
 1, "--reopen"
 1, "--overwrite --reopen"

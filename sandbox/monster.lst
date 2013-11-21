@@ -3,6 +3,10 @@
 0, "--key=binary --keysize-fixed --keysize=20 --erase-pct=30 --find-pct=30 --duplicate=last"
 0, "--key=binary --keysize-fixed --keysize=60 --erase-pct=30 --find-pct=30 --duplicate=last --fullcheck=find"
 
+# default node layout, large pages
+0, "--key=binary --keysize-fixed --keysize=10 --erase-pct=30 --find-pct=30 --duplicate=last --pagesize=131072"
+0, "--key=binary --keysize=32 --erase-pct=30 --find-pct=30 --pagesize=131072"
+
 # binary keys, variable length and duplicates
 0, "--key=binary --keysize=10 --erase-pct=30 --find-pct=30 --duplicate=last"
 0, "--key=binary --keysize=20 --erase-pct=30 --find-pct=30 --duplicate=last"
