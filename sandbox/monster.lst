@@ -46,6 +46,10 @@
 0, "--key=uint32 --recsize-fixed=4 --erase-pct=40"
 0, "--key=uint32 --recsize-fixed=8 --overwrite --erase-pct=40"
 0, "--key=uint64 --recsize-fixed=10 --fullcheck=find --erase-pct=40"
+0, "--key=binary --recsize-fixed=0 --fullcheck=find --erase-pct=40"
+0, "--key=binary --recsize-fixed=5 --fullcheck=find --erase-pct=40"
+0, "--key=binary --recsize-fixed=16 --fullcheck=find --erase-pct=40"
+0, "--key=binary --recsize-fixed=16 --pagesize=32768 --erase-pct=20"
 
 # 64 byte keys
 0, "--key=uint64"

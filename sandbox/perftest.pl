@@ -125,6 +125,8 @@ sub run {
   run_single_test("$opt --key=uint32 --recsize-fixed=10 --erase-pct=25 --find-pct=40");
   run_single_test("$opt --key=uint32 --recsize-fixed=10");
   run_single_test("$opt --key=uint32 --recsize-fixed=10 --open --find-pct=100");
+  run_single_test("$opt --key=binary --recsize-fixed=0 --fullcheck=find --erase-pct=40"
+  run_single_test("$opt --key=binary --recsize-fixed=16 --pagesize=32768 --erase-pct=20"
 
   # record size 8
   run_single_test("$opt --recsize=8");
