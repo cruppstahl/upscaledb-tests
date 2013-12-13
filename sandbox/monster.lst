@@ -12,6 +12,12 @@
 0, "--extkey-threshold=32 --key=binary --keysize=64 --fullcheck=find"
 0, "--extkey-threshold=32 --key=binary --keysize=64 --open --erase-pct=50 --find-pct=50"
 
+# duplicates, low threshold
+0, "--duptable-threshold=32 --key=uint16 --duplicate=last"
+0, "--duptable-threshold=32 --key=uint16 --open --erase-pct=50 --duplicate=last"
+0, "--duptable-threshold=32 --key=binary --keysize=5 --duplicate=first --use-cursors"
+0, "--duptable-threshold=32 --key=binary --keysize=5 --open --erase-pct=50 --duplicate=first --use-cursors"
+
 # binary keys, variable length and duplicates
 0, "--key=binary --keysize=10 --erase-pct=30 --find-pct=30 --duplicate=last"
 0, "--key=binary --keysize=20 --erase-pct=30 --find-pct=30 --duplicate=last"
@@ -181,11 +187,11 @@
 3, "--no-mmap"
 3, "--no-mmap --overwrite"
 
-3, "--keysize=8 --keysize-fixed"
-3, "--keysize=8 --keysize-fixed --overwrite"
-3, "--keysize=8 --keysize-fixed --inmemorydb"
-3, "--keysize=8 --keysize-fixed --overwrite --inmemorydb"
-3, "--keysize=8 --keysize-fixed --use-cursors --overwrite --inmemorydb"
+0, "--keysize=8 --keysize-fixed"
+0, "--keysize=8 --keysize-fixed --overwrite"
+0, "--keysize=8 --keysize-fixed --inmemorydb"
+0, "--keysize=8 --keysize-fixed --overwrite --inmemorydb"
+0, "--keysize=8 --keysize-fixed --use-cursors --overwrite --inmemorydb"
 
 3, "--keysize=680"
 3, "--keysize=680 --overwrite"
