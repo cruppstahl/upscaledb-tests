@@ -109,9 +109,23 @@ sub run_directory {
   }
 }
 
+sub run_list {
+  my $c = shift;
+  my $list = shift;
+  my $dryrun = $c->options->{'dryrun'};
+
+  open FILE, $list or die "Couldn't open file $list: $!";
+  foreach (<FILE>) {
+    if (/(\d), \"(.*?)\"$/) {
+      run_directory($dryrun, 0, $1, $2, $c->options->{'limit'});
+    }
+  }
+}
+
 sub run {
   my $c = shift;
   my $dryrun = $c->options->{'dryrun'};
+  my $list = $c->options->{'list'};
 
   `rm -f *.db* monster.txt`;
 
@@ -120,11 +134,12 @@ sub run {
                 $c->options->{'limit'});
   }
   else {
-    open FILE, 'monster.lst' or die "Couldn't open file monster.lst: $!";
-    foreach (<FILE>) {
-      if (/(\d), \"(.*?)\"$/) {
-        run_directory($dryrun, 0, $1, $2, $c->options->{'limit'});
-      }
+    if ($list) {
+      run_list($c, $list);
+    }
+    else {
+      run_list($c, 'monster1.lst');
+      run_list($c, 'monster2.lst');
     }
   }
 
@@ -153,7 +168,7 @@ sub setup {
   my $c = shift;
   $c->register_commands( {
         run => "runs the monster tests (can take a day or two...;\n" .
-                "\t\targuments: --dir=1|2|3|4; --options=OPTIONS)",
+                "\t\targuments: --dir=1|2|3|4; --options=OPTIONS, --list=FILE)",
         valgrind => 'runs assorted tests in valgrind' 
     });
 }
