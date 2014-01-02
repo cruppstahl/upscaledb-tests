@@ -45,4 +45,54 @@
    fun:_ZN9hamsterdb8Database5closeEj
    fun:ham_db_close
 }
-
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Param
+   pwrite64(buf)
+   fun:__pwrite_nocancel
+   fun:_ZN9hamsterdb9os_pwriteEimPKvm
+   fun:_ZN9hamsterdb10DiskDevice5writeEmPvm
+   fun:_ZN9hamsterdb4Page5flushEv
+   fun:_ZN9hamsterdbL17db_close_callbackEPNS_4PageEPNS_8DatabaseEj
+   fun:_ZN9hamsterdb11PageManager14close_databaseEPNS_8DatabaseE
+   fun:_ZN9hamsterdb13LocalDatabase10close_implEj
+   fun:_ZN9hamsterdb8Database5closeEj
+   fun:ham_db_close
+   fun:_ZN15HamsterDatabase11do_close_dbEv
+   fun:_ZN15ParserGenerator5closeEv
+   fun:_ZN15ParserGenerator7executeEv
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Param
+   pwrite64(buf)
+   fun:__pwrite_nocancel
+   fun:_ZN9hamsterdb9os_pwriteEimPKvm
+   fun:_ZN9hamsterdb10DiskDevice5writeEmPvm
+   fun:_ZN9hamsterdb4Page5flushEv
+   fun:_ZN9hamsterdbL14purge_callbackEPNS_4PageE
+   fun:_ZN9hamsterdb11PageManager11purge_cacheEv
+   fun:_ZN9hamsterdb13LocalDatabase6insertEPNS_11TransactionEP9ham_key_tP12ham_record_tj
+   fun:ham_db_insert
+   fun:_ZN15HamsterDatabase9do_insertEPmP9ham_key_tP12ham_record_t
+   fun:_ZN16RuntimeGenerator6insertEv
+   fun:_ZN16RuntimeGenerator7executeEv.part.248
+   fun:_Z15run_single_testI15HamsterDatabase16RuntimeGeneratorEbP13Configuration
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Param
+   pwrite64(buf)
+   fun:__pwrite_nocancel
+   fun:_ZN9hamsterdb9os_pwriteEimPKvm
+   fun:_ZN9hamsterdb10DiskDevice5writeEmPvm
+   fun:_ZN9hamsterdb4Page5flushEv
+   fun:_ZN9hamsterdbL17db_close_callbackEPNS_4PageEPNS_8DatabaseEj
+   fun:_ZN9hamsterdb11PageManager14close_databaseEPNS_8DatabaseE
+   fun:_ZN9hamsterdb13LocalDatabase10close_implEj
+   fun:_ZN9hamsterdb8Database5closeEj
+   fun:ham_db_close
+   fun:_ZN15HamsterDatabase11do_close_dbEv
+   fun:_ZN16RuntimeGenerator5closeEv
+   fun:_ZN16RuntimeGenerator7executeEv.part.248
+}
