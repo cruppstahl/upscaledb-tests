@@ -1,3 +1,11 @@
+# bulk erase
+0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=random"
+0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=ascending"
+0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=descending"
+0, "--key=uint64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=random"
+0, "--key=uint64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=ascending"
+0, "--key=uint64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=descending"
+
 # duplicates, low threshold
 0, "--duptable-threshold=2 --key=uint16 --duplicate=last --recsize-fixed=1"
 0, "--duptable-threshold=2 --key=uint16 --duplicate=last --recsize-fixed=0"
@@ -152,4 +160,3 @@
 
 # extended keys
 0, "--keysize=1024"
-
