@@ -50,7 +50,21 @@ sub run {
   run_single_test("--seed=12345 --stop-ops=50000 --key=uint16");
   run_single_test("--seed=12345 --stop-ops=50000 --key=uint32");
   run_single_test("--seed=12345 --stop-ops=50000 --key=uint64");
+  run_single_test("--seed=12345 --stop-ops=50000 --recsize-fixed=0");
+  run_single_test("--seed=12345 --stop-ops=50000");
   run_single_test("--seed=12345 --stop-ops=50000 --key=uint64 --recsize-fixed=5");
+
+  # a few biggies
+  run_single_test("--seed=12345 --stop-ops=10000000");
+  run_single_test("--seed=12345 --stop-ops=10000000 --key=uint16");
+  run_single_test("--seed=12345 --stop-ops=10000000 --key=uint32");
+  run_single_test("--seed=12345 --stop-ops=10000000 --key=uint64 --recsize-fixed=5");
+  run_single_test("--seed=12345 --stop-ops=10000000 --recsize-fixed=0");
+  run_single_test("--seed=12345 --stop-ops=10000000");
+  run_single_test("--seed=12345 --stop-ops=10000000 --key=uint64 --recsize-fixed=5");
+
+  # big records
+  run_single_test("--seed=12345 --recsize=1048576");
 
   # various work loads (uint16)
   run_single_test("$opt --key=uint16 --erase-pct=25 --find-pct=40");
@@ -125,8 +139,8 @@ sub run {
   run_single_test("$opt --key=uint32 --recsize-fixed=10 --erase-pct=25 --find-pct=40");
   run_single_test("$opt --key=uint32 --recsize-fixed=10");
   run_single_test("$opt --key=uint32 --recsize-fixed=10 --open --find-pct=100");
-  run_single_test("$opt --key=binary --recsize-fixed=0 --fullcheck=find --erase-pct=40"
-  run_single_test("$opt --key=binary --recsize-fixed=16 --pagesize=32768 --erase-pct=20"
+  run_single_test("$opt --key=binary --recsize-fixed=0 --fullcheck=find --erase-pct=40");
+  run_single_test("$opt --key=binary --recsize-fixed=16 --pagesize=32768 --erase-pct=20");
 
   # record size 8
   run_single_test("$opt --recsize=8");
