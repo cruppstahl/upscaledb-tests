@@ -66,6 +66,11 @@ sub run {
   # big records
   run_single_test("--seed=12345 --recsize=1048576");
 
+  # bulk erase
+  run_single_test("--seed=12345 --stop-ops=1000000 --bulk-erase --recsize-fixed=0");
+  run_single_test("--seed=12345 --stop-ops=1000000 --bulk-erase");
+  run_single_test("--seed=12345 --stop-ops=1000000 --bulk-erase --key=uint64 --recsize-fixed=5");
+
   # various work loads (uint16)
   run_single_test("$opt --key=uint16 --erase-pct=25 --find-pct=40");
   run_single_test("$opt --key=uint16");
@@ -220,8 +225,8 @@ sub read_data {
     while (<FH>) {
       chomp;
       last if ($_ eq '');
-      if (/total elapsed time \(sec\)\s*(\S+)$/) {
-        $t{'total_elapsed_time'} = $1;
+      if (/hamsterdb elapsed time \(sec\)\s*(\S+)$/) {
+        $t{'hamsterdb_elapsed_time'} = $1;
       }
       elsif (/latency \(min, avg, max\)/) {
         # skip
@@ -313,7 +318,7 @@ sub compare {
           . color($color) . sprintf('%s%6.2f %', $sign, $p)
           . color('reset') . "\n";
     }
-    $s .= "$test\n$t" if $t ne '';
+    $s .= "\n$test\n$t" if $t ne '';
   }
 
   return $s;

@@ -1,27 +1,32 @@
 # bulk erase
-0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=random"
-0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=ascending"
-0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=descending"
-0, "--key=uint64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=random"
-0, "--key=uint64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=ascending"
-0, "--key=uint64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=descending"
+0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=random --cache=104857600"
+0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=ascending --cache=104857600"
+0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=descending --cache=104857600"
+0, "--key=uint64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=random --cache=104857600"
+0, "--key=uint64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=ascending --cache=104857600"
+0, "--key=uint64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=descending --cache=104857600"
+
+# bulk erase with many extkeys
+#0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=descending --extkey-threshold=20 --recsize=0"
+#0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=random --extkey-threshold=20 --recsize=0"
+#0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=ascending --extkey-threshold=20 --recsize=0"
 
 # duplicates, low threshold
-0, "--duptable-threshold=2 --key=uint16 --duplicate=last --recsize-fixed=1"
-0, "--duptable-threshold=2 --key=uint16 --duplicate=last --recsize-fixed=0"
-0, "--duptable-threshold=32 --key=uint16 --duplicate=last"
-0, "--duptable-threshold=32 --key=uint16 --open --erase-pct=50 --duplicate=last"
-0, "--duptable-threshold=32 --key=binary --keysize=5 --duplicate=first --use-cursors"
-0, "--duptable-threshold=32 --key=binary --keysize=5 --open --erase-pct=50 --duplicate=first --use-cursors"
+0, "--duptable-threshold=2 --key=uint16 --duplicate=last --recsize-fixed=1 --cache=104857600"
+0, "--duptable-threshold=2 --key=uint16 --duplicate=last --recsize-fixed=0 --cache=104857600"
+0, "--duptable-threshold=32 --key=uint16 --duplicate=last --cache=104857600"
+0, "--duptable-threshold=32 --key=uint16 --open --erase-pct=50 --duplicate=last --cache=104857600"
+0, "--duptable-threshold=32 --key=binary --keysize=5 --duplicate=first --use-cursors --cache=104857600"
+0, "--duptable-threshold=32 --key=binary --keysize=5 --open --erase-pct=50 --duplicate=first --use-cursors --cache=104857600"
 
 # binary keys, fixed length and duplicates
-0, "--key=binary --keysize-fixed --keysize=10 --erase-pct=30 --find-pct=30 --duplicate=last"
-0, "--key=binary --keysize-fixed --keysize=20 --erase-pct=30 --find-pct=30 --duplicate=last"
-0, "--key=binary --keysize-fixed --keysize=60 --erase-pct=30 --find-pct=30 --duplicate=last --fullcheck=find"
+0, "--key=binary --keysize-fixed --keysize=10 --erase-pct=30 --find-pct=30 --duplicate=last --cache=104857600"
+0, "--key=binary --keysize-fixed --keysize=20 --erase-pct=30 --find-pct=30 --duplicate=last --cache=104857600"
+0, "--key=binary --keysize-fixed --keysize=60 --erase-pct=30 --find-pct=30 --duplicate=last --fullcheck=find --cache=104857600"
 
 # default node layout, large pages
-0, "--key=binary --keysize-fixed --keysize=10 --erase-pct=30 --find-pct=30 --duplicate=last --pagesize=131072"
-0, "--key=binary --keysize=32 --erase-pct=30 --find-pct=30 --pagesize=131072"
+0, "--key=binary --keysize-fixed --keysize=10 --erase-pct=30 --find-pct=30 --duplicate=last --pagesize=131072 --cache=104857600"
+0, "--key=binary --keysize=32 --erase-pct=30 --find-pct=30 --pagesize=131072 --cache=104857600"
 
 # extended keys, low threshold
 0, "--extkey-threshold=32 --key=binary --keysize=64"
