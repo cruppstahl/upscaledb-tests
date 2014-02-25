@@ -6,10 +6,16 @@
 0, "--key=uint64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=ascending --cache=104857600"
 0, "--key=uint64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=descending --cache=104857600"
 
+# bulk erase, then refill, then erase, then refill
+0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --cache=104857600"
+0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --open --cache=104857600"
+0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --open --erase-pct=100 --cache=104857600"
+0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --open --bulk-erase --cache=104857600"
+
 # bulk erase with many extkeys
-#0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=descending --extkey-threshold=20 --recsize=0"
-#0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=random --extkey-threshold=20 --recsize=0"
-#0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=ascending --extkey-threshold=20 --recsize=0"
+0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=descending --extkey-threshold=20 --recsize=0"
+0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=random --extkey-threshold=20 --recsize=0"
+0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=ascending --extkey-threshold=20 --recsize=0"
 
 # duplicates, low threshold
 0, "--duptable-threshold=2 --key=uint16 --duplicate=last --recsize-fixed=1 --cache=104857600"
