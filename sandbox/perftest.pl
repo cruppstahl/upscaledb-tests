@@ -64,7 +64,7 @@ sub run {
   run_single_test("--seed=12345 --stop-ops=10000000 --key=uint64 --recsize-fixed=5");
 
   # big records
-  run_single_test("--seed=12345 --recsize=1048576");
+  run_single_test("--seed=12345 --recsize=1048576 --stop-ops=100000");
 
   # bulk erase
   run_single_test("--seed=12345 --stop-ops=1000000 --bulk-erase --recsize-fixed=0");
