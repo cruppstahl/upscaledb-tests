@@ -171,14 +171,24 @@ sub run {
   run_single_test("$opt --use-cursors --duplicate=last");
   # cursors w/ overwrites
   run_single_test("$opt --use-cursors --overwrite");
+
   # txn temp
   run_single_test("$opt --use-transactions=tmp");
+  run_single_test("$opt --use-transactions=tmp --recsize=0");
+  run_single_test("$opt --use-transactions=tmp --recsize=0 --flush-txn-immediately");
   # txn 5
   run_single_test("$opt --use-transactions=5");
+  run_single_test("$opt --use-transactions=5 --recsize=0");
+  run_single_test("$opt --use-transactions=5 --recsize=0 --flush-txn-immediately");
   # txn 20
   run_single_test("$opt --use-transactions=20");
-  # txn 100
+  run_single_test("$opt --use-transactions=20 --recsize=0");
+  run_single_test("$opt --use-transactions=20 --recsize=0 --flush-txn-immediately");
+  # txn 100 w/o records, with and without batching
   run_single_test("$opt --use-transactions=100");
+  run_single_test("$opt --use-transactions=100 --recsize=0");
+  run_single_test("$opt --use-transactions=100 --recsize=0 --flush-txn-immediately");
+
   # txn temp (inmemory)
   run_single_test("$opt --use-transactions=tmp --inmemorydb");
   # txn 5 (inmemory)
@@ -189,6 +199,7 @@ sub run {
   run_single_test("$opt --use-transactions=100 --inmemorydb");
   # txn 5 w/ fsync
   run_single_test("$opt --use-transactions=5 --use-fsync");
+
   # threads 5
   run_single_test("$opt --num-threads=5");
   # encryption
