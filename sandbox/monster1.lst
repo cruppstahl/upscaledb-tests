@@ -16,6 +16,12 @@
 0, "--key=binary --use-transactions=10 --keysize=64 --pagesize=1024 --recsize=0 --open --erase-pct=100 --cache=104857600 --flush-txn-immediately"
 0, "--key=binary --use-transactions=10 --keysize=64 --pagesize=1024 --recsize=0 --open --bulk-erase --cache=104857600 --flush-txn-immediately"
 
+# same again, with transactions (w/o journalling)
+0, "--key=binary --use-transactions=10 --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --cache=104857600 --disable-recovery"
+0, "--key=binary --use-transactions=10 --keysize=64 --pagesize=1024 --recsize=0 --open --cache=104857600 --disable-recovery"
+0, "--key=binary --use-transactions=10 --keysize=64 --pagesize=1024 --recsize=0 --open --erase-pct=100 --cache=104857600 --disable-recovery"
+0, "--key=binary --use-transactions=10 --keysize=64 --pagesize=1024 --recsize=0 --open --bulk-erase --cache=104857600 --disable-recovery"
+
 # bulk erase
 0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=random --cache=104857600"
 0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --distribution=ascending --cache=104857600"
