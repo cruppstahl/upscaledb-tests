@@ -140,6 +140,7 @@ sub run {
     else {
       run_list($c, 'monster1.lst');
       run_list($c, 'monster2.lst');
+      run_list($c, 'monster3.lst');
     }
   }
 

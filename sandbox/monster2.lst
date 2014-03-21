@@ -17,10 +17,6 @@
 3, "--key=custom --use-cursors --duplicate=first"
 3, "--key=custom --use-cursors --duplicate=last"
 
-# AES encryption
-3, "--use-encryption"
-3, "--use-encryption --use-transactions=10"
-
 # client/server
 3, "--use-remote"
 3, "--use-remote --use-transactions=10"

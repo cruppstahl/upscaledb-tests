@@ -1,0 +1,16 @@
+#
+# This file contains additional tests for hamsterdb pro
+#
+
+# Transactions w/ compression
+0, "--key=uint32 --erase-pct=10 --use-transactions=10 --journal-compression=1"
+0, "--key=uint64 --erase-pct=20 --use-transactions=15 --journal-compression=2"
+0, "--key=real32 --erase-pct=30 --use-transactions=20 --journal-compression=3"
+0, "--key=real64 --erase-pct=40 --use-transactions=25 --journal-compression=4"
+0, "--key=binary --keysize=64 --pagesize=1024 --bulk-erase --distribution=ascending --extkey-threshold=20 --recsize=0 --use-transactions=10 --journal-compression=3"
+3, "--use-transactions=5 --journal-compression=3"
+
+# AES encryption
+3, "--use-encryption"
+3, "--use-encryption --use-transactions=10"
+

@@ -207,6 +207,12 @@ sub run {
   # remote
   run_single_test("$opt --use-remote");
 
+  # various journal compression methods
+  run_single_test("$opt --use-transactions=20 --journal-compression=1");
+  run_single_test("$opt --use-transactions=20 --journal-compression=2");
+  run_single_test("$opt --use-transactions=20 --journal-compression=3");
+  run_single_test("$opt --use-transactions=20 --journal-compression=4");
+
   # recovery
   run_single_test("$opt --use-recovery");
   run_single_test("$opt --use-recovery --recsize=8");
