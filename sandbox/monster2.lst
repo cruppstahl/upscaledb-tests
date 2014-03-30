@@ -37,12 +37,6 @@
 3, "--no-mmap"
 3, "--no-mmap --overwrite"
 
-0, "--keysize=8 --keysize-fixed"
-0, "--keysize=8 --keysize-fixed --overwrite"
-0, "--keysize=8 --keysize-fixed --inmemorydb"
-0, "--keysize=8 --keysize-fixed --overwrite --inmemorydb"
-0, "--keysize=8 --keysize-fixed --use-cursors --overwrite --inmemorydb"
-
 3, "--keysize=680"
 3, "--keysize=680 --overwrite"
 3, "--keysize=680 --inmemorydb"

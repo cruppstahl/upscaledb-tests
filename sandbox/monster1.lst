@@ -157,6 +157,13 @@
 0, "--key=real64 --use-cursors --duplicate=first"
 0, "--key=real64 --use-cursors --duplicate=last"
 
+# binary keys, 8 bytes (fixed length)
+0, "--keysize=8 --keysize-fixed"
+0, "--keysize=8 --keysize-fixed --overwrite"
+0, "--keysize=8 --keysize-fixed --inmemorydb"
+0, "--keysize=8 --keysize-fixed --overwrite --inmemorydb"
+0, "--keysize=8 --keysize-fixed --use-cursors --overwrite --inmemorydb"
+
 # binary keys, 16 bytes
 0, "--key=binary"
 0, "--key=binary --erase-pct=30 --find-pct=30"
