@@ -41,6 +41,7 @@ sub run_single_test {
 }
 
 sub run {
+  my $c = shift;
   unlink 'perftest.txt';
 
   my $opt = "--seed=1380279291 --stop-ops=1000000";
@@ -202,22 +203,35 @@ sub run {
 
   # threads 5
   run_single_test("$opt --num-threads=5");
-  # encryption
-  run_single_test("$opt --use-encryption");
   # remote
   run_single_test("$opt --use-remote");
-
-  # various journal compression methods
-  run_single_test("$opt --use-transactions=20 --journal-compression=1");
-  run_single_test("$opt --use-transactions=20 --journal-compression=2");
-  run_single_test("$opt --use-transactions=20 --journal-compression=3");
-  run_single_test("$opt --use-transactions=20 --journal-compression=4");
 
   # recovery
   run_single_test("$opt --use-recovery");
   run_single_test("$opt --use-recovery --recsize=8");
   run_single_test("$opt --use-recovery --keysize=128 --keysize-fixed");
   run_single_test("$opt --use-recovery --recsize=8 --keysize=128 --keysize-fixed");
+
+  #### features for hamsterdb-pro
+
+  # encryption
+  run_single_test("$opt --use-encryption");
+
+  # various journal compression methods
+  run_single_test("$opt --use-transactions=20 --journal-compression=zlib");
+  run_single_test("$opt --use-transactions=20 --journal-compression=snappy");
+  run_single_test("$opt --use-transactions=20 --journal-compression=lzf");
+  run_single_test("$opt --use-transactions=20 --journal-compression=lzo");
+
+  # various record compression methods
+  run_single_test("$opt --recsize=32 --record-compression=zlib");
+  run_single_test("$opt --recsize=32 --record-compression=snappy");
+  run_single_test("$opt --recsize=32 --record-compression=lzf");
+  run_single_test("$opt --recsize=32 --record-compression=lzo");
+  run_single_test("$opt --record-compression=zlib");
+  run_single_test("$opt --record-compression=snappy");
+  run_single_test("$opt --record-compression=lzf");
+  run_single_test("$opt --record-compression=lzo");
 
   return '';
 }

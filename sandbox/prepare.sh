@@ -1,6 +1,7 @@
 
 
 DIR=$HOME/prj/hamsterdb
+#DIR=$HOME/prj/hamsterdb-pro
 #DIR=$HOME/tmp/hamsterdb-2.1.7
 
 # copy the test binary
