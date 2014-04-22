@@ -14,3 +14,13 @@
 3, "--use-encryption"
 3, "--use-encryption --use-transactions=10"
 
+# SIMD tests
+0, "--key=uint16 --recsize=0"
+0, "--key=uint16 --recsize=0 --open --find-pct=100"
+0, "--key=uint32 --recsize=0"
+0, "--key=uint32 --recsize=0 --open --find-pct=100"
+0, "--key=uint64 --recsize=0"
+0, "--key=uint64 --recsize=0 --open --find-pct=100"
+0, "--key=real32 --recsize=0"
+0, "--key=real32 --recsize=0 --open --find-pct=100"
+

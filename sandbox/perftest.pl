@@ -202,22 +202,50 @@ sub run {
 
   # threads 5
   run_single_test("$opt --num-threads=5");
-  # encryption
-  run_single_test("$opt --use-encryption");
   # remote
   run_single_test("$opt --use-remote");
-
-  # various journal compression methods
-  run_single_test("$opt --use-transactions=20 --journal-compression=1");
-  run_single_test("$opt --use-transactions=20 --journal-compression=2");
-  run_single_test("$opt --use-transactions=20 --journal-compression=3");
-  run_single_test("$opt --use-transactions=20 --journal-compression=4");
 
   # recovery
   run_single_test("$opt --use-recovery");
   run_single_test("$opt --use-recovery --recsize=8");
   run_single_test("$opt --use-recovery --keysize=128 --keysize-fixed");
   run_single_test("$opt --use-recovery --recsize=8 --keysize=128 --keysize-fixed");
+
+  #
+  # hamsterdb pro -----------------------------------------------------
+  #
+
+  # encryption
+  run_single_test("$opt --use-encryption");
+
+  # various journal compression methods
+  run_single_test("$opt --use-transactions=20 --journal-compression=zlib");
+  run_single_test("$opt --use-transactions=20 --journal-compression=snappy");
+  run_single_test("$opt --use-transactions=20 --journal-compression=lzf");
+  run_single_test("$opt --use-transactions=20 --journal-compression=lzo");
+
+  # various record compression methods
+  run_single_test("$opt --record-compression=zlib");
+  run_single_test("$opt --record-compression=snappy");
+  run_single_test("$opt --record-compression=lzf");
+  run_single_test("$opt --record-compression=lzo");
+
+  # various key compression methods
+  run_single_test("$opt --key=string --keysize=200");
+  run_single_test("$opt --key=string --keysize=200 --key-compression=zlib");
+  run_single_test("$opt --key=string --keysize=200 --key-compression=snappy");
+  run_single_test("$opt --key=string --keysize=200 --key-compression=lzf");
+  run_single_test("$opt --key=string --keysize=200 --key-compression=lzo");
+
+  # SIMD tests
+  run_single_test("$opt --key=uint16 --recsize=0");
+  run_single_test("$opt --key=uint16 --recsize=0 --open --find-pct=100");
+  run_single_test("$opt --key=uint32 --recsize=0");
+  run_single_test("$opt --key=uint32 --recsize=0 --open --find-pct=100");
+  run_single_test("$opt --key=uint64 --recsize=0");
+  run_single_test("$opt --key=uint64 --recsize=0 --open --find-pct=100");
+  run_single_test("$opt --key=real32 --recsize=0");
+  run_single_test("$opt --key=real32 --recsize=0 --open --find-pct=100");
 
   return '';
 }
