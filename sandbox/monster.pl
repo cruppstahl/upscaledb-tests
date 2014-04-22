@@ -55,11 +55,11 @@ sub run_single_test {
   print FH $output;
   if ($fail) {
     print FH "[FAIL]\n";
-    print "[FAIL]\n";
+    print color('red') . "[FAIL]\n" . color('reset');
   }
   else {
     print FH "\n";
-    print "[OK]\n";
+    print color('green') . "[OK]\n" . color('reset');
   }
   
   close(FH);
@@ -113,11 +113,12 @@ sub run_list {
   my $c = shift;
   my $list = shift;
   my $dryrun = $c->options->{'dryrun'};
+  my $options = $c->options->{'options'};
 
   open FILE, $list or die "Couldn't open file $list: $!";
   foreach (<FILE>) {
     if (/(\d), \"(.*?)\"$/) {
-      run_directory($dryrun, 0, $1, $2, $c->options->{'limit'});
+      run_directory($dryrun, 0, $1, "$options $2", $c->options->{'limit'});
     }
   }
 }

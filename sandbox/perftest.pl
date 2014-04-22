@@ -41,6 +41,7 @@ sub run_single_test {
 }
 
 sub run {
+  my $c = shift;
   unlink 'perftest.txt';
 
   my $opt = "--seed=1380279291 --stop-ops=1000000";

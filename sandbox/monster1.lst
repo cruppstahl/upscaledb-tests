@@ -175,6 +175,14 @@
 0, "--key=binary --use-cursors --duplicate=last"
 0, "--key=binary --use-cursors --duplicate=last --erase-pct=30 --find-pct=30"
 
+# binary keys, 8 bytes fixed length
+0, "--key=binary --keysize=8 --keysize-fixed --erase-pct=30 --find-pct=30"
+0, "--key=binary --keysize=8 --keysize-fixed"
+0, "--key=binary --keysize=8 --keysize-fixed --overwrite"
+0, "--key=binary --keysize=8 --keysize-fixed --inmemorydb"
+0, "--key=binary --keysize=8 --keysize-fixed --overwrite --inmemorydb"
+0, "--key=binary --keysize=8 --keysize-fixed --use-cursors --overwrite --inmemorydb"
+
 # binary keys, 16 bytes fixed length
 0, "--key=binary --keysize-fixed"
 0, "--key=binary --keysize-fixed --erase-pct=30 --find-pct=30"
