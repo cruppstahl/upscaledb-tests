@@ -1,0 +1,47 @@
+#
+# This file contains additional tests for hamsterdb pro
+#
+
+# Transactions w/ compression
+0, "--key=uint32 --erase-pct=10 --use-transactions=10 --journal-compression=zlib"
+0, "--key=uint64 --erase-pct=20 --use-transactions=15 --journal-compression=snappy"
+0, "--key=real32 --erase-pct=30 --use-transactions=20 --journal-compression=lzf"
+0, "--key=real64 --erase-pct=40 --use-transactions=25 --journal-compression=lzo"
+0, "--key=binary --keysize=64 --pagesize=1024 --bulk-erase --distribution=ascending --extkey-threshold=20 --recsize=0 --use-transactions=10 --journal-compression=lzf"
+3, "--use-transactions=5 --journal-compression=lzf"
+
+# Record compression
+1, "--record-compression=zlib"
+1, "--record-compression=snappy --use-cursors --duplicate=last"
+1, "--record-compression=lzf --overwrite"
+1, "--record-compression=lzo --overwrite"
+0, "--key=uint64 --erase-pct=30 --record-compression=zlib"
+0, "--key=binary --keysize=64 --pagesize=1024 --bulk-erase --distribution=ascending --extkey-threshold=20 --recsize=0 --record-compression=lzo"
+0, "--key=uint64 --erase-pct=30 --record-compression=zlib --inmemorydb --overwrite"
+0, "--key=uint64 --erase-pct=30 --record-compression=lzo --inmemorydb --overwrite"
+
+# Key compression
+0, "--key-compression=zlib"
+0, "--key-compression=snappy"
+0, "--key-compression=lzf"
+0, "--key-compression=lzo"
+0, "--key=binary --keysize=64 --pagesize=1024 --bulk-erase --distribution=ascending --extkey-threshold=20 --recsize=0 --key-compression=zlib"
+0, "--key=binary --keysize=64 --erase-pct=20 --find-pct=20 --record-compression=snappy --key-compression=lzo --use-encryption"
+
+# AES encryption
+3, "--use-encryption"
+3, "--use-encryption --use-transactions=10"
+
+# everything combined
+0, "--key=binary --keysize=64 --bulk-erase --record-compression=lzo --key-compression=zlib --use-encryption"
+
+# SIMD tests
+0, "--key=uint16 --recsize=0"
+0, "--key=uint16 --recsize=0 --open --find-pct=100"
+0, "--key=uint32 --recsize=0"
+0, "--key=uint32 --recsize=0 --open --find-pct=100"
+0, "--key=uint64 --recsize=0"
+0, "--key=uint64 --recsize=0 --open --find-pct=100"
+0, "--key=real32 --recsize=0"
+0, "--key=real32 --recsize=0 --open --find-pct=100"
+
