@@ -9,9 +9,9 @@ sub higher_is_better
 {
   my $metric = shift;
   my @tags = (
-	"cache_hits",
-	"freelist_hits",
-	"extkey_cache_hits",
+    #"cache_hits",
+    #"freelist_hits",
+    #"extkey_cache_hits",
     "insert_#ops",
     "erase_#ops",
     "find_#ops",
@@ -24,7 +24,26 @@ sub higher_is_better
 
 sub lower_is_better
 {
-  return (!higher_is_better(shift));
+  my $metric = shift;
+  my @tags = (
+    "cache_misses",
+    "freelist_misses",
+    "hamsterdb_elapsed_time",
+    "btree_smo_splits",
+    "btree_smo_merges",
+    "filesize",
+    "mem_total_allocations",
+    "journal_bytes_flushed",
+    "page_count_fetched",
+    "page_count_flushed",
+    "page_count_type_index",
+    "page_count_type_blob",
+    "blob_total_allocated",
+    "blob_total_read",
+    "extended_keys",
+    "extended_duptables"
+  );
+  return grep(/$metric/, @tags);
 }
 
 sub run_single_test {
@@ -347,13 +366,13 @@ sub compare {
         $p = $diff / ($oldv / 100.0)
           if ($oldv != 0);
         $newv = '???' unless $newv;
-        $sign = '-';
+        $sign = '+';
       }
       elsif ($oldv > $newv) {
         my $diff = $oldv - $newv;
         $p = $diff / ($oldv / 100.0);
         $newv = '???' unless $newv;
-        $sign = '+';
+        $sign = '-';
       }
       else {
         next;
