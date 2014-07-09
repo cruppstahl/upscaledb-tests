@@ -235,6 +235,23 @@ sub run {
   # hamsterdb pro -----------------------------------------------------
   #
 
+  # SIMD tests
+  run_single_test("$opt --key=uint16 --recsize=0");
+  run_single_test("$opt --key=uint16 --recsize=0 --open --find-pct=100");
+  run_single_test("$opt --key=uint32 --recsize=0");
+  run_single_test("$opt --key=uint32 --recsize=0 --open --find-pct=100");
+  run_single_test("$opt --key=uint64 --recsize=0");
+  run_single_test("$opt --key=uint64 --recsize=0 --open --find-pct=100");
+  run_single_test("$opt --key=real32 --recsize=0");
+  run_single_test("$opt --key=real32 --recsize=0 --open --find-pct=100");
+
+  # various key compression methods
+  run_single_test("$opt --key=string --keysize=200");
+  run_single_test("$opt --key=string --keysize=200 --key-compression=zlib");
+  run_single_test("$opt --key=string --keysize=200 --key-compression=snappy");
+  run_single_test("$opt --key=string --keysize=200 --key-compression=lzf");
+  run_single_test("$opt --key=string --keysize=200 --key-compression=lzo");
+
   # encryption
   run_single_test("$opt --use-encryption");
 
@@ -249,23 +266,6 @@ sub run {
   run_single_test("$opt --record-compression=snappy");
   run_single_test("$opt --record-compression=lzf");
   run_single_test("$opt --record-compression=lzo");
-
-  # various key compression methods
-  run_single_test("$opt --key=string --keysize=200");
-  run_single_test("$opt --key=string --keysize=200 --key-compression=zlib");
-  run_single_test("$opt --key=string --keysize=200 --key-compression=snappy");
-  run_single_test("$opt --key=string --keysize=200 --key-compression=lzf");
-  run_single_test("$opt --key=string --keysize=200 --key-compression=lzo");
-
-  # SIMD tests
-  run_single_test("$opt --key=uint16 --recsize=0");
-  run_single_test("$opt --key=uint16 --recsize=0 --open --find-pct=100");
-  run_single_test("$opt --key=uint32 --recsize=0");
-  run_single_test("$opt --key=uint32 --recsize=0 --open --find-pct=100");
-  run_single_test("$opt --key=uint64 --recsize=0");
-  run_single_test("$opt --key=uint64 --recsize=0 --open --find-pct=100");
-  run_single_test("$opt --key=real32 --recsize=0");
-  run_single_test("$opt --key=real32 --recsize=0 --open --find-pct=100");
 
   return '';
 }
