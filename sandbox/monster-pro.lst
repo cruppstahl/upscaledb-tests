@@ -45,3 +45,12 @@
 0, "--key=real32 --recsize=0"
 0, "--key=real32 --recsize=0 --open --find-pct=100"
 
+# CRC32
+0, "--enable-crc32 --recsize=10241024 --seed=1405078961 --stop-ops=1000"
+0, "--enable-crc32 --recsize=10241024 --open --find-pct=100 --seed=1405078961 --stop-ops=1000"
+
+0, "--enable-crc32 --recsize=32 --key=uint32 --pagesize=1024"
+0, "--enable-crc32 --recsize=32 --key=uint32 --pagesize=1024 --open --find-pct=50"
+0, "--enable-crc32 --recsize=32 --key=uint32 --pagesize=1024 --open --find-pct=50"
+0, "--enable-crc32 --recsize=32 --key=uint32 --pagesize=1024 --open --find-pct=50"
+
