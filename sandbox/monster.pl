@@ -88,7 +88,7 @@ sub run_directory {
     }
     else {
       # or with generated data
-      run_single_test($valgrind, "--stop-ops=500000", $options);
+      run_single_test($valgrind, "--stop-ops=200000", $options);
     }
   }
   else {
