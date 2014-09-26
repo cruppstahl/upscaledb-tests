@@ -208,3 +208,6 @@
 # extended keys
 0, "--keysize=1024"
 0, "--keysize=1024 --recsize=1024 --pagesize=1024 --distribution=ascending"
+
+# variable length keys with duplicates
+0, "--duplicate=last"

@@ -36,14 +36,16 @@
 0, "--key=binary --keysize=64 --bulk-erase --record-compression=lzo --key-compression=zlib --use-encryption"
 
 # SIMD tests
-0, "--key=uint16 --recsize=0"
-0, "--key=uint16 --recsize=0 --open --find-pct=100"
-0, "--key=uint32 --recsize=0"
-0, "--key=uint32 --recsize=0 --open --find-pct=100"
-0, "--key=uint64 --recsize=0"
-0, "--key=uint64 --recsize=0 --open --find-pct=100"
-0, "--key=real32 --recsize=0"
-0, "--key=real32 --recsize=0 --open --find-pct=100"
+0, "--key=uint16 --recsize=0 --seed=1"
+0, "--key=uint16 --recsize=0 --open --find-pct=100 --seed=1"
+0, "--key=uint32 --recsize=0 --seed=2"
+0, "--key=uint32 --recsize=0 --open --find-pct=100 --seed=2"
+0, "--key=uint64 --recsize=0 --seed=3"
+0, "--key=uint64 --recsize=0 --open --find-pct=100 --seed=3"
+0, "--key=real32 --recsize=0 --seed=4"
+0, "--key=real32 --recsize=0 --open --find-pct=100 --seed=4"
+0, "--key=real64 --recsize=0 --seed=5"
+0, "--key=real64 --recsize=0 --open --find-pct=100 --seed=5"
 
 # CRC32
 0, "--enable-crc32 --recsize=10241024 --seed=1405078961 --stop-ops=1000"
