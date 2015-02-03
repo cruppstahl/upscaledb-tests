@@ -2,7 +2,15 @@
 # This file contains additional tests for hamsterdb pro
 #
 
+# Zint32/StreamVbyte compression
+0, "--key=uint32 --key-compression=zint32_streamvbyte --recsize-fixed=2 --bulk-erase"
+0, "--key=uint32 --key-compression=zint32_streamvbyte --recsize-fixed=3 --seed=2"
+0, "--key=uint32 --key-compression=zint32_streamvbyte --recsize-fixed=3 --seed=2 --open --find-pct=50 --erase-pct=30"
+0, "--key=uint32 --key-compression=zint32_streamvbyte --recsize-fixed=3 --seed=3 --open"
+0, "--key=uint32 --key-compression=zint32_streamvbyte --recsize-fixed=3 --seed=3 --open --erase-pct=100"
+
 # Zint32/SimdComp compression
+0, "--key=uint32 --key-compression=zint32_simdcomp --recsize-fixed=2 --bulk-erase"
 0, "--key=uint32 --key-compression=zint32_simdcomp --recsize-fixed=3 --seed=2"
 0, "--key=uint32 --key-compression=zint32_simdcomp --recsize-fixed=3 --seed=2 --open --find-pct=50 --erase-pct=30"
 0, "--key=uint32 --key-compression=zint32_simdcomp --recsize-fixed=3 --seed=3 --open"
