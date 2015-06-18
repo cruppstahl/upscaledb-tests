@@ -2,6 +2,20 @@
 # This file contains additional tests for hamsterdb pro
 #
 
+# Zint32/FOR compression
+0, "--key=uint32 --key-compression=zint32_for --recsize-fixed=2 --bulk-erase"
+0, "--key=uint32 --key-compression=zint32_for --recsize-fixed=3 --seed=2"
+0, "--key=uint32 --key-compression=zint32_for --recsize-fixed=3 --seed=2 --open --find-pct=50 --erase-pct=30"
+0, "--key=uint32 --key-compression=zint32_for --recsize-fixed=3 --seed=3 --open"
+0, "--key=uint32 --key-compression=zint32_for --recsize-fixed=3 --seed=3 --open --erase-pct=100"
+
+# Zint32/SimdFOR compression
+0, "--key=uint32 --key-compression=zint32_simdfor --recsize-fixed=2 --bulk-erase"
+0, "--key=uint32 --key-compression=zint32_simdfor --recsize-fixed=3 --seed=2"
+0, "--key=uint32 --key-compression=zint32_simdfor --recsize-fixed=3 --seed=2 --open --find-pct=50 --erase-pct=30"
+0, "--key=uint32 --key-compression=zint32_simdfor --recsize-fixed=3 --seed=3 --open"
+0, "--key=uint32 --key-compression=zint32_simdfor --recsize-fixed=3 --seed=3 --open --erase-pct=100"
+
 # Zint32/MaskedVbyte compression
 0, "--key=uint32 --key-compression=zint32_maskedvbyte --recsize-fixed=2 --bulk-erase"
 0, "--key=uint32 --key-compression=zint32_maskedvbyte --recsize-fixed=3 --seed=2"
