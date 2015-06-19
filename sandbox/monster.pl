@@ -94,7 +94,12 @@ sub run_directory {
   else {
     if ($maxdir == 0) {
       # run tests with random data
-      run_single_test(0, "--stop-ops=$limit", $options);
+      if ($options =~ /stop-ops/) {
+        run_single_test(0, "", $options);
+      }
+      else {
+        run_single_test(0, "--stop-ops=$limit", $options);
+      }
     }
     else {
       # or with generated data

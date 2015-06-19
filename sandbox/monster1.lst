@@ -1,3 +1,9 @@
+# simulate crashes
+0, "--use-recovery --simulate-crashes --stop-ops=1000 --fullcheck-frequency=1"
+0, "--use-recovery --simulate-crashes --stop-ops=5000 --fullcheck-frequency=10"
+0, "--use-recovery --simulate-crashes --stop-ops=10000 --fullcheck-frequency=100"
+0, "--use-transactions=tmp --simulate-crashes --stop-ops=100000"
+
 # bulk erase, then refill, then erase, then refill
 0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --bulk-erase --cache=104857600"
 0, "--key=binary --keysize=64 --pagesize=1024 --recsize=0 --open --cache=104857600"
@@ -211,3 +217,4 @@
 
 # variable length keys with duplicates
 0, "--duplicate=last"
+
