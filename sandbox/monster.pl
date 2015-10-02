@@ -25,8 +25,8 @@ sub run_single_test {
 
   if ($valgrind) {
     $real_params = "--quiet $params $file";
-    print "[START] ./ham_bench $real_params $file\n";
-    $output = `valgrind --tool=memcheck --suppressions=valgrind.suppress ./ham_bench $real_params 2>&1`;
+    print "[START] ./ups_bench $real_params $file\n";
+    $output = `valgrind --tool=memcheck --suppressions=valgrind.suppress ./ups_bench $real_params 2>&1`;
   }
   else {
     # do not reopen file if 'inmemorydb' is set
@@ -36,8 +36,8 @@ sub run_single_test {
     else {
       $real_params = "--quiet --use-berkeleydb=true --reopen=true $params";
     }
-    print "[START] ./ham_bench $real_params $file\n";
-    $output = `./ham_bench $real_params $file`;
+    print "[START] ./ups_bench $real_params $file\n";
+    $output = `./ups_bench $real_params $file`;
   }
 
 
@@ -51,7 +51,7 @@ sub run_single_test {
   $total++;
   $errors++ if $fail;
 
-  print FH "./ham_bench $real_params $file\n";
+  print FH "./ups_bench $real_params $file\n";
   print FH $output;
   if ($fail) {
     print FH "[FAIL]\n";

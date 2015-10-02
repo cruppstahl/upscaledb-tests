@@ -28,7 +28,7 @@ sub lower_is_better
   my @tags = (
     "cache_misses",
     "freelist_misses",
-    "hamsterdb_elapsed_time",
+    "upscaledb_elapsed_time",
     "btree_smo_splits",
     "btree_smo_merges",
     "filesize",
@@ -50,10 +50,10 @@ sub run_single_test {
   my $params = shift;
 
   open(FH, ">>perftest.txt") or die "Cannot open perftest.txt for writing";
-  print "[START] ./ham_bench $params --quiet --metrics=all\n";
-  my $output = `./ham_bench $params --quiet --metrics=all`;
-  print "[STOP]  ./ham_bench $params --quiet --metrics=all\n";
-  print FH "./ham_bench $params --quiet --metrics=all\n";
+  print "[START] ./ups_bench $params --quiet --metrics=all\n";
+  my $output = `./ups_bench $params --quiet --metrics=all`;
+  print "[STOP]  ./ups_bench $params --quiet --metrics=all\n";
+  print FH "./ups_bench $params --quiet --metrics=all\n";
   print FH $output;
   print FH "\n";
   close(FH);
@@ -231,10 +231,6 @@ sub run {
   run_single_test("$opt --use-recovery --keysize=128 --keysize-fixed");
   run_single_test("$opt --use-recovery --recsize=8 --keysize=128 --keysize-fixed");
 
-  #
-  # hamsterdb pro -----------------------------------------------------
-  #
-
   # encryption
   run_single_test("$opt --use-encryption");
 
@@ -242,20 +238,17 @@ sub run {
   run_single_test("$opt --use-transactions=20 --journal-compression=zlib");
   run_single_test("$opt --use-transactions=20 --journal-compression=snappy");
   run_single_test("$opt --use-transactions=20 --journal-compression=lzf");
-  run_single_test("$opt --use-transactions=20 --journal-compression=lzo");
 
   # various record compression methods
   run_single_test("$opt --record-compression=zlib");
   run_single_test("$opt --record-compression=snappy");
   run_single_test("$opt --record-compression=lzf");
-  run_single_test("$opt --record-compression=lzo");
 
   # various key compression methods
   run_single_test("$opt --key=string --keysize=200");
   run_single_test("$opt --key=string --keysize=200 --key-compression=zlib");
   run_single_test("$opt --key=string --keysize=200 --key-compression=snappy");
   run_single_test("$opt --key=string --keysize=200 --key-compression=lzf");
-  run_single_test("$opt --key=string --keysize=200 --key-compression=lzo");
 
   # SIMD tests
   run_single_test("$opt --key=uint16 --recsize=0");
@@ -279,7 +272,7 @@ sub read_data {
   while (<FH>) {
     chomp;
     next if $_ eq '';
-    die "expected './ham_bench ...', found $_" unless /^\.\/ham_bench /;
+    die "expected './ups_bench ...', found $_" unless /^\.\/ups_bench /;
     my $test = $_;
 
     $_ = <FH>;
@@ -292,13 +285,13 @@ sub read_data {
     while (<FH>) {
       chomp;
       last if ($_ eq '');
-      if (/hamsterdb elapsed time \(sec\)\s*(\S+)$/) {
-        $t{'hamsterdb_elapsed_time'} = $1;
+      if (/upscaledb elapsed time \(sec\)\s*(\S+)$/) {
+        $t{'upscaledb_elapsed_time'} = $1;
       }
       elsif (/latency \(min, avg, max\)/) {
         # skip
       }
-      elsif (/^\s+hamsterdb (\S+)\s*(\S+)$/) {
+      elsif (/^\s+upscaledb (\S+)\s*(\S+)$/) {
         $t{$1} = $2;
       }
     }
