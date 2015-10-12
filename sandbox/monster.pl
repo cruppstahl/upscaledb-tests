@@ -147,7 +147,7 @@ sub run {
       run_list($c, 'monster1.lst');
       run_list($c, 'monster2.lst');
       run_list($c, 'monster3.lst');
-      run_list($c, 'monster-pro.lst');
+      run_list($c, 'monster4.lst');
     }
   }
 
