@@ -51,7 +51,7 @@ sub run_single_test {
 
   open(FH, ">>perftest.txt") or die "Cannot open perftest.txt for writing";
   print "[START] ./ups_bench $params --quiet --metrics=all\n";
-  my $output = `./ups_bench $params --quiet --metrics=all`;
+  my $output = `taskset -c 0,0 ./ups_bench $params --quiet --metrics=all`;
   print "[STOP]  ./ups_bench $params --quiet --metrics=all\n";
   print FH "./ups_bench $params --quiet --metrics=all\n";
   print FH $output;
@@ -272,7 +272,7 @@ sub read_data {
   while (<FH>) {
     chomp;
     next if $_ eq '';
-    die "expected './ups_bench ...', found $_" unless /^\.\/ups_bench /;
+    die "expected './ups_bench ...', found $_" unless /^\.\/..._bench /;
     my $test = $_;
 
     $_ = <FH>;

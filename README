@@ -1,14 +1,14 @@
 
-hamsterdb "monster" testsuite                    Thu Jun  2 20:31:03 CEST 2011
-(C) Christoph Rupp, chris@crupp.de; http://www.hamsterdb.com
+upscaledb "monster" testsuite                    Thu Jun  2 20:31:03 CEST 2011
+(C) Christoph Rupp, chris@crupp.de; http://www.upscaledb.com
 
-This is the README file of the hamsterdb "monster" testsuite.
+This is the README file of the upscaledb "monster" testsuite.
 
 Contents:
 
 1. About
 
-This testsuite contains more than 30 000 tests for hamsterdb Embedded Storage.
+This testsuite contains more than 30 000 tests for upscaledb Embedded Storage.
 These tests run on Windows and Unix/Linux. They execute various script files
 (in /testfiles) against BerkeleyDb, and frequently compare both databases 
 to make sure that they're equal. 
@@ -44,17 +44,15 @@ as i can, promised!
 
 6. Licensing
 
-The hamsterdb testsuite is released under GPL2 or later. There are several 
-exceptions for other open source licenses (see 
-http://hamsterdb.com/licensing/exceptions for legal information and a license 
-list).
+The upscaledb testsuite is released under GPL2 or later. There are several 
+exceptions for other open source licenses (see http://upscaledb.com/buy).
 
 7. Contact
 
-Author of hamsterdb Embedded Storage is 
+Author of upscaledb Embedded Storage is 
     Christoph Rupp
     Paul-Preuss-Str. 63
     80995 Muenchen/Germany
     email: chris@crupp.de
-    web: http://www.hamsterdb.com
+    web: http://upscaledb.com
 
