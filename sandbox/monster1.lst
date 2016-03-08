@@ -1,6 +1,19 @@
+# record types
+0, "--record=uint8 --erase-pct=30 --find-pct=30"
+0, "--record=uint8 --erase-pct=30 --find-pct=30 --open"
+0, "--record=uint16 --erase-pct=30 --find-pct=30"
+0, "--record=uint16 --erase-pct=30 --find-pct=30 --open"
+0, "--record=uint32 --erase-pct=30 --find-pct=30"
+0, "--record=uint32 --erase-pct=30 --find-pct=30 --open"
+0, "--record=uint64 --erase-pct=30 --find-pct=30"
+0, "--record=uint64 --erase-pct=30 --find-pct=30 --open"
+0, "--record=real32 --erase-pct=30 --find-pct=30"
+0, "--record=real32 --erase-pct=30 --find-pct=30 --open"
+0, "--record=real64 --erase-pct=30 --find-pct=30"
+0, "--record=real64 --erase-pct=30 --find-pct=30 --open"
+
 # simulate crashes
 0, "--use-recovery --simulate-crashes --stop-ops=1000 --fullcheck-frequency=1"
-0, "--use-recovery --simulate-crashes --stop-ops=5000 --fullcheck-frequency=10"
 0, "--use-recovery --simulate-crashes --stop-ops=10000 --fullcheck-frequency=100"
 0, "--use-transactions=tmp --simulate-crashes --stop-ops=100000"
 
@@ -15,12 +28,6 @@
 0, "--key=binary --use-transactions=10 --keysize=64 --recsize=0 --open --cache=104857600"
 0, "--key=binary --use-transactions=10 --keysize=64 --recsize=0 --open --erase-pct=100 --cache=104857600"
 0, "--key=binary --use-transactions=10 --keysize=64 --recsize=0 --open --bulk-erase --cache=104857600"
-
-# same again, with transactions (w/o buffering)
-0, "--key=binary --use-transactions=10 --keysize=64 --recsize=0 --bulk-erase --cache=104857600 --flush-txn-immediately"
-0, "--key=binary --use-transactions=10 --keysize=64 --recsize=0 --open --cache=104857600 --flush-txn-immediately"
-0, "--key=binary --use-transactions=10 --keysize=64 --recsize=0 --open --erase-pct=100 --cache=104857600 --flush-txn-immediately"
-0, "--key=binary --use-transactions=10 --keysize=64 --recsize=0 --open --bulk-erase --cache=104857600 --flush-txn-immediately"
 
 # same again, with transactions (w/o journalling)
 0, "--key=binary --use-transactions=10 --keysize=64 --recsize=0 --bulk-erase --cache=104857600 --disable-recovery"

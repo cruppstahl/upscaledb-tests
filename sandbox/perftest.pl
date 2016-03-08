@@ -195,19 +195,15 @@ sub run {
   # txn temp
   run_single_test("$opt --use-transactions=tmp");
   run_single_test("$opt --use-transactions=tmp --recsize=0");
-  run_single_test("$opt --use-transactions=tmp --recsize=0 --flush-txn-immediately");
   # txn 5
   run_single_test("$opt --use-transactions=5");
   run_single_test("$opt --use-transactions=5 --recsize=0");
-  run_single_test("$opt --use-transactions=5 --recsize=0 --flush-txn-immediately");
   # txn 20
   run_single_test("$opt --use-transactions=20");
   run_single_test("$opt --use-transactions=20 --recsize=0");
-  run_single_test("$opt --use-transactions=20 --recsize=0 --flush-txn-immediately");
   # txn 100 w/o records, with and without batching
   run_single_test("$opt --use-transactions=100");
   run_single_test("$opt --use-transactions=100 --recsize=0");
-  run_single_test("$opt --use-transactions=100 --recsize=0 --flush-txn-immediately");
 
   # txn temp (inmemory)
   run_single_test("$opt --use-transactions=tmp --inmemorydb");
