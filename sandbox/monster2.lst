@@ -89,15 +89,6 @@
 3, "--hints=UPS_HINT_PREPEND --use-cursors"
 3, "--hints=UPS_HINT_PREPEND --use-cursors --inmemorydb"
 
-# UPS_DIRECT_ACCESS
-3, "--direct-access --inmemorydb"
-3, "--direct-access --inmemorydb --fullcheck=find"
-3, "--direct-access --inmemorydb --overwrite"
-3, "--direct-access --inmemorydb --use-cursors"
-3, "--direct-access --inmemorydb --use-cursors --overwrite $1 $2 $3"
-3, "--direct-access --inmemorydb --use-cursors --duplicate=first"
-3, "--direct-access --inmemorydb --fullcheck=reverse"
-
 # use temporary transactions
 3, "--use-transactions=tmp"
 3, "--use-transactions=tmp --overwrite"

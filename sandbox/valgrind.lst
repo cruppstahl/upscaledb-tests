@@ -52,7 +52,6 @@
 1, "--cache=50 --overwrite --reopen"
 1, "--use-recovery --reopen"
 1, "--cache=unlimited"
-1, "--direct-access --inmemorydb"
 1, "--use-transactions=tmp"
 1, "--use-transactions=10"
 1, "--use-transactions=10000"
