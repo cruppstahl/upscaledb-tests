@@ -48,12 +48,13 @@ sub lower_is_better
 
 sub run_single_test {
   my $params = shift;
+  my $options = "--quiet";
 
   open(FH, ">>perftest.txt") or die "Cannot open perftest.txt for writing";
-  print "[START] ./ups_bench $params --quiet --metrics=all\n";
-  my $output = `taskset -c 0,0 ./ups_bench $params --quiet --metrics=all`;
-  print "[STOP]  ./ups_bench $params --quiet --metrics=all\n";
-  print FH "./ups_bench $params --quiet --metrics=all\n";
+  print "[START] ./ups_bench $params $options\n";
+  my $output = `taskset -c 0,1 ./ups_bench $params $options`;
+  print "[STOP]  ./ups_bench $params $options\n";
+  print FH "./ups_bench $params $options\n";
   print FH $output;
   print FH "\n";
   close(FH);
@@ -62,8 +63,6 @@ sub run_single_test {
 sub run {
   my $c = shift;
   unlink 'perftest.txt';
-
-  my $opt = "--seed=1380279291 --stop-ops=1000000";
 
   # a few quickies
   run_single_test("--seed=12345 --stop-ops=50000");
@@ -76,60 +75,56 @@ sub run {
 
   # a few biggies
   run_single_test("--seed=12345 --stop-ops=10000000");
-  run_single_test("--seed=12345 --stop-ops=10000000 --key=uint16");
   run_single_test("--seed=12345 --stop-ops=10000000 --key=uint32");
   run_single_test("--seed=12345 --stop-ops=10000000 --key=uint64 --recsize-fixed=5");
   run_single_test("--seed=12345 --stop-ops=10000000 --recsize-fixed=0");
-  run_single_test("--seed=12345 --stop-ops=10000000");
-  run_single_test("--seed=12345 --stop-ops=10000000 --key=uint64 --recsize-fixed=5");
-
-  # big records
-  run_single_test("--seed=12345 --recsize=1048576 --stop-ops=100000");
 
   # bulk erase
-  run_single_test("--seed=12345 --stop-ops=1000000 --bulk-erase --recsize-fixed=0");
-  run_single_test("--seed=12345 --stop-ops=1000000 --bulk-erase");
-  run_single_test("--seed=12345 --stop-ops=1000000 --bulk-erase --key=uint64 --recsize-fixed=5");
+  #run_single_test("--seed=12345 --bulk-erase --recsize-fixed=0");
+  #run_single_test("--seed=12345 --bulk-erase");
+  #run_single_test("--seed=12345 --bulk-erase --key=uint64 --recsize-fixed=5");
+
+  my $opt = "--seed=1380279291 --stop-ops=1000000";
 
   # various work loads (uint16)
-  run_single_test("$opt --key=uint16 --erase-pct=25 --find-pct=40");
-  run_single_test("$opt --key=uint16");
-  run_single_test("$opt --key=uint16 --open --find-pct=100");
+  #run_single_test("$opt --key=uint16 --erase-pct=25 --find-pct=40");
+  #run_single_test("$opt --key=uint16");
+  #run_single_test("$opt --key=uint16 --open --find-pct=100");
 
   # various work loads (uint32)
-  run_single_test("$opt --key=uint32 --erase-pct=25 --find-pct=40");
-  run_single_test("$opt --key=uint32");
-  run_single_test("$opt --key=uint32 --open --find-pct=100");
+  #run_single_test("$opt --key=uint32 --erase-pct=25 --find-pct=40");
+  #run_single_test("$opt --key=uint32");
+  #run_single_test("$opt --key=uint32 --open --find-pct=100");
 
   # various work loads (uint64)
-  run_single_test("$opt --key=uint64 --erase-pct=25 --find-pct=40");
-  run_single_test("$opt --key=uint64");
-  run_single_test("$opt --key=uint64 --open --find-pct=100");
+  #run_single_test("$opt --key=uint64 --erase-pct=25 --find-pct=40");
+  #run_single_test("$opt --key=uint64");
+  #run_single_test("$opt --key=uint64 --open --find-pct=100");
 
   # various work loads (real32)
-  run_single_test("$opt --key=real32 --erase-pct=25 --find-pct=40");
-  run_single_test("$opt --key=real32");
-  run_single_test("$opt --key=real32 --open --find-pct=100");
+  #run_single_test("$opt --key=real32 --erase-pct=25 --find-pct=40");
+  #run_single_test("$opt --key=real32");
+  #run_single_test("$opt --key=real32 --open --find-pct=100");
 
   # various work loads (real64)
-  run_single_test("$opt --key=real64 --erase-pct=25 --find-pct=40");
-  run_single_test("$opt --key=real64");
-  run_single_test("$opt --key=real64 --open --find-pct=100");
+  #run_single_test("$opt --key=real64 --erase-pct=25 --find-pct=40");
+  #run_single_test("$opt --key=real64");
+  #run_single_test("$opt --key=real64 --open --find-pct=100");
 
   # various work loads (16 byte binary, fixed size)
-  run_single_test("$opt --key=binary --keysize-fixed --erase-pct=25 --find-pct=40");
-  run_single_test("$opt --key=binary --keysize-fixed");
-  run_single_test("$opt --key=binary --keysize-fixed --open --find-pct=100");
+  #run_single_test("$opt --key=binary --keysize-fixed --erase-pct=25 --find-pct=40");
+  #run_single_test("$opt --key=binary --keysize-fixed");
+  #run_single_test("$opt --key=binary --keysize-fixed --open --find-pct=100");
 
   # various work loads (128 byte binary, fixed size)
-  run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --erase-pct=25 --find-pct=40");
-  run_single_test("$opt --key=binary --keysize=128 --keysize-fixed");
-  run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --open --find-pct=100");
+  #run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --erase-pct=25 --find-pct=40");
+  #run_single_test("$opt --key=binary --keysize=128 --keysize-fixed");
+  #run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --open --find-pct=100");
 
   # various work loads (16 byte binary, fixed size, duplicates)
-  run_single_test("$opt --key=binary --keysize-fixed --duplicate=last --erase-pct=25 --find-pct=40");
-  run_single_test("$opt --key=binary --keysize-fixed --duplicate=last");
-  run_single_test("$opt --key=binary --keysize-fixed --duplicate=last --open --find-pct=100");
+  #run_single_test("$opt --key=binary --keysize-fixed --duplicate=last --erase-pct=25 --find-pct=40");
+  #run_single_test("$opt --key=binary --keysize-fixed --duplicate=last");
+  #run_single_test("$opt --key=binary --keysize-fixed --duplicate=last --open --find-pct=100");
 
   # various work loads (128 byte binary, fixed size, duplicates)
   run_single_test("$opt --key=binary --keysize=128 --keysize-fixed --duplicate=last --erase-pct=25 --find-pct=40");
@@ -198,9 +193,6 @@ sub run {
   # txn 5
   run_single_test("$opt --use-transactions=5");
   run_single_test("$opt --use-transactions=5 --recsize=0");
-  # txn 20
-  run_single_test("$opt --use-transactions=20");
-  run_single_test("$opt --use-transactions=20 --recsize=0");
   # txn 100 w/o records, with and without batching
   run_single_test("$opt --use-transactions=100");
   run_single_test("$opt --use-transactions=100 --recsize=0");
@@ -209,8 +201,6 @@ sub run {
   run_single_test("$opt --use-transactions=tmp --inmemorydb");
   # txn 5 (inmemory)
   run_single_test("$opt --use-transactions=5 --inmemorydb");
-  # txn 20 (inmemory)
-  run_single_test("$opt --use-transactions=20 --inmemorydb");
   # txn 100 (inmemory)
   run_single_test("$opt --use-transactions=100 --inmemorydb");
   # txn 5 w/ fsync
@@ -220,12 +210,6 @@ sub run {
   run_single_test("$opt --num-threads=5");
   # remote
   run_single_test("$opt --use-remote");
-
-  # recovery
-  run_single_test("$opt --use-recovery");
-  run_single_test("$opt --use-recovery --recsize=8");
-  run_single_test("$opt --use-recovery --keysize=128 --keysize-fixed");
-  run_single_test("$opt --use-recovery --recsize=8 --keysize=128 --keysize-fixed");
 
   # encryption
   run_single_test("$opt --use-encryption");
@@ -245,18 +229,6 @@ sub run {
   run_single_test("$opt --key=string --keysize=200 --key-compression=zlib");
   run_single_test("$opt --key=string --keysize=200 --key-compression=snappy");
   run_single_test("$opt --key=string --keysize=200 --key-compression=lzf");
-
-  # SIMD tests
-  run_single_test("$opt --key=uint16 --recsize=0");
-  run_single_test("$opt --key=uint16 --recsize=0 --open --find-pct=100");
-  run_single_test("$opt --key=uint32 --recsize=0");
-  run_single_test("$opt --key=uint32 --recsize=0 --open --find-pct=100");
-  run_single_test("$opt --key=uint64 --recsize=0");
-  run_single_test("$opt --key=uint64 --recsize=0 --open --find-pct=100");
-  run_single_test("$opt --key=real32 --recsize=0");
-  run_single_test("$opt --key=real32 --recsize=0 --open --find-pct=100");
-  run_single_test("$opt --key=real64 --recsize=0");
-  run_single_test("$opt --key=real64 --recsize=0 --open --find-pct=100");
 
   return '';
 }
