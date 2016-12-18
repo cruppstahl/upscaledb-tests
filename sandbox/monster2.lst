@@ -81,14 +81,6 @@
 3, "--use-recovery --overwrite --no-mmap"
 3, "--use-recovery --keysize=16"
 
-# UPS_HINT_APPEND
-3, "--hints=UPS_HINT_APPEND --use-cursors"
-3, "--hints=UPS_HINT_APPEND --use-cursors --inmemorydb"
-
-# UPS_HINT_PREPEND
-3, "--hints=UPS_HINT_PREPEND --use-cursors"
-3, "--hints=UPS_HINT_PREPEND --use-cursors --inmemorydb"
-
 # use temporary transactions
 3, "--use-transactions=tmp"
 3, "--use-transactions=tmp --overwrite"
