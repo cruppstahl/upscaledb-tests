@@ -30,14 +30,6 @@
 0, "--key=uint32 --key-compression=zint32_streamvbyte --recsize-fixed=3 --seed=3 --open --erase-pct=100"
 0, "--key=uint32 --key-compression=zint32_streamvbyte --recsize-fixed=3 --seed=3 --duplicate=last"
 
-# Zint32/MaskedVbyte compression
-0, "--key=uint32 --key-compression=zint32_maskedvbyte --recsize-fixed=2 --bulk-erase"
-0, "--key=uint32 --key-compression=zint32_maskedvbyte --recsize-fixed=3 --seed=2"
-0, "--key=uint32 --key-compression=zint32_maskedvbyte --recsize-fixed=3 --seed=2 --open --find-pct=50 --erase-pct=30"
-0, "--key=uint32 --key-compression=zint32_maskedvbyte --recsize-fixed=3 --seed=3 --open"
-0, "--key=uint32 --key-compression=zint32_maskedvbyte --recsize-fixed=3 --seed=3 --open --erase-pct=100"
-0, "--key=uint32 --key-compression=zint32_maskedvbyte --recsize-fixed=3 --seed=3 --duplicate=last"
-
 # Zint32/VarByte compression
 0, "--key=uint32 --key-compression=zint32_varbyte --recsize-fixed=3 --seed=2"
 0, "--key=uint32 --key-compression=zint32_varbyte --recsize-fixed=3 --seed=2 --open --find-pct=50 --erase-pct=30"
