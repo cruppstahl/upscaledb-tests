@@ -44,8 +44,8 @@ as i can, promised!
 
 6. Licensing
 
-The upscaledb testsuite is released under GPL2 or later. There are several 
-exceptions for other open source licenses (see http://upscaledb.com/buy).
+The upscaledb testsuite is released under Apache License 2.0. See the file
+COPYING for details.
 
 7. Contact
 
